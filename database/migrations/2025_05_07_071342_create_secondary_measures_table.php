@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('secondary_measures', function (Blueprint $table) {
             $table->id();
+            // $table->string('name');
+            $table->foreignId('measure_name_id')->constrained()->cascadeOnDelete();
+            $table->float('measure');
+            $table->foreignId('measure_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
