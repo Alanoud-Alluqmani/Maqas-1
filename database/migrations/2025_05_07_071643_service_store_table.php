@@ -11,7 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('service_store', function (Blueprint $table) {
+            $table->foreignId('store_id')->constrained();
+            $table->foreignId('service_id')->constrained();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('service_store');
     }
 };
