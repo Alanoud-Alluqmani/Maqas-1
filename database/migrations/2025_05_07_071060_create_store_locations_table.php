@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('feature_store', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('store_id')->constrained();
-        $table->foreignId('feature_id')->constrained();
-        $table->timestamps();
+        Schema::create('store_locations', function (Blueprint $table) {
+            $table->id();
+            $table->string('loc_rul');
+            $table->foreignId('store_id')->constrained()->cascadeOnDelete();
+            $table->timestamps();
         });
-           
     }
 
     /**
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('feature_store');
+        Schema::dropIfExists('store_locations');
     }
 };
