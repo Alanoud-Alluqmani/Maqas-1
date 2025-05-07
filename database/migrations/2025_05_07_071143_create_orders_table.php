@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('store_id')->constrained();
             $table->foreignId('service_id')->constrained();
             $table->foreignId('status_id')->constrained();
+            $table->foreignId('customer_location_id')->constrained();
+            $table->foreignId('store_location_id')->constrained();
             $table->float('total_price');
             $table->timestamps();
         });
