@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('images', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('design_id')->constrained()->cascadeOnDelete();
+            $table->image('image');
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */

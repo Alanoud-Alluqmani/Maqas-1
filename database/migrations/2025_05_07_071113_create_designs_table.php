@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('designs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('feature_store_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->float('price');
             $table->timestamps();
         });
     }
