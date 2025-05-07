@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('location_order', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('order_id')->constrained();
-            $table->foreignId('customer_loc')->constrained();
-            $table->foreignId('store_loc')->constrained();
-            $table->timestamps();
+        Schema::create('feature_stores', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('store_id')->constrained();
+        $table->foreignId('feature_id')->constrained();
+        $table->timestamps();
         });
-
+           
     }
 
     /**
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('location_order');
+        Schema::dropIfExists('feature_stores');
     }
 };
