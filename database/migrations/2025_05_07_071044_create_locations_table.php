@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
+            $table->string('loc_rul');
+            $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('store_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
