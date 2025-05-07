@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('customer_locations', function (Blueprint $table) {
             $table->id();
-            $table->string('loc_rul');
+            $table->string('loc_url');
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
