@@ -23,6 +23,20 @@ class Product_categoriesSeeder extends Seeder
                 'name_ar' => 'القائد',
                 'name_en' => 'Super Admin',
                 'created_at' => Carbon::now()
-            ], );
+            ], 
+
+            [
+                'name_ar' => 'عباية',
+                'name_en' => 'Abayah',
+                'created_at' => Carbon::now()
+            ], 
+
+             [
+                'name_ar' => 'ثوب',
+                'name_en' => 'Thobe',
+                'created_at' => Carbon::now()
+            ], 
+        
+        );
     }
 }
