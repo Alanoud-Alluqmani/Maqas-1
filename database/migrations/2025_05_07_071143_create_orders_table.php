@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('store_location_id')->constrained();
             $table->float('total_price');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
     /**

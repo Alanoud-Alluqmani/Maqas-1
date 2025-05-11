@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('product_category_id')->constrained();
             $table->float('rating_avr');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
