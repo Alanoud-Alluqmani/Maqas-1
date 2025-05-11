@@ -60,5 +60,9 @@ class User extends Authenticatable
         return $this->belongsTo(Store::class);
     }
 
+    public function ratings(){
+        return $this->hasManyThrough(Rating::class, Order::class);
+    }
+
     
 }

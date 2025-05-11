@@ -44,4 +44,8 @@ class Store extends Model
     public function users(){
         return $this->hasMany(User::class);
     }
+
+    public function ratings(){
+        return $this->hasManyThrough(Rating::class, through: Order::class);
+    }
 }
