@@ -17,6 +17,7 @@ return new class extends Migration
             $table->tinyInteger('rating')->unsigned()->default(0); // unsigned makes it non negative
             $table->text('comment')->default('');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

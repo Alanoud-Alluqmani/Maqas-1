@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Item extends Model
+class MeasureValue extends Model
 {
     use SoftDeletes;
-    public function order(){
-        return $this->belongsTo(Order::class);
+    protected $fillable = [
+        'measure',
+    ];
+
+
+    public function measure_name(){
+        return $this->belongsTo(MeasureName::class);
     }
 
     public function measure(){
         return $this->belongsTo(Measure::class);
-    }
-
-
-    public function designs(){
-        return $this->belongsToMany(Design::class);
     }
 }

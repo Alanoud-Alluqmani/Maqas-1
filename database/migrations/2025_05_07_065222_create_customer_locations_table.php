@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('loc_url');
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

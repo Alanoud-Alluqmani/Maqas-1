@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('measure_id')->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
