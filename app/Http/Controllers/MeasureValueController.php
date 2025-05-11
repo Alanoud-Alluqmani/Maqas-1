@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SecondaryMeasure;
+use App\Models\MeasureValue;
 use Illuminate\Http\Request;
 
-class SecondaryMeasureController extends Controller
+class MeasureValueController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class SecondaryMeasureController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SecondaryMeasure $secondaryMeasure)
+    public function show(MeasureValue $MeasureVlaue)
     {
         //
     }
@@ -42,7 +42,7 @@ class SecondaryMeasureController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(SecondaryMeasure $secondaryMeasure)
+    public function edit(MeasureValue $MeasureVlaue)
     {
         //
     }
@@ -50,7 +50,7 @@ class SecondaryMeasureController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, SecondaryMeasure $secondaryMeasure)
+    public function update(Request $request, MeasureValue $secondaryMeasure)
     {
         //
     }
@@ -58,7 +58,7 @@ class SecondaryMeasureController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(SecondaryMeasure $secondaryMeasure)
+    public function destroy(MeasureValue $secondaryMeasure)
     {
         //
     }

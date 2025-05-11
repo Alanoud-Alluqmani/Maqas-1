@@ -16,7 +16,9 @@ return new class extends Migration
             $table->foreignId('design_id')->constrained()->cascadeOnDelete();
             $table->string('image');
             $table->timestamps();
+            $table->softDeletes();
         });
+
     }
     /**
      * Reverse the migrations.
