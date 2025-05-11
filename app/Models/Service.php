@@ -12,7 +12,8 @@ class Service extends Model
         'name_ar',
         'name_en',
         'description_ar',
-        'description_en'
+        'description_en',
+        'icon_id'
     ];
 
 
@@ -23,4 +24,6 @@ class Service extends Model
     public function stores(){
         return $this->belongsToMany(Store::class);
     }
+
+
 }
