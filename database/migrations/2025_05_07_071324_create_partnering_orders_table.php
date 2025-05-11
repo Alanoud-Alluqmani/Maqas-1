@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('store_id')->constrained();
             $table->enum('status', ['Waiting','Accepted', 'Rejected'])->default('Waiting');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

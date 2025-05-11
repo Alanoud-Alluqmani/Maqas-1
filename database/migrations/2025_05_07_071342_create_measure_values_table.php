@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('secondary_measures', function (Blueprint $table) {
+        Schema::create('measure_vlaues', function (Blueprint $table) {
             $table->id();
             // $table->string('name');
             $table->foreignId('measure_name_id')->constrained()->cascadeOnDelete();
             $table->float('measure');
             $table->foreignId('measure_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('secondary_measures');
+        Schema::dropIfExists('measure_vlaues');
     }
 };

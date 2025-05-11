@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name_en');
             $table->foreignId('product_category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
 
        

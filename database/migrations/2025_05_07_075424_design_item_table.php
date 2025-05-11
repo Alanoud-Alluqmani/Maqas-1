@@ -15,6 +15,8 @@ return new class extends Migration
             $table->foreignId('design_id')->constrained()->cascadeOnDelete();
             $table->foreignId('item_id')->constrained()->cascadeOnDelete();
             $table->primary(['design_id', 'item_id']);
+            $table->timestamps();
+            $table->softDeletes();
         });
         
     }

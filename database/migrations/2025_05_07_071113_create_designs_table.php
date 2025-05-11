@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name_en');
             $table->float('price');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
