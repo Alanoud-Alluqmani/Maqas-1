@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('service_store', function (Blueprint $table) {
             $table->foreignId('store_id')->constrained();
             $table->foreignId('service_id')->constrained();
+            $table->primary(['store_id', 'service_id']);
             $table->timestamps();
             $table->softDeletes();
         });
