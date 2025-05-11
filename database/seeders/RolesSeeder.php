@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 
 class RolesSeeder extends Seeder
@@ -18,14 +19,9 @@ class RolesSeeder extends Seeder
     {
         DB::table('roles')->insert(
             [
-                'id' => '0',
-                'name' => 'Super Admin',
-
-            ],
-            [
-                'id' => '1',
-                'name' => 'Co-admin',
-            ],
+                'role' => 'Super Admin',
+                'created_at' => Carbon::now()
+            ]
         );
     }
 }
