@@ -17,11 +17,10 @@ class CustomerLocationFactory extends Factory
      */
     public function definition(): array
     {
-        $customers = Customer::pluck('id')->toarray();
 
         return [
             'loc_url' => fake()->url(),
-            'customer_id' => fake()->randomElement($customers),
+            'customer_id' => Customer::pluck('id')->random(),
         ];
     }
 }

@@ -21,7 +21,23 @@ class RolesSeeder extends Seeder
             [
                 'role' => 'Super Admin',
                 'created_at' => Carbon::now()
-            ]
-        );
+            ]);
+
+
+            DB::table('roles')->insert(
+            [  'role' => 'Co-Admin',
+                'created_at' => Carbon::now()
+            ]);
+
+            DB::table('roles')->insert(
+            [    'role' => ' Store Owner',
+                'created_at' => Carbon::now()
+            ]);
+
+            DB::table('roles')->insert(
+            [ 'role' => 'Store Employee',
+                'created_at' => Carbon::now()
+            ]);
+        
     }
 }

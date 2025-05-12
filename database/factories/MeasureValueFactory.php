@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Database\Factories\Measure;
+use App\Models\Measure;
 use App\Models\MeasureName;
 
 /**

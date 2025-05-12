@@ -17,11 +17,9 @@ class StoreLocationFactory extends Factory
      */
     public function definition(): array
     {
-        $stores = Store::pluck('id')->toarray();
-
         return [
             'loc_url' => fake()->url(),
-            'store_id' => fake()->randomElement($stores),
+            'store_id' => Store::pluck('id')->slice(1)->random(),
         ];
     }
 }

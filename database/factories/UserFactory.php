@@ -28,20 +28,14 @@ class UserFactory extends Factory
     {
         $faker = FakerFactory::create('ar_JO');
 
-        $roles = Role::pluck('id')->toarray();
-        $roles = array_slice($roles, 1);
-
-        $stores = Store::pluck('id')->toarray();
-        $stores = array_slice($stores, 1);
-
         return [
             'name_ar' => $faker->name,
             'name_en' => fake()->name,
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->unique()->phoneNumber(),
             'email_verified_at' => now(),
-            'role_id' => fake()->randomElement($roles),
-            'store_id' => fake()->randomElement($stores),
+            'role_id' => Role::pluck('id')->slice(1)->random(),
+            'store_id' => Store::pluck('id')->slice(1)->random(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];

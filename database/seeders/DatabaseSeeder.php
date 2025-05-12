@@ -14,13 +14,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-        $this->call(RolesSeeder::class);
-        $this->call(Product_categoriesSeeder::class);
-        $this->call(StoresSeeder::class);
-        $this->call(UsersSeeder::class);
+        $this->call([
+            RolesSeeder::class,
+            ServicesSeeder::class,
+            Product_categoriesSeeder::class,
+            MeasureNamesSeeder::class,
+            StoresSeeder::class,
+            UsersSeeder::class,
+            CustomerSeeder::class,
+            CustomerLocationSeeder::class,
+            FeaturesSeeder::class,
+            FeatureStoresSeeder::class,
+            StoreLocationSeeder::class,
+            DesignSeeder::class,
+            ImageSeeder::class,
+            StatusesSeeder::class,
+            OrderSeeder::class,
+            MeasureSeeder::class,
+            ItemSeeder::class,
+            RatingsSeeder::class,
+            partnering_ordersSeeder::class,
+            measure_valuesSeeder::class,
 
-
+        ]);
     }
 }
 

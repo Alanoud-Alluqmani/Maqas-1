@@ -13,6 +13,6 @@ class StoreLocationSeeder extends Seeder
      */
     public function run(): void
     {
-        StoreLocation::factory()->count(50)->create();
+        StoreLocation::factory()->count(10)->create();
     }
 }

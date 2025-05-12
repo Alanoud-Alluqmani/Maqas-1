@@ -17,26 +17,28 @@ class Product_categoriesSeeder extends Seeder
      */
     public function run(): void
     {
-        // ProductCategory::factory(1)->create(); 
         DB::table('product_categories')->insert(
           [
                 'name_ar' => 'القائد',
                 'name_en' => 'Super Admin',
                 'created_at' => Carbon::now()
-            ], 
-
+          ]);
+          
+          
+          DB::table('product_categories')->insert(
             [
                 'name_ar' => 'عباية',
                 'name_en' => 'Abayah',
                 'created_at' => Carbon::now()
-            ], 
+            ]);
 
+
+            DB::table('product_categories')->insert(
              [
                 'name_ar' => 'ثوب',
                 'name_en' => 'Thobe',
                 'created_at' => Carbon::now()
-            ], 
+             ]);
         
-        );
     }
 }

@@ -10,11 +10,7 @@ use App\Models\Design;
  */
 class ImageFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+
     public function definition(): array
     {
         $designs = Design::pluck('id');

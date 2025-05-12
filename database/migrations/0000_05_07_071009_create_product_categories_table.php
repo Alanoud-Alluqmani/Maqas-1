@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name_ar');
             $table->string('name_en');
-            $table->string('icon');
+            $table->string('icon')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
