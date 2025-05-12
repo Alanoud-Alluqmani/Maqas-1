@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use App\Models\User;
 
 class UsersSeeder extends Seeder
 {
@@ -28,5 +29,7 @@ class UsersSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
         );
+
+        User::factory()->count(50)->create();
     }
 }
