@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\ProductCategory;
 use App\Models\Store;
+use App\Models\Service;
 use Carbon\Carbon;
 
 class StoresSeeder extends Seeder
@@ -18,25 +19,9 @@ class StoresSeeder extends Seeder
      */
     public function run(): void
     {
-        // $store = Store::factory(1)->make([
-        //         'name_ar' => 'Super Admin',
-        //         'name_en' => 'Super Admin',
-        //         'legal' => 'Super Admin',
-        //         'email' => 'Super Admin',
-        //         'phone' => '0',
-        //         'is_active' => true,
-        //         //'product_category_id' => ProductCategory::factory(),
-        //         'rating_avr' => '0.0',
-        // ])
-        // ->for(ProductCategory::factory()->state([
-        //     'name_ar' => 'القائد',
-        //     'name_en' => 'Super Admin',
-        // ])); 
         DB::table('stores')->insert(
             [
-                
-
-               'name_ar' => 'Super Admin',
+               'name_ar' => 'القائد',
                 'name_en' => 'Super Admin',
                 'legal' => 'Super Admin',
                 'email' => 'Super Admin',
@@ -48,6 +33,11 @@ class StoresSeeder extends Seeder
             ],
         );
 
-        Store::factory()->count(50)->create();
+        Store::factory()->count(10)->create();
+
+        foreach(Store::all() as $store){
+            $services = Service::inRandomOrder()->take(rand(1, 2))->pluck('id');
+            $store->services()->attach($services);
+        }
     }
 }

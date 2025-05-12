@@ -13,6 +13,6 @@ class partnering_ordersSeeder extends Seeder
      */
     public function run(): void
     {
-       PartneringOrder::factory()->create();
+       PartneringOrder::factory()->count(10)->create();
     }
 }

@@ -19,9 +19,6 @@ class StoreFactory extends Factory
     public function definition(): array
     {
         $faker = FakerFactory::create('ar_JO');
-
-        $prod_categs = ProductCategory::pluck('id');
-
         return [
                 'name_ar' => $faker->name,
                 'name_en' => $this->faker->name,
@@ -29,7 +26,7 @@ class StoreFactory extends Factory
                 'email' => $this->faker->email(),
                 'phone' => $this->faker->phoneNumber(),
                 'is_active' => $this->faker->boolean(),
-                'product_category_id' => fake()->randomElement($prod_categs),
+                'product_category_id' => ProductCategory::pluck('id')->slice(1)->random(),
                 'rating_avr' => $this->faker->numberBetween(0,5),
 
         ];

@@ -20,13 +20,12 @@ class DesignFactory extends Factory
     {
         $faker = FakerFactory::create('ar_JO');
 
-        $feature_stores = FeatureStore::pluck('id')->toarray();
 
         return [
             'name_ar' => $faker->name,
             'name_en' => fake()->name,
-            'price' => fake()->price,
-            'feature_store_id' => fake()->randomElement($feature_stores)
+            'price' => fake()->randomFloat(2,0,100),
+            'feature_store_id' => FeatureStore::pluck('id')->random()
         ];
     }
 }

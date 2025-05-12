@@ -13,6 +13,6 @@ class DesignSeeder extends Seeder
      */
     public function run(): void
     {
-        Design::factory()->count(50)->create();
+        Design::factory()->count(10)->create();
     }
 }

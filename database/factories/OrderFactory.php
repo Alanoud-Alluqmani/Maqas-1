@@ -22,21 +22,14 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
-        $customers = Customer::pluck('id')->toarray();
-        $stores = Store::pluck('id')->toarray();
-        $services = Service::pluck('id')->toarray();
-        $statuses = Status::pluck('id')->toarray();
-        $custlocs = CustomerLocation::pluck('id')->toarray();
-        $storelocs = StoreLocation::pluck('id')->toarray();
-
         return [
-            'customer_id' => fake()->randomElement($customers),
-            'store_id' => fake()->randomElement($stores),
-            'service_id' => fake()->randomElement($services),
-            'status_id' => fake()->randomElement($statuses),
-            'customer_location_id' => fake()->randomElement($custlocs),
-            'store_location_id' => fake()->randomElement($storelocs),
-            'total_price' => fake()->price
+            'customer_id' => Customer::pluck('id')->random(),
+            'store_id' => Store::pluck('id')->slice(1)->random(),
+            'service_id' => Service::pluck('id')->random(),
+            'status_id' => Status::pluck('id')->random(),
+            'customer_location_id' => CustomerLocation::pluck('id')->random(),
+            'store_location_id' => StoreLocation::pluck('id')->random(),
+            'total_price' => fake()->randomFloat(2,0,400),
         ];
     }
 }

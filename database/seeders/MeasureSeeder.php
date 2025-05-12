@@ -13,6 +13,6 @@ class MeasureSeeder extends Seeder
      */
     public function run(): void
     {
-        Measure::factory()->count(50)->create();
+        Measure::factory()->count(10)->create();
     }
 }
