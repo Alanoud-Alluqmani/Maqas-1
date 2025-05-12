@@ -47,5 +47,7 @@ class StoresSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
         );
+
+        Store::factory()->count(50)->create();
     }
 }
