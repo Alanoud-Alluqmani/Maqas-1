@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
-            $table->string('name_ar')->unique();
-            $table->string('name_en')->unique();
+            $table->string('name_ar')->default('');
+            $table->string('name_en')->default('');
             $table->string('legal');
-            $table->string('email');
-            $table->string('phone');
-            $table->boolean('is_active');
+            $table->string('email')->default('');
+            $table->string('phone')->default('');
+            $table->boolean('is_active')->default(false);
             $table->foreignId('product_category_id')->constrained();
-            $table->float('rating_avr');
+            $table->float('rating_avr')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
