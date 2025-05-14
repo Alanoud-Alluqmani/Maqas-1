@@ -10,10 +10,10 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 
 //Auth
-Route::post('register', [AuthController::class, 'register']);
-Route::get('email', [AuthController::class, 'email']);
-Route::post('/api/login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout']);
+// Route::post('register', [AuthController::class, 'register']);
+// Route::get('email', [AuthController::class, 'email']);
+// Route::post('/api/login', [AuthController::class, 'login']);
+// Route::post('logout', [AuthController::class, 'logout']);
 
 
 Route::controller( AuthController::class)->group(function(): void{
@@ -24,5 +24,5 @@ Route::controller( AuthController::class)->group(function(): void{
 
     Route::post('logout', 'logout')->name('logout');
 
-    Route::get('email',  'email')->name('email');
+    Route::get('/email/verify/{id}',  'verifyEmail')->name('verify');
 });
