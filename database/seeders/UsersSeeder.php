@@ -25,11 +25,10 @@ class UsersSeeder extends Seeder
                 'phone' => '055',
                 'email' => 'superadmin@gmail.com',
                 'store_id' => 1,
-                'password' => Hash::make('password'),
+                'password' => Hash::make('Password@12'),
                 'created_at' => Carbon::now()
             ],
         );
-
         User::factory()->count(10)->create();
     }
 }
