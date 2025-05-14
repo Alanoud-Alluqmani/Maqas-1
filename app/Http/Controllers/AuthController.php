@@ -166,13 +166,31 @@ class AuthController extends Controller
         ], 200); // OK response status
     }
 
+    public function verifyEmail($id)
+    {
+        $user = User::find($id);
 
-    public function email(){
-        Mail::to('mokaro.jin26@gmail.com')->send(new RegisterMail());
-        return response()->json([
-            'message' => 'Email Sent Successfully', // Success message
-        ]);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        if ($user->email_verified_at) {
+            return response()->json(['message' => 'Email is already verified']);
+        }
+
+        $user->email_verified_at = now();
+        $user->save();
+
+        return response()->json(['message' => 'Email verified successfully!']);
     }
+
+
+    // public function email(){
+    //     Mail::to('mokaro.jin26@gmail.com')->send(new RegisterMail());
+    //     return response()->json([
+    //         'message' => 'Email Sent Successfully', // Success message
+    //     ]);
+    // }
 
 }
 

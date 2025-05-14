@@ -21,9 +21,7 @@ class OwnerRegisterRequest extends FormRequest
         return [
             'name_ar' => 'required|string|max:255',
             'name_en' => 'required|string|max:255', // Validates that "name" is required, a string, and no longer than 255 characters
-           // 'name_ar' => 'required|string|max:255|regex:/^[\p{Arabic} ]+$/u', // Must be Arabic
-           // 'name_en' => 'required|string|max:255|regex:/^[A-Za-z ]+$/',
-            'phone' => 'required', // |digits:10'
+            'phone' => 'required|digits:10',
             'email' => 'required|email|unique:users',        // Validates that "email" is required and must follow email format
             'password' => [                     // Validates the password against multiple rules
                 'required',                     // Password is required
