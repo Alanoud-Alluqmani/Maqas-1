@@ -110,8 +110,9 @@ return [
     |
     */
 
-    // 'from' => [
-    //     'address' => env('MAIL_FROM_ADDRESS', 'alanoodnd8@gmail.com'),
-    //     'name' => env('MAIL_FROM_NAME', 'MAQAS'),
-    // ]
+    'from' => [
+        'address' => env('MAIL_FROM_ADDRESS', 'alanoodnd8@gmail.com'),
+        'name' => env('MAIL_FROM_NAME', 'Maqas'),
+    ],
+
 ];
