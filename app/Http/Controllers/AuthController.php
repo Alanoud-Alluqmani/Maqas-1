@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Storage;
+use App\Mail\RegisterMail;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Mail;
+
+
+
+
+
 class AuthController extends Controller
 {
 
@@ -40,84 +48,25 @@ class AuthController extends Controller
         
 
         
-$role = Role::where('role', ' Store Owner')->first();
+        $role = Role::where('role', ' Store Owner')->first();
 
-if (!$role) {
-    return response()->json(['error' => 'Role "Store Owner" not found in the database'], 404);
-}
+        if (!$role) {
+            return response()->json(['error' => 'Role "Store Owner" not found in the database'], 404);
+        }
 
-$user['role_id'] = $role->id;
+        $user['role_id'] = $role->id;
 
         
         $user = User::create($user); // Create a new user with validated data
-
+        
+        //AuthController::login( $user);
+        //event(new Registered($user));
+          Mail::to($user->email)->send(new RegisterMail($user));
         return response()->json([
             'message' => 'User Created Successfully', // Success message
             'data' => $user, // Include the created user data in the response
         ]);
     }
-
-
-
-
-
-//     public function register(OwnerRegisterRequest $request)
-// {
-//     // Store the uploaded file in storage/app/public/legal
-//     $filePath = $request->file('legal')->store('legal', 'public');
-
-//     // Create user and save file path
-//     $user = User::create([
-//         'name_ar' => $request->name_ar,
-//         'name_en' => $request->name_en,
-//         'phone' => $request->phone,
-//         'email' => $request->email,
-//         'password' => Hash::make($request->password),
-//         'legal' => $filePath, // Save file path
-//         'product_category_id' => $request->product_category_id,
-//     ]);
-
-//     return response()->json([
-//         'message' => 'User Created Successfully',
-//         'data' => $user,
-//     ]);
-// }
-
-
-
-// public function register(OwnerRegisterRequest $request)
-// {
-//     try {
-//         // Debugging: Log request input
-//         Log::info('Register Request Data:', $request->all());
-
-//         // Store the uploaded file
-//         if ($request->hasFile('legal')) {
-//             $filePath = $request->file('legal')->store('legal', 'public');
-//         } else {
-//             $filePath = null;
-//         }
-
-//         // Create user
-//         $user = User::create([
-//             'name_ar' => $request->name_ar,
-//             'name_en' => $request->name_en,
-//             'phone' => $request->phone,
-//             'email' => $request->email,
-//             'password' => Hash::make($request->password),
-//             'legal' => $filePath,
-//             'product_category_id' => $request->product_category_id,
-//         ]);
-
-//         return response()->json([
-//             'message' => 'User Created Successfully',
-//             'data' => $user,
-//         ]);
-//     } catch (\Exception $e) {
-//         Log::error('Error in Register:', ['message' => $e->getMessage(), 'trace' => $e->getTrace()]);
-//         return response()->json(['error' => 'Something went wrong.'], 500);
-//     }
-// }
 
     public function login(LoginRequest $request)
     {
