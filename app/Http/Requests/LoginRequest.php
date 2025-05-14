@@ -23,12 +23,12 @@ class LoginRequest extends FormRequest
             'password' => [                     // Validates the password against multiple rules
                 'required',                     // Password is required
                 'string',                       // Must be a string
-                'min:8',                        // Minimum length of 8 characters
-                'max:24',                       // Maximum length of 24 characters
-                'regex:/[A-Z]/',                // Must include at least one uppercase letter
-                'regex:/[a-z]/',                // Must include at least one lowercase letter
-                'regex:/[0-9]/',                // Must include at least one numeric character
-                'regex:/[@$!%*?&#]/',           // Must include at least one special character
+                // 'min:8',                        // Minimum length of 8 characters
+                // 'max:24',                       // Maximum length of 24 characters
+                // 'regex:/[A-Z]/',                // Must include at least one uppercase letter
+                // 'regex:/[a-z]/',                // Must include at least one lowercase letter
+                // 'regex:/[0-9]/',                // Must include at least one numeric character
+                // 'regex:/[@$!%*?&#]/',           // Must include at least one special character
             ],
         ];
     }
