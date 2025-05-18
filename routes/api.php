@@ -25,4 +25,14 @@ Route::controller( AuthController::class)->group(function(): void{
     Route::post('logout', 'logout')->name('logout');
 
     Route::get('/email/verify/{id}',  'verifyEmail')->name('verify');
+
+    Route::post('/forgot-password', 'forgotPassword')->name('password.email');
+
+    Route::post('/reset-password', 'resetPassword')->name('password.update'); 
 });
+
+Route::get('/reset-password/{token}', function ($token) {
+    return response()->json(['token' => $token]);
+})->name('password.reset');
+
+
