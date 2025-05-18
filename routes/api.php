@@ -26,3 +26,11 @@ Route::controller( AuthController::class)->group(function(): void{
 
     Route::get('/email/verify/{id}',  'verifyEmail')->name('verify');
 });
+
+
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+     return response()->json(['message' => 'Email verified successfully!']);
+})->middleware(['signed'])->name('verification.verify');

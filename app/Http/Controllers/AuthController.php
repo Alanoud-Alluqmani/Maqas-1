@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
+use Illuminate\Auth\Events\Registered;
+
 class AuthController extends Controller
 {
 
@@ -72,8 +74,8 @@ class AuthController extends Controller
         $user = User::create($user); // Create a new user with validated data
         
         //AuthController::login( $user);
-        //event(new Registered($user));
-          Mail::to($user->email)->send(new RegisterMail($user));
+        event(new Registered($user));
+         // Mail::to($user->email)->send(new RegisterMail($user));
         return response()->json([
             'message' => 'User Created Successfully', // Success message
             'data' => $user, // Include the created user data in the response
