@@ -9,13 +9,6 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 
-//Auth
-// Route::post('register', [AuthController::class, 'register']);
-// Route::get('email', [AuthController::class, 'email']);
-// Route::post('/api/login', [AuthController::class, 'login']);
-// Route::post('logout', [AuthController::class, 'logout']);
-
-
 Route::controller( AuthController::class)->group(function(): void{
 
     Route::post('register', 'ownerRegister')->name('ownerRegister');
@@ -24,5 +17,9 @@ Route::controller( AuthController::class)->group(function(): void{
 
     Route::post('logout', 'logout')->name('logout');
 
-    Route::get('/email/verify/{id}',  'verifyEmail')->name('verify');
+    Route::get('verify-email/{id}/{hash}', 'emailVerify')->middleware('signed')->name('verification.verify');
+
+    Route::post('resend-verification', 'resendEmailVerification')->name('verification.resend');
+
 });
+
