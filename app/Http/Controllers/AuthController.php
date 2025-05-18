@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest; 
 use App\Http\Requests\OwnerRegisterRequest; 
+use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User; 
 use App\Models\Role;   
 use App\Models\Store; 
@@ -16,12 +17,16 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
 class AuthController extends Controller
 {
 
        public function __construct()
 {
     $this->middleware('auth:sanctum')->only(['logout']);
+    $this->middleware('guest')->only(['forgotPassword', 'resetPassword']);
 } 
 
 
@@ -83,47 +88,6 @@ class AuthController extends Controller
 
     
     // public function employeeRegister(OwnerRegisterRequest $request)
-    // {
-    //     $user = $request->validated();
-
-    //      if ($request->hasFile('legal')) {
-    //         //$filePath = $request->file('legal')->storeAs('legal', $user['name_en']);
-    
-    //         $file = $request->file('legal');
-    //         $filename = $user['name_en'] . '.' . $file->getClientOriginalExtension(); // Keeps the original extension
-    //         $filePath = $file->storeAs('legal', $filename, 'public');   
-    //     } else {
-    //         return response()->json(['error' => 'File upload failed'], 400);
-    //     }
-
-    //     // Create store with the correct legal field
-    //     $store = Store::create([
-    //         'legal' => $filePath, // Store uploaded file path
-    //         'product_category_id' => $user['product_category_id']
-    //     ]);
-        
-
-    //     $user['store_id'] = $store->id;
-        
-
-        
-    //     $role = Role::where('role', ' Store Owner')->first();
-
-    //     if (!$role) {
-    //         return response()->json(['error' => 'Role "Store Owner" not found in the database'], 404);
-    //     }
-
-    //     $user['role_id'] = $role->id;
-
-        
-    //     $user = User::create($user); // Create a new user with validated data
-
-    //     return response()->json([
-    //         'message' => 'User Created Successfully', // Success message
-    //         'data' => $user, // Include the created user data in the response
-    //     ]);
-    // }
-
 
 
 
@@ -191,6 +155,90 @@ class AuthController extends Controller
     //         'message' => 'Email Sent Successfully', // Success message
     //     ]);
     // }
+
+    public function forgotPassword(Request $request){
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $status = Password::broker('users')->sendResetLink(
+            $request->only('email')
+        );
+
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json(['message' => __($status)])
+            : response()->json(['message' => __($status)], 400);
+    }
+
+
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        $request->validated();
+
+        // $status = Password::broker('users')->reset(
+        //     $request->only('email', 'password', 'password_confirmation', 'token'),
+        //     function (User $user, string $password) {
+        //         $user->forceFill([
+        //             'password' => Hash::make($password)
+        //         ]);
+        //         $user->save();
+        //     }
+        // );
+
+        // return $status === Password::PASSWORD_RESET
+        //     ? response()->json(['message' => __($status)])
+        //     : response()->json(['message' => __($status)], 400);
+
+        $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function (User $user, string $password) {
+            $user->forceFill([
+                'password' => Hash::make($password)
+            ])->setRememberToken(Str::random(60));
+
+            $user->save();
+
+            event(new PasswordReset($user));
+        }
+    );
+
+    return $status === Password::PasswordReset
+        ? redirect()->route('login')->with('status', __($status))
+        : back()->withErrors(['email' => [__($status)]]);
+    }
+
+
+//     use App\Models\User;
+// use Illuminate\Auth\Events\PasswordReset;
+// use Illuminate\Http\Request;
+// use Illuminate\Support\Facades\Hash;
+// use Illuminate\Support\Facades\Password;
+// use Illuminate\Support\Str;
+
+// Route::post('/reset-password', function (Request $request) {
+//     $request->validate([
+//         'token' => 'required',
+//         'email' => 'required|email',
+//         'password' => 'required|min:8|confirmed',
+//     ]);
+
+//     $status = Password::reset(
+//         $request->only('email', 'password', 'password_confirmation', 'token'),
+//         function (User $user, string $password) {
+//             $user->forceFill([
+//                 'password' => Hash::make($password)
+//             ])->setRememberToken(Str::random(60));
+
+//             $user->save();
+
+//             event(new PasswordReset($user));
+//         }
+//     );
+
+//     return $status === Password::PasswordReset
+//         ? redirect()->route('login')->with('status', __($status))
+//         : back()->withErrors(['email' => [__($status)]]);
+// })->middleware('guest')->name('password.update');
 
 }
 
