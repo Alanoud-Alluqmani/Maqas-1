@@ -3,17 +3,12 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Requests\EmployeeRegisterRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
 use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-
-
-//Auth
-// Route::post('register', [AuthController::class, 'register']);
-// Route::get('email', [AuthController::class, 'email']);
-// Route::post('/api/login', [AuthController::class, 'login']);
-// Route::post('logout', [AuthController::class, 'logout']);
+use Illuminate\Support\Facades\URL;
 
 
 Route::controller( AuthController::class)->group(function(): void{
@@ -24,13 +19,13 @@ Route::controller( AuthController::class)->group(function(): void{
 
     Route::post('logout', 'logout')->name('logout');
 
-    Route::get('/email/verify/{id}',  'verifyEmail')->name('verify');
+    Route::get('verify-email/{id}/{hash}', 'emailVerify')->middleware('signed')->name('verification.verify');
+
+    Route::post('resend-verification', 'resendEmailVerification')->name('verification.resend');
+
+    Route::post('/employee/register/{id}', 'employeeRegister')->middleware('signed')->name('employeeRegister');
+
+    Route::get('/generate-link/{store_id}', 'generateLink')->middleware('signed')->name('generateLink');
+
 });
 
-
-
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-
-     return response()->json(['message' => 'Email verified successfully!']);
-})->middleware(['signed'])->name('verification.verify');
