@@ -31,6 +31,7 @@ class AuthController extends Controller
 {
     $this->middleware('auth:sanctum')->only(['logout']);
     $this->middleware('guest')->only(['forgotPassword', 'resetPassword']);
+    $this->middleware('guest')->only(['forgotPassword', 'resetPassword']);
 } 
 
 
