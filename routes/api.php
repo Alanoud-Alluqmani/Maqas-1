@@ -29,6 +29,10 @@ Route::controller( AuthController::class)->group(function(): void{
 
     // Route::get('/generate-link/{store_id}', 'generateLink')->middleware('signed')->name('generateLink');
 
+    Route::post('/forgot-password', 'forgotPassword')->name('password.email');
+
+    Route::post('/reset-password', 'resetPassword')->name('password.update'); 
+
 });
 
 Route::controller( StoreController::class)->group(function(): void{
@@ -58,3 +62,6 @@ Route::controller( StoreLocationController::class)->group(function(): void{
 //just for admin
   Route::get('show-stores-loc', [StoreLocationController::class,'index'])->name('showStoresLoc');
 
+Route::get('/reset-password/{token}', function ($token) {
+    return response()->json(['token' => $token]);
+})->name('password.reset');
