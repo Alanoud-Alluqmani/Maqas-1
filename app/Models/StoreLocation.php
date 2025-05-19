@@ -11,6 +11,7 @@ class StoreLocation extends Model
     use SoftDeletes, HasFactory;
     protected $fillable = [
         'loc_url',
+         'store_id',
     ];
 
     public function store(){
