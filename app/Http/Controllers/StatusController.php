@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Status;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\StatusRequest;
 
 class StatusController extends Controller
 {
@@ -16,37 +17,31 @@ class StatusController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StatusRequest $request)
     {
-        //
+        $status = Status::create( $request->validated());
+        return response()->json([
+             "new status" => $status
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Status $status)
-    {
-        //
+    public function show($id)
+    {  
+        $service_id = 'service_id_'.$id;
+        $statuses = Status::where($service_id, true)->get();
+        return response()->json([
+        'status' => $statuses
+    ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Status $status)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -61,6 +56,10 @@ class StatusController extends Controller
      */
     public function destroy(Status $status)
     {
-        //
+        $status->delete();
+
+        return response()->json([ // Return a JSON response indicating success
+            'message' => 'Status Deleted Successfully'
+        ]);
     }
 }

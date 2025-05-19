@@ -11,7 +11,9 @@ class Status extends Model
     use SoftDeletes, HasFactory;
     protected $fillable = [
         'status_ar',
-        'status_en'
+        'status_en',
+        'service_id_1',
+        'service_id_2',
     ];
 
     public function orders(){
