@@ -6,9 +6,20 @@ use App\Models\StoreLocation;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreLocationRequest;
+use App\Models\Store;
 
 class StoreLocationController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('auth:sanctum');
+        // $this->middleware('super admin')->only(['index']);
+        // $this->middleware('co admin')->only(['index', 'destroy']);
+        // $this->middleware('store owner')->only(['destroy', 'update', 'store']);
+        // $this->middleware('store employee')->only(['destroy', 'update', 'store']);
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -20,53 +31,44 @@ class StoreLocationController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    
 
     /**
      * Store a newly created resource in storage.
      */
-     public function store(StoreLocationRequest $request, $id)
+    public function store(StoreLocationRequest $request, Store $store)
     {
-        $request['store_id'] = $id;
-        $storeLoc = StoreLocation::create($request->validated(), ['store_id' => $id]); // Create a new product with validated data
+       $storeLoc = $store->locations()->create($request->validated());
         return response()->json([
             "message" => 'success', // Return success message in JSON format
             "data" => $storeLoc
         ]);
     }
 
-
+    // public function locations(Store $store){
+    //     return response()->json([
+    //         "message" => 'success', // Return success message in JSON format
+    //         "data" => $storeLoc
+    //     ]); 
+    // }
 
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(StoreLocation $storeLoc)
     {
-        $storeLoc = StoreLocation::findOrFail($id);
+        
         return $storeLoc;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(StoreLocation $storeLocation)
-    {
-        //
-    }
+    
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreLocationRequest $request, $id)
+    public function update(StoreLocationRequest $request, StoreLocation $storeLoc)
     {
-        $storeLoc = StoreLocation::findOrFail($id); // Find the product by ID or fail if not found
         $storeLoc->update($request->validated()); // Update the product with validated data
         return response()->json([
             'store Location' => $storeLoc, // Return the updated product
@@ -77,9 +79,9 @@ class StoreLocationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(StoreLocation $storeLoc)
     {
-     $storeLoc = StoreLocation::findOrFail($id);
+    
     $storeLoc->delete();
 
         return response()->json([ // Return a JSON response indicating success

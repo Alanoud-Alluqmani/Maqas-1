@@ -55,7 +55,7 @@ class AuthController extends Controller
         
         $user['store_id'] = $store->id;
         
-        $role = Role::where('role', ' Store Owner')->first();
+        $role = Role::where('role', 'Store Owner')->first();
 
         if (!$role) {
             return response()->json(['error' => 'Role "Store Owner" not found in the database'], 404);

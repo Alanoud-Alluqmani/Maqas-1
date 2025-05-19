@@ -30,7 +30,7 @@ class RolesSeeder extends Seeder
             ]);
 
             DB::table('roles')->insert(
-            [    'role' => ' Store Owner',
+            [    'role' => 'Store Owner',
                 'created_at' => Carbon::now()
             ]);
 
