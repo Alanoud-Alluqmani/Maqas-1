@@ -19,8 +19,8 @@ class Rating extends Model
         return $this->belongsTo(Order::class);
     }
 
-    public function user(){
-        return $this->hasOneThrough(User::class, Order::class);
+    public function custumer(){
+        return $this->hasOneThrough(Customer::class, Order::class);
     }
 
     public function store(){

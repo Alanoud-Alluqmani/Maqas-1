@@ -56,6 +56,8 @@ class Customer extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
-
+    public function ratings(){
+        return $this->hasManyThrough(Rating::class, Order::class);
+    }
    
 }
