@@ -106,43 +106,43 @@ class AuthController extends Controller
     }
 
     
-    public function employeeRegister(EmployeeRegisterRequest $request, $id)
-    {
+    // public function employeeRegister(EmployeeRegisterRequest $request, $id)
+    // {
 
-        if (!$request->hasValidSignature()) {
-        abort(403, 'Invalid or expired link.');}
+    //     if (!$request->hasValidSignature()) {
+    //     abort(403, 'Invalid or expired link.');}
 
-        $user = $request->validated();
+    //     $user = $request->validated();
 
-        // $store=Store:: where('id', $id)->first();
-        // if (!$store) {
-        //     return response()->json(['error' => 'Store not found in the database'], 404);
-        // }
-        $user['store_id'] = $id;
-        $role = Role::where('role', 'Store Employee')->first();
+    //     // $store=Store:: where('id', $id)->first();
+    //     // if (!$store) {
+    //     //     return response()->json(['error' => 'Store not found in the database'], 404);
+    //     // }
+    //     $user['store_id'] = $id;
+    //     $role = Role::where('role', 'Store Employee')->first();
 
-        if (!$role) {
-            return response()->json(['error' => 'Role "Store Employee" not found in the database'], 404);
-        }
+    //     if (!$role) {
+    //         return response()->json(['error' => 'Role "Store Employee" not found in the database'], 404);
+    //     }
 
-        $user['role_id'] = $role->id;
+    //     $user['role_id'] = $role->id;
 
         
-        $user = User::create($user); // Create a new user with validated data
+    //     $user = User::create($user); // Create a new user with validated data
 
-        return response()->json([
-            'message' => 'User Created Successfully', // Success message
-            'data' => $user, // Include the created user data in the response
-         ]);
-    }
+    //     return response()->json([
+    //         'message' => 'User Created Successfully', // Success message
+    //         'data' => $user, // Include the created user data in the response
+    //      ]);
+    // }
 
-     public function generateLink($store_id)
-    {
+    //  public function generateLink($store_id)
+    // {
 
-        $url = URL::signedRoute('employeeRegister', ['id' => $store_id]);
-        return response()->json(['registration_link' => $url]);
+    //     $url = URL::signedRoute('employeeRegister', ['id' => $store_id]);
+    //     return response()->json(['registration_link' => $url]);
 
-    }
+    // }
 
 
 
