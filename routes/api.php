@@ -38,9 +38,9 @@ Route::controller( AuthController::class)->group(function(): void{
 
 Route::controller( StoreController::class)->group(function(): void{
 
-     Route::get('show-store/{id}','show')->name('showStore');
+    Route::get('show-store/{id}','show')->name('showStore');
 
-    Route::post('update-store/{id}', 'update')->name('updateStore');
+    Route::put('update-store/{id}', 'update')->name('updateStore');
 
     Route::get('destroy-store/{id}','destroy')->name('deleteStore');
 
@@ -50,13 +50,13 @@ Route::controller( StoreController::class)->group(function(): void{
 
 Route::controller( StoreLocationController::class)->group(function(): void{
 
-     Route::get('show-store-loc/{id}','show')->name('showLoc');
+    Route::get('show-store-loc/{storeLoc}','show')->name('showLoc');
 
-     Route::post('store-loc/{id}', 'store')->name('storeLoc');
+    Route::post('store-loc/{store}', 'store')->name('storeLoc');
 
-    Route::post('update-store-loc/{id}', 'update')->name('updateLoc');
+    Route::put('update-store-loc/{storeLoc}', 'update')->name('updateLoc');
 
-    Route::get('destroy-store-loc/{id}','destroy')->name('deleteLoc');
+    Route::get('destroy-store-loc/{storeLoc}','destroy')->name('deleteLoc');
 
 });
 
@@ -70,5 +70,5 @@ Route::get('/reset-password/{token}', function ($token) {
 
 
 Route::controller( UserController::class)->group(function(){
-    Route::get('/user', 'user')->name('user.profile');
+    Route::get('/show', 'show')->name('user.show');
 });

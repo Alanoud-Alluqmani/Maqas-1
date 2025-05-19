@@ -10,7 +10,13 @@ class StoreController extends Controller
 {
 
     public function __construct(){
-        $this->middleware('auth:sanctum')->only(['addEmployee']);
+        $this->middleware('auth:sanctum');// currently, all methods are protected by 
+        // login, but will this affect the customer?
+        // $this->middleware('super admin')->only(['index', 'destroy']);
+        // // the index function too is supposed to be used to the customer...
+        // $this->middleware('co admin')->only(['index', 'destroy']);
+        // $this->middleware('store owner')->only(['destroy', 'update']);
+        // $this->middleware('store employee')->only(['']);
     }
 
     public function addEmployee(Request $request){
@@ -26,49 +32,25 @@ class StoreController extends Controller
         return $stores; 
     }
 
-    // /**
-    //  * Show the form for creating a new resource.
-    //  */
-    // public function create()
-    // {
-    //     //
-    // }
-
-    // /**
-    //  * Store a newly created resource in storage.
-    //  */
-    // public function store(StoreRequest $request)
-    // {
-    //   $user = $request->validated();
-    //     $user = Store::store($user);
-    // }
-
+   
 
         
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Store $store)
     {
-        $store = Store::findOrFail($id);
         return $store;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Store $store)
-    {
-        //
-    }
+    
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreRequest $request, $id)
+    public function update(StoreRequest $request, Store $store)
     {
          // Validate and retrieve the data
-     $store = Store::findOrFail($id);
       $store->update($request->validated()); // Update the product with validated data
         return response()->json([
             'store' => $store, // Return the updated product
@@ -80,10 +62,10 @@ class StoreController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Store $store)
     {
-     $store = Store::findOrFail($id);
-    $store->delete();
+     $store->is_active = false;
+     $store->delete();
 
         return response()->json([ // Return a JSON response indicating success
             'message' => 'Store Deleted Successfully'
