@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('status_ar');
             $table->string('status_en');
+            $table->boolean('service_id_1')->default(false);
+            $table->boolean('service_id_2')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
