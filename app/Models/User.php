@@ -66,9 +66,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Store::class);
     }
 
-    public function ratings(){
-        return $this->hasManyThrough(Rating::class, Order::class);
-    }
 
     
 }

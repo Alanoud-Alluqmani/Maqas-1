@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\StoreLocationController;
 use App\Http\Requests\EmployeeRegisterRequest;
@@ -65,3 +66,9 @@ Route::controller( StoreLocationController::class)->group(function(): void{
 Route::get('/reset-password/{token}', function ($token) {
     return response()->json(['token' => $token]);
 })->name('password.reset');
+
+
+
+Route::controller( UserController::class)->group(function(){
+    Route::get('/user', 'user')->name('user.profile');
+});
