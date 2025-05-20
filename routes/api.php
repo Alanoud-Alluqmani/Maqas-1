@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\StoreLocationController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\StatusController;
 use App\Http\Requests\EmployeeRegisterRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
@@ -50,9 +52,11 @@ Route::controller( StoreController::class)->group(function(): void{
 
 Route::controller( StoreLocationController::class)->group(function(): void{
 
-    Route::get('show-store-loc/{storeLoc}','show')->name('showLoc');
+     Route::get('show-store-loc/{store}','showAll')->name('showAllLoc');
 
-    Route::post('store-loc/{store}', 'store')->name('storeLoc');
+     Route::get('show-store-locs/{storeLoc}','show')->name('showLoc');
+
+     Route::post('store-loc/{store}', 'store')->name('storeLoc');
 
     Route::put('update-store-loc/{storeLoc}', 'update')->name('updateLoc');
 
@@ -66,6 +70,36 @@ Route::controller( StoreLocationController::class)->group(function(): void{
 Route::get('/reset-password/{token}', function ($token) {
     return response()->json(['token' => $token]);
 })->name('password.reset');
+
+
+
+Route::controller( OrderController::class)->group(function(): void{
+
+     Route::get('show-order/{order}','show')->name('showOrder');
+
+     Route::get('show-orders','index')->name('showOrders');
+
+    // Route::post('store-loc/{store}', 'store')->name('storeLoc');
+
+   Route::post('update-order-status/{id}', 'update')->name('updateStatus');
+
+    //Route::get('destroy-store-loc/{id}','destroy')->name('deleteLoc');
+
+});
+
+Route::controller( StatusController::class)->group(function(): void{
+
+     Route::get('show-status/{id}','show')->name('showStatus');
+
+    // Route::get('show-orders','index')->name('showOrders');
+
+     Route::post('add-status', 'store')->name('newStatus');
+
+   //Route::post('update-order-status/{id}', 'update')->name('updateStatus');
+
+    Route::get('destroy-status/{status}','destroy')->name('deleteStatus');
+
+});
 
 
 
