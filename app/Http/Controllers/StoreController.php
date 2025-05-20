@@ -51,9 +51,9 @@ class StoreController extends Controller
     public function update(StoreRequest $request, Store $store)
     {
          // Validate and retrieve the data
-      $store->update($request->validated()); // Update the product with validated data
+      $store->update($request->validated()); 
         return response()->json([
-            'store' => $store, // Return the updated product
+            'store' => $store, 
             'message' => 'Store updated successfully' // Success message
         ]);
     }

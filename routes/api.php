@@ -105,4 +105,8 @@ Route::controller( StatusController::class)->group(function(): void{
 
 Route::controller( UserController::class)->group(function(){
     Route::get('/show', 'show')->name('user.show');
+    Route::put('update-user/{user}', 'update')->name('updateUser');
+    Route::put('update-password/{user}', 'updatePassword')->name('updatePassword');
+    Route::put('update-email/{user}', 'updateEmail')->name('updateEmail');
+
 });
