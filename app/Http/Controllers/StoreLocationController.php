@@ -39,18 +39,18 @@ class StoreLocationController extends Controller
     public function store(StoreLocationRequest $request, Store $store)
     {
        $storeLoc = $store->locations()->create($request->validated());
+       $storeLoc = $store->locations()->create($request->validated());
         return response()->json([
             "message" => 'success', // Return success message in JSON format
             "data" => $storeLoc
         ]);
     }
 
-    // public function locations(Store $store){
-    //     return response()->json([
-    //         "message" => 'success', // Return success message in JSON format
-    //         "data" => $storeLoc
-    //     ]); 
-    // }
+    public function showAll(Store $store)
+    {
+        $storeLoc = $store->locations()->get();
+        return $storeLoc;
+    }
 
 
     /**
@@ -71,7 +71,7 @@ class StoreLocationController extends Controller
     {
         $storeLoc->update($request->validated()); // Update the product with validated data
         return response()->json([
-            'store Location' => $storeLoc, // Return the updated product
+            'store Location' => $storeLoc, 
             'message' => 'store Location updated successfully' // Success message
         ]);
     }
@@ -85,7 +85,7 @@ class StoreLocationController extends Controller
     $storeLoc->delete();
 
         return response()->json([ // Return a JSON response indicating success
-            'message' => 'Store Deleted Successfully'
+            'message' => 'Store Location Deleted Successfully'
         ]);
     }
 }
