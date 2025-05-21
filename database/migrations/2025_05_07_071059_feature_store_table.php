@@ -15,6 +15,7 @@ return new class extends Migration
         $table->id();
         $table->foreignId('store_id')->constrained();
         $table->foreignId('feature_id')->constrained();
+       // $table->unique(['feature_id', 'store_id']);
         $table->timestamps();
         $table->softDeletes();
         });

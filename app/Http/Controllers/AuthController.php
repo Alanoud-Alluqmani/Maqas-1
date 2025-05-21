@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\OwnerRegisterRequest; 
 use App\Http\Requests\EmployeeRegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Models\PartneringOrder;
 use App\Models\User; 
 use App\Models\Role;   
 use App\Models\Store; 
@@ -47,14 +48,21 @@ class AuthController extends Controller
             return response()->json(['error' => 'File upload failed'], 400);
         }
 
+        
+
         // Create store with the correct legal field
         $store = Store::create([
             'legal' => $filePath, // Store uploaded file path
             'product_category_id' => $user['product_category_id']
-        ])
-        ->partnering_order()->create();
+        ]);
+
+        //->partnering_order()->create();
+
+        
         
         $user['store_id'] = $store->id;
+        echo $user['store_id'];
+        echo $store->id;
         
         $role = Role::where('role', 'Store Owner')->first();
 
@@ -67,6 +75,8 @@ class AuthController extends Controller
         
         $user = User::create($user); // Create a new user with validated data
         
+        $store->partnering_order()->create();
+
         event(new Registered($user));
         return response()->json([
             'message' => 'User Created Successfully', // Success message

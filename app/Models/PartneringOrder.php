@@ -12,6 +12,7 @@ class PartneringOrder extends Model
 
     protected $fillable = [
         'status',
+        // 'id'
     ];
 
     public function store(){
