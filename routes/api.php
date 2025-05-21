@@ -10,9 +10,13 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\PartneringOrderController;
 use App\Http\Controllers\FeatureController;
+use App\Http\Controllers\SpecifyProductController;
+use App\Http\Controllers\DesignController;
 use App\Http\Requests\EmployeeRegisterRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
+use App\Models\Design;
+use App\Models\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\URL;
@@ -46,7 +50,7 @@ Route::controller( StoreController::class)->group(function(): void{
 
     Route::put('update-store/{id}', 'update')->name('updateStore');
 
-    Route::get('destroy-store/{id}','destroy')->name('deleteStore');
+    Route::delete('destroy-store/{id}','destroy')->name('deleteStore');
 
 });
 //just for admin
@@ -62,7 +66,7 @@ Route::controller( StoreLocationController::class)->group(function(): void{
 
     Route::put('update-store-loc/{storeLoc}', 'update')->name('updateLoc');
 
-    Route::get('destroy-store-loc/{storeLoc}','destroy')->name('deleteLoc');
+    Route::delete('destroy-store-loc/{storeLoc}','destroy')->name('deleteLoc');
 
 });
 
@@ -85,7 +89,7 @@ Route::controller( OrderController::class)->group(function(): void{
 
    Route::post('update-order-status/{id}', 'update')->name('updateStatus');
 
-    //Route::get('destroy-store-loc/{id}','destroy')->name('deleteLoc');
+    //Route::delete('destroy-store-loc/{id}','destroy')->name('deleteLoc');
 
 });
 
@@ -99,7 +103,7 @@ Route::controller( StatusController::class)->group(function(): void{
 
    //Route::post('update-order-status/{id}', 'update')->name('updateStatus');
 
-    Route::get('destroy-status/{status}','destroy')->name('deleteStatus');
+    Route::delete('destroy-status/{status}','destroy')->name('deleteStatus');
 
 });
 
@@ -118,3 +122,34 @@ Route::apiResource('partnering-orders', PartneringOrderController::class)->excep
 
 Route::apiResource('features', FeatureController::class)->except('store');
 Route::post('features/{prod_catg}', [FeatureController::class, 'store'])->name('features.store');
+
+
+
+
+
+
+
+
+
+
+
+
+Route::controller( SpecifyProductController::class)->group(function(){
+    Route::get('show-store-features', 'index')->name('store.features.show');
+    Route::get('show-store-feature/{feature}', 'show')->name('store.feature.show');
+    Route::post('store-feature', 'store')->name('select.feature');
+    Route::delete('destroy-feature/{feature}', 'destroy')->name('destroy.feature');
+
+});
+
+
+Route::controller(DesignController::class)->group(function(){
+    Route::get('show-store-designs/{store}', 'indexAdmin')->name('store.designs.show.admin');
+    Route::get('show-store-designs', 'indexPartner')->name('store.designs.show.partner');
+    Route::get('show-design/{design}', 'show')->name('store.design.show');
+    Route::get('show-feature-design/{feature}', 'showStoreDesign')->name('feature.design.show');
+    Route::post('store-desgin', 'store')->name('add.desgin');
+    Route::put('update-desgin', 'update')->name('update.desgin');
+    Route::delete('destroy-desgin/{desgin}', 'destroy')->name('destroy.desgin');
+
+});

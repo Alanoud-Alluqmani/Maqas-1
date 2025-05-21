@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Models\ProductCategory;
 use App\Models\Store;
 use App\Models\Service;
+use App\Models\Feature;
 use Carbon\Carbon;
 
 class StoresSeeder extends Seeder
@@ -33,11 +34,18 @@ class StoresSeeder extends Seeder
             ],
         );
 
+        $store_first = Store::all()->first();
+        $store_first->partnering_order()->create();
+
         Store::factory()->count(10)->create();
 
         foreach(Store::all() as $store){
             $services = Service::inRandomOrder()->take(rand(1, 2))->pluck('id');
+            // $features = Feature::inRandomOrder()->take(rand(1, 2))->pluck('id');
+            // echo $services;
+            // echo $features;
             $store->services()->attach($services);
+            // $store->features()->attach($features);
         }
     }
 }

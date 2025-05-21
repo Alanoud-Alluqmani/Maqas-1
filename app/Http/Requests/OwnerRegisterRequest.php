@@ -34,7 +34,7 @@ class OwnerRegisterRequest extends FormRequest
                 'regex:/[@$!%*?&#]/',           // Must include at least one special character
             ],
             'legal' => 'required|file|mimes:pdf|max:2048',
-            'product_category_id' => 'required|integer',
+            'product_category_id' => 'required|integer|exists:product_categories,id',
         ];
     }
 
