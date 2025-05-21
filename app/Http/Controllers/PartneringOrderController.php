@@ -49,6 +49,11 @@ class PartneringOrderController extends Controller
             $store = $partneringOrder->store;
             $store->is_active = false;
             $store->save();
+        } 
+        else if ($partneringOrder->status == 'Accepted'){
+            $store = $partneringOrder->store;
+            $store->is_active = true;
+            $store->save();
         }
 
 

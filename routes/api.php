@@ -121,6 +121,22 @@ Route::controller( UserController::class)->group(function(){
 Route::apiResource('partnering-orders', PartneringOrderController::class)->except('store');
 
 Route::apiResource('features', FeatureController::class)->except('store');
+
+Route::controller( FeatureController::class)->group(function(): void{
+
+    Route::post('features/{prod_catg}', 'store')->name('features.store');
+    
+    Route::get('features/{prod_catg}','showCategoryFeatures')->name('category.features');
+
+     Route::post('add-status', 'store')->name('newStatus');
+
+   //Route::post('update-order-status/{id}', 'update')->name('updateStatus');
+
+    Route::get('destroy-status/{status}','destroy')->name('deleteStatus');
+
+});
+
+
 Route::post('features/{prod_catg}', [FeatureController::class, 'store'])->name('features.store');
 
 
