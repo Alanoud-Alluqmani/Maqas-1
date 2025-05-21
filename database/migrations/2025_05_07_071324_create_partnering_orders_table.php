@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('partnering_orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('store_id')->constrained();
+            $table->foreignId('store_id')->constrained()->cascadeOnDelete();
             $table->enum('status', ['Waiting','Accepted', 'Rejected'])->default('Waiting');
             $table->timestamps();
             $table->softDeletes();
