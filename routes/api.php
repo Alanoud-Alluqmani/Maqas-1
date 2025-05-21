@@ -8,6 +8,8 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\StoreLocationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\PartneringOrderController;
+use App\Http\Controllers\FeatureController;
 use App\Http\Requests\EmployeeRegisterRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
@@ -106,3 +108,9 @@ Route::controller( StatusController::class)->group(function(): void{
 Route::controller( UserController::class)->group(function(){
     Route::get('/show', 'show')->name('user.show');
 });
+
+
+Route::apiResource('partnering-orders', PartneringOrderController::class)->except('store');
+
+Route::apiResource('features', FeatureController::class)->except('store');
+Route::post('features/{prod_catg}', [FeatureController::class, 'store'])->name('features.store');

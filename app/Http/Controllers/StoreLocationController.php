@@ -38,7 +38,7 @@ class StoreLocationController extends Controller
      */
     public function store(StoreLocationRequest $request, Store $store)
     {
-       $storeLoc = $store->locations()->create($request->validated());
+       
        $storeLoc = $store->locations()->create($request->validated());
         return response()->json([
             "message" => 'success', // Return success message in JSON format
