@@ -24,6 +24,7 @@ class FeatureController extends Controller
         return $features;
     }
 
+
     
 
     /**
@@ -47,7 +48,10 @@ class FeatureController extends Controller
         return $feature;
     }
 
-    
+    public function showCategoryFeatures(ProductCategory $prod_catg)
+    {
+        return $prod_catg->features;
+    }
 
     /**
      * Update the specified resource in storage.
