@@ -7,21 +7,22 @@ use Illuminate\Http\Request;
 
 class DesignController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('auth:sanctum');// currently, all methods are protected by 
+    }
+
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $designs = Design::all(); 
+        return $designs;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    
 
     /**
      * Store a newly created resource in storage.

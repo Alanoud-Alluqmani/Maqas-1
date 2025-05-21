@@ -9,7 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class PartneringOrder extends Model
 {
     use SoftDeletes, HasFactory;
-    public function stores(){
+
+    protected $fillable = [
+        'status',
+    ];
+
+    public function store(){
         return $this->belongsTo(Store::class);
     }
 }

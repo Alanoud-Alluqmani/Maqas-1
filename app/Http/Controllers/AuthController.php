@@ -51,7 +51,8 @@ class AuthController extends Controller
         $store = Store::create([
             'legal' => $filePath, // Store uploaded file path
             'product_category_id' => $user['product_category_id']
-        ]);
+        ])
+        ->partnering_order()->create();
         
         $user['store_id'] = $store->id;
         
