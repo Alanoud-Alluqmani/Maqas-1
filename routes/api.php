@@ -46,32 +46,33 @@ Route::controller( AuthController::class)->group(function(): void{
 
 Route::controller( StoreController::class)->group(function(): void{
 
-    Route::get('show-store/{id}','show')->name('showStore');
+    Route::get('show-store/{id}','show')->name('show.store');
 
-    Route::put('update-store/{id}', 'update')->name('updateStore');
+     Route::get('view-stores', 'index')->name('view.stores');
 
-    Route::delete('destroy-store/{id}','destroy')->name('deleteStore');
+    Route::put('update-store/{id}', 'update')->name('update.store');
+
+    Route::delete('destroy-store/{id}','destroy')->name('destroy.store');
 
 });
-//just for admin
-  Route::get('show-stores', [StoreController::class,'index'])->name('showStores');
+
 
 Route::controller( StoreLocationController::class)->group(function(): void{
 
-     Route::get('show-store-loc/{store}','showAll')->name('showAllLoc');
+     Route::get('view-store-loc/{store}','view')->name('view.store.Loc');
 
-     Route::get('show-store-locs/{storeLoc}','show')->name('showLoc');
+     Route::get('view-stores-loc','index')->name('view.stores.loc');
 
-     Route::post('store-loc/{store}', 'store')->name('storeLoc');
+     Route::get('show-store-locs/{storeLoc}','show')->name('show.loc');
 
-    Route::put('update-store-loc/{storeLoc}', 'update')->name('updateLoc');
+     Route::post('store-loc/{store}', 'store')->name('store.loc');
 
-    Route::delete('destroy-store-loc/{storeLoc}','destroy')->name('deleteLoc');
+    Route::put('update-store-loc/{storeLoc}', 'update')->name('update.loc');
+
+    Route::delete('destroy-store-loc/{storeLoc}','destroy')->name('destroy.loc');
 
 });
 
-//just for admin
-  Route::get('show-stores-loc', [StoreLocationController::class,'index'])->name('showStoresLoc');
 
 Route::get('/reset-password/{token}', function ($token) {
     return response()->json(['token' => $token]);
@@ -81,39 +82,38 @@ Route::get('/reset-password/{token}', function ($token) {
 
 Route::controller( OrderController::class)->group(function(): void{
 
-     Route::get('show-order/{order}','show')->name('showOrder');
+     Route::get('show-order/{order}','show')->name('show.order');
 
-     Route::get('show-orders','index')->name('showOrders');
+     Route::get('view-orders','index')->name('view.orders');
 
-    // Route::post('store-loc/{store}', 'store')->name('storeLoc');
-
-   Route::post('update-order-status/{id}', 'update')->name('updateStatus');
-
-    //Route::delete('destroy-store-loc/{id}','destroy')->name('deleteLoc');
+    Route::post('update-order-status/{id}', 'update')->name('update.order.status');
 
 });
 
 Route::controller( StatusController::class)->group(function(): void{
 
-     Route::get('show-status/{id}','show')->name('showStatus');
+     Route::get('show-status/{id}','show')->name('show.status');
 
-    // Route::get('show-orders','index')->name('showOrders');
+    // Route::get('view-statuses','view')->name('view.statuses');
 
-     Route::post('add-status', 'store')->name('newStatus');
+     Route::post('add-status', 'store')->name('add.status');
 
-   //Route::post('update-order-status/{id}', 'update')->name('updateStatus');
+   //Route::post('update-status/{id}', 'update')->name('update.status');
 
-    Route::delete('destroy-status/{status}','destroy')->name('deleteStatus');
+    Route::delete('destroy-status/{status}','destroy')->name('destroy.status');
 
 });
 
 
 
 Route::controller( UserController::class)->group(function(){
-    Route::get('/show', 'show')->name('user.show');
-    Route::put('update-user/{user}', 'update')->name('updateUser');
-    Route::put('update-password/{user}', 'updatePassword')->name('updatePassword');
-    Route::put('update-email/{user}', 'updateEmail')->name('updateEmail');
+    Route::get('show-user', 'show')->name('show.user');
+
+    Route::put('update-user/{user}', 'update')->name('update.user');
+
+    Route::put('update-password/{user}', 'updatePassword')->name('update.password');
+
+    Route::put('update-email/{user}', 'updateEmail')->name('update.email');
 
 });
 
@@ -122,11 +122,12 @@ Route::apiResource('partnering-orders', PartneringOrderController::class)->excep
 
 Route::apiResource('features', FeatureController::class)->except('store');
 
+
 Route::controller( FeatureController::class)->group(function(): void{
 
     Route::post('features/{prod_catg}', 'store')->name('features.store');
     
-    Route::get('features/{prod_catg}','showCategoryFeatures')->name('category.features');
+    Route::get('view-features/{prod_catg}','viewCategoryFeatures')->name('view.category.features');
 
     // Route::post('add-status', 'store')->name('newStatus');
 
@@ -137,14 +138,9 @@ Route::controller( FeatureController::class)->group(function(): void{
 });
 
 
-Route::post('features/{prod_catg}', [FeatureController::class, 'store'])->name('features.store');
-
-
-
-
 Route::controller( SpecifyProductController::class)->group(function(){
-    Route::get('show-store-features', 'index')->name('store.features.show');
-    Route::get('show-store-feature/{feature}', 'show')->name('store.feature.show');
+    Route::get('view-store-features', 'index')->name('view.store.features');
+    Route::get('show-store-feature/{feature}', 'show')->name('show.store.feature');
     Route::post('store-feature', 'store')->name('select.feature');
     Route::delete('destroy-feature/{feature}', 'destroy')->name('destroy.feature');
 
@@ -153,7 +149,7 @@ Route::controller( SpecifyProductController::class)->group(function(){
 
 Route::controller(DesignController::class)->group(function(){
     Route::get('show-store-designs/{store}', 'indexAdmin')->name('store.designs.show.admin');
-    Route::get('show-store-designs', 'indexPartner')->name('store.designs.show.partner');
+    Route::get('view-store-designs', 'indexPartner')->name('store.designs.view.partner');
     Route::get('show-design/{design}', 'show')->name('store.design.show');
     Route::get('show-feature-design/{feature}', 'showStoreDesign')->name('feature.design.show');
     Route::post('store-desgin', 'store')->name('add.desgin');

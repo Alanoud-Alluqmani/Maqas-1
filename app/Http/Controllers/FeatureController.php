@@ -21,11 +21,14 @@ class FeatureController extends Controller
     public function index()
     {
         $features = Feature::all(); 
-        return $features;
+
+          return response()->json([
+            "message" => 'success', 
+            "data" =>  $features
+        ], 200);
     }
 
 
-    
 
     /**
      * Store a newly created resource in storage.
@@ -37,7 +40,7 @@ class FeatureController extends Controller
         return response()->json([
             "message" => 'feature created successfully.', 
             "data" => $feature
-        ]);
+        ],201);
     }
 
     /**
@@ -45,12 +48,31 @@ class FeatureController extends Controller
      */
     public function show(Feature $feature)
     {
-        return $feature;
+        
+        if (!$feature) {
+            return response()->json(['message' => 'Feature not found.'], 404);
+        }
+          return response()->json([
+            "message" => 'success', 
+            "data" =>  $feature
+        ], 200);
     }
 
-    public function showCategoryFeatures(ProductCategory $prod_catg)
+    public function viewCategoryFeatures(ProductCategory $prod_catg)
     {
-        return $prod_catg->features;
+
+        if (!$prod_catg) {
+            return response()->json(['message' => 'Product category not found.'], 404);
+        }
+        if (!$prod_catg->features) {
+            return response()->json(['message' => 'Product category features not found.'], 404);
+        }
+         
+          return response()->json([
+            "message" => 'success', 
+            "data" =>  $prod_catg->features
+        ], 200);
+        
     }
 
     /**
@@ -58,11 +80,16 @@ class FeatureController extends Controller
      */
     public function update(FeatureRequest $request, Feature $feature)
     {
+        if (!$feature) {
+            return response()->json(['message' => 'Feature not found.'], 404);
+        }
+
         $feature->update($request->validated()); // Update the product with validated data
+       
         return response()->json([
-            'feature' => $feature, 
-            'message' => 'feature updated successfully' // Success message
-        ]);
+            'message' => 'feature updated successfully' ,
+            'data' => $feature
+        ], 200);
     }
 
     /**
@@ -70,10 +97,14 @@ class FeatureController extends Controller
      */
     public function destroy(Feature $feature)
     {
+        if (!$feature) {
+            return response()->json(['message' => 'Feature not found.'], 404);
+        }
+
         $feature->delete();
 
         return response()->json([ // Return a JSON response indicating success
-            'message' => 'feature Deleted Successfully'
-        ]);
+            'message' => 'Feature Deleted Successfully'
+        ],204);
     }
 }

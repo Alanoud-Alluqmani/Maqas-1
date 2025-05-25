@@ -28,8 +28,12 @@ class StoreController extends Controller
      */
     public function index()
     {
-         $stores = Store::all(); 
-        return $stores; 
+        $stores = Store::all(); 
+
+        return response()->json([
+            'message'=> 'success',
+            'data'=>  $stores 
+        ],200); 
     }
 
    
@@ -40,7 +44,14 @@ class StoreController extends Controller
      */
     public function show(Store $store)
     {
-        return $store;
+
+         if (!$store) {
+            return response()->json(['message' => 'Store not found.'], 404);
+        }
+       return response()->json([
+            "message" => 'success', // Return success message in JSON format
+            "data" => $store
+        ], 200);
     }
 
     
@@ -50,12 +61,16 @@ class StoreController extends Controller
      */
     public function update(StoreRequest $request, Store $store)
     {
-         // Validate and retrieve the data
+        if(!$store){
+            return response()->json(['message' => 'Store not found.'], 404);
+        }
+
       $store->update($request->validated()); 
+
         return response()->json([
-            'store' => $store, 
-            'message' => 'Store updated successfully' // Success message
-        ]);
+            'message' => 'Store updated successfully',
+            'store' => $store
+        ], 200);
     }
 
 
@@ -64,11 +79,15 @@ class StoreController extends Controller
      */
     public function destroy(Store $store)
     {
-     $store->is_active = false;
-     $store->delete();
+            if (!$store) {
+            return response()->json(['message' => 'store not found.'], 404);
+        }
+        $store->is_active = false;
+
+         $store->delete();
 
         return response()->json([ // Return a JSON response indicating success
             'message' => 'Store Deleted Successfully'
-        ]);
+        ],204);
     }
 }

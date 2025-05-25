@@ -45,43 +45,35 @@ class AuthController extends Controller
             $filename = $user['name_en'] . '.' . $file->getClientOriginalExtension(); // Keeps the original extension
             $filePath = $file->storeAs('legal', $filename, 'public');   
         } else {
-            return response()->json(['error' => 'File upload failed'], 400);
+            return response()->json(['message' => 'File upload failed'], 400);
         }
 
         
-
-        // Create store with the correct legal field
         $store = Store::create([
-            'legal' => $filePath, // Store uploaded file path
+            'legal' => $filePath, 
             'product_category_id' => $user['product_category_id']
         ]);
-
-        //->partnering_order()->create();
-
-        
         
         $user['store_id'] = $store->id;
-        echo $user['store_id'];
-        echo $store->id;
         
         $role = Role::where('role', 'Store Owner')->first();
 
         if (!$role) {
-            return response()->json(['error' => 'Role "Store Owner" not found in the database'], 404);
+            return response()->json(['message' => 'Role "Store Owner" not found in the database'], 404);
         }
 
         $user['role_id'] = $role->id;
 
         
-        $user = User::create($user); // Create a new user with validated data
+        $user = User::create($user); 
         
         $store->partnering_order()->create();
 
         event(new Registered($user));
         return response()->json([
-            'message' => 'User Created Successfully', // Success message
-            'data' => $user, // Include the created user data in the response
-        ]);
+            'message' => 'User Created Successfully', 
+            'data' => $user, 
+        ], 201);
     }
 
      public function emailVerify($id ,$hash, Request $request) {
@@ -102,7 +94,7 @@ class AuthController extends Controller
             $user->markEmailAsVerified();
         }
     
-        return response()->json(['message' => 'Email verified successfully!']);
+        return response()->json(['message' => 'Email verified successfully!'], 200);
     }
 
 
@@ -118,7 +110,7 @@ class AuthController extends Controller
         }
     
         $user->sendEmailVerificationNotification();
-        return response()->json(['message' => 'Verification link resent!']);
+        return response()->json(['message' => 'Verification link resent!'], 200);
     }
 
     
@@ -171,8 +163,7 @@ class AuthController extends Controller
 
         if (!Auth::attempt($cardinals)){
             return response()->json([
-                'message'=> 'Invalid email or password'
-            ], 401);
+                'message'=> 'Invalid email or password' ], 401);
         }
 
         if(is_null($user->email_verified_at)){
@@ -188,7 +179,7 @@ class AuthController extends Controller
             'message' => 'Login Success', // Success message
             'access_token' => $token, // Include the generated token
             'data' => $user, // Include the user data in the response
-        ]);
+        ], 200);
     }
 
     public function logout(Request $request)
@@ -209,13 +200,13 @@ class AuthController extends Controller
         }
 
         if ($user->email_verified_at) {
-            return response()->json(['message' => 'Email is already verified']);
+            return response()->json(['message' => 'Email is already verified'], 200);
         }
 
         $user->email_verified_at = now();
         $user->save();
 
-        return response()->json(['message' => 'Email verified successfully!']);
+        return response()->json(['message' => 'Email verified successfully!'], 200);
     }
 
 
@@ -229,7 +220,7 @@ class AuthController extends Controller
         );
 
         return $status === Password::RESET_LINK_SENT
-            ? response()->json(['message' => __($status)])
+            ? response()->json(['message' => __($status)],200)
             : response()->json(['message' => __($status)], 400);
     }
 
@@ -252,8 +243,8 @@ class AuthController extends Controller
     );
 
     return $status === Password::PasswordReset
-        ? redirect()->route('login')->with('status', __($status))
-        : back()->withErrors(['email' => [__($status)]]);
+        ? redirect()->route('login')->with('status', __($status),200)
+        : back()->withErrors(['email' => [__($status)]],400);
     }
 
 }
