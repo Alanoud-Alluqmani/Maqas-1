@@ -76,7 +76,7 @@ Route::controller( StoreLocationController::class)->group(function(): void{
 
 Route::get('/reset-password/{token}', function ($token) {
     return response()->json(['token' => $token]);
-})->name('password.reset');
+})->name('password.reset'); 
 
 
 
@@ -140,14 +140,6 @@ Route::controller( FeatureController::class)->group(function(): void{
 
 
 Route::post('features/{prod_catg}', [FeatureController::class, 'store'])->name('features.store');
-
-
-
-
-
-
-
-
 
 
 

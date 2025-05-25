@@ -67,12 +67,12 @@ class PartneringOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PartneringOrder $partneringOrder)
-    {
-        $partneringOrder->delete();
+    // public function destroy(PartneringOrder $partneringOrder)
+    // {
+    //     $partneringOrder->delete();
 
-        return response()->json([ // Return a JSON response indicating success
-            'message' => 'partner order Deleted Successfully'
-        ]);
-    }
+    //     return response()->json([ // Return a JSON response indicating success
+    //         'message' => 'partner order Deleted Successfully'
+    //     ]);
+    // }
 }
