@@ -9,6 +9,11 @@ use App\Http\Requests\StatusRequest;
 
 class StatusController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth:sanctum');// currently, all methods are protected by 
+    }
+
+
     /**
      * Display a listing of the resource.
      */
