@@ -19,7 +19,16 @@ class PartneringOrderController extends Controller
     public function index()
     {
         $part_ord = PartneringOrder::all(); 
-        return $part_ord;
+
+        if (!$part_ord){
+            return response()->json([
+            'message' => 'no partnering orders found'
+        ], 404);
+        } else
+        return response()->json([
+            'message' => 'partnering orders found',
+            'data' => $part_ord // Return the products in JSON format
+        ], 200);
     }
 
     
@@ -29,7 +38,15 @@ class PartneringOrderController extends Controller
      */
     public function show(PartneringOrder $partneringOrder)
     {
-        return $partneringOrder;
+        if (!$partneringOrder){
+            return response()->json([
+            'message' => 'partnering order not found'
+        ], 404);
+        } else
+        return response()->json([
+            'message' => 'partnering order found',
+            'data' => $partneringOrder // Return the products in JSON format
+        ], 200);
     }
 
 
@@ -58,9 +75,9 @@ class PartneringOrderController extends Controller
 
 
         return response()->json([
-            'partner order' => $partneringOrder, // Return the updated product
-            'message' => 'partner order updated successfully' // Success message
-        ]);
+            'message' => 'partner order updated successfully',
+            'data' => $partneringOrder,
+        ], 200);
 
     }
 

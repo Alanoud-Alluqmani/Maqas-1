@@ -20,7 +20,15 @@ class ProductCategoryController extends Controller
     public function index()
     {
         $categs = ProductCategory::all(); 
-        return $categs; 
+        if (!$categs){
+            return response()->json([
+            'message' => 'no categories found'
+        ], 404);
+        } else
+        return response()->json([
+            'message' => 'categories found',
+            'data' => $categs // Return the products in JSON format
+        ], 200);
     }
 
     
@@ -49,7 +57,7 @@ class ProductCategoryController extends Controller
         return response()->json([
             'message' => 'Product Category Created Successfully', // Success message
             'data' => $categ, // Include the created user data in the response
-        ]);
+        ], 201);
     }
 
     /**
@@ -57,7 +65,15 @@ class ProductCategoryController extends Controller
      */
     public function show(ProductCategoryRequest $productCategory)
     {
-        return $productCategory;
+        if (!$productCategory){
+            return response()->json([
+            'message' => 'category not found'
+        ], 404);
+        } else
+        return response()->json([
+            'message' => 'category found',
+            'data' => $productCategory // Return the products in JSON format
+        ], 200);
     }
 
     
@@ -87,8 +103,8 @@ class ProductCategoryController extends Controller
 
         return response()->json([
             'message' => 'Product Category updated Successfully', // Success message
-            'data' => $$productCategory, // Include the created user data in the response
-        ]);
+            'data' => $productCategory, // Include the created user data in the response
+        ], 200);
     }
 
 
@@ -101,6 +117,6 @@ class ProductCategoryController extends Controller
 
         return response()->json([ // Return a JSON response indicating success
             'message' => 'product category Deleted Successfully'
-        ]);
+        ], 200);
     }
 }

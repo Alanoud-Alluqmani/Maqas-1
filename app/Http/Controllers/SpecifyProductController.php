@@ -23,7 +23,16 @@ class SpecifyProductController extends Controller
     {
         $store = Auth::user()->store;
         $features = $store->features;
-        return $features;
+        if (!$features){
+            return response()->json([
+            'message' => 'no features found for this store'
+        ], 404);
+        } else
+        return response()->json([
+            'message' => 'features found for this store',
+            'data' => $features // Return the products in JSON format
+        ], 200);
+        
     }
 
      /**
@@ -31,16 +40,25 @@ class SpecifyProductController extends Controller
      */
     public function show(FeatureStore $feature)
     {
-        $store_id = Auth::user()->store->id;
-        // $store = $user->store->id;
+        // $store_id = Auth::user()->store->id;
+        // // $store = $user->store->id;
 
-        $something = DB::table('feature_store')
-        ->where('store_id', $store_id)
-        ->where('feature_id', $feature->id)
-        ->get();
-        // ->load('designs');
+        // $something = DB::table('feature_store')
+        // ->where('store_id', $store_id)
+        // ->where('feature_id', $feature->id)
+        // ->get();
+        // // ->load('designs');
 
-        return $something;
+        // return $something;
+        if (!$feature){
+            return response()->json([
+            'message' => 'feature not found'
+        ], 404);
+        } else
+        return response()->json([
+            'message' => 'feature found',
+            'data' => $feature // Return the products in JSON format
+        ], 200);
     }
     
 
@@ -65,9 +83,9 @@ class SpecifyProductController extends Controller
     // $store->save(); 
 
     return response()->json([
-        'Feature' => $store,
-        'message' => 'Feature selected successfully'
-    ],200);
+        'message' => 'Feature selected successfully',
+        'data' => $store,
+    ],201);
     }
 
 
@@ -82,6 +100,6 @@ class SpecifyProductController extends Controller
 
         return response()->json([ // Return a JSON response indicating success
             'message' => 'feature Deleted Successfully'
-        ]);
+        ], 200);
     }
 }
