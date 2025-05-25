@@ -28,12 +28,15 @@ class UserController extends Controller
                                             // it does not know...
         $user = Auth::user();
         if (!$user) {
-            return response()->json(['error' => 'Unauthenticated'], 401);
+            return response()->json(['message' => 'Unauthenticated'], 401);
         }
         return response()->json([
-            'data' => $user->load(['store']),
-            'role' => $user->role()->get()
-        ]);
+            'message' =>'success',
+            'data' => [
+                'user' =>$user->load(['store']),
+                'role' => $user->role()->get()
+                ]
+        ], 200);
 
     }
 
@@ -42,49 +45,37 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user){
         $authUser = Auth::user();
         if (!$authUser) {
-            return response()->json(['error' => 'Unauthenticated'], 401);
+            return response()->json(['message' => 'Unauthenticated'], 401);
         }
         $user->update($request->validated());
 
          return response()->json([
-            'data' => $user->load(['store']),
-            'role' => $user->role()->get()
-        ]); 
+            'message' =>'success',
+            'data' => [
+                'user' =>$user->load(['store']),
+                'role' => $user->role()->get()
+                ]
+        ], 200); 
     }
-
-    // public function updateEmail(UpdateEmailRequest $request, User $user){
-    //     $authUser = Auth::user();
-    //     if (!$authUser) {
-    //         return response()->json(['error' => 'Unauthenticated'], 401);
-    //     }
-    //     $user->update($request->validated());
-    //      return response()->json([
-    //         'Message' => 'Email changed successfully',
-    //         'New email'=> $user->email
-    //     ], 200);
-    // }
 
 
     public function updateEmail(UpdateEmailRequest $request, User $user){
+        
     $authUser = Auth::user();
     if (!$authUser) {
-        return response()->json(['error' => 'Unauthenticated'], 401);
+        return response()->json(['message' => 'Unauthenticated'], 401);
     }
-    $user['email_verified_at'] = null; // Set email_verified_at to null
+
+     $user['email_verified_at'] = null; // Set email_verified_at to null
+
     $validatedData = $request->validated();
-
-    // if ( $user['email'] === $validatedData['email']) {
-    //     return response()->json([
-    //         'Message' => 'The new email is the same as the current email. No changes made.'
-    //     ], 400); 
-    // }
-
+   
     $user->update($validatedData);
     event(new Registered($user));
 
     return response()->json([
-        'Message' => 'Email changed successfully',
-        'New email' => $user->email
+        'message' => 'Email changed successfully',
+        'data' => $user->email
     ], 200);
 }
 
@@ -92,21 +83,21 @@ class UserController extends Controller
     public function updatePassword(UpdatePasswordRequest $request, User $user){
         $authUser = Auth::user();
         if (!$authUser) {
-            return response()->json(['error' => 'Unauthenticated'], 401);
+            return response()->json(['message' => 'Unauthenticated'], 401);
         }
         $validated = $request->validated();
 
          //Match The Old Password
         if(!Hash::check($validated['old_password'], $authUser->password)){
         
-        return response()->json(['error' => 'Old Password Doesn\'t match!']);
+        return response()->json(['message' => 'Old Password Doesn\'t match!'], 422 );
         }
 
         $user->update([
             'password' => Hash::make($validated['new_password'])
         ]);
 
-        return response()->json(['Message' => 'Password changed successfully'], 200);
+        return response()->json(['message' => 'Password changed successfully'], 200);
     }
     
 

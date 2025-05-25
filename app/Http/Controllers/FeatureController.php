@@ -105,6 +105,6 @@ class FeatureController extends Controller
 
         return response()->json([ // Return a JSON response indicating success
             'message' => 'Feature Deleted Successfully'
-        ],204);
+        ],200);
     }
 }

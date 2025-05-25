@@ -12,7 +12,8 @@ class Design extends Model
     protected $fillable = [
         'name_ar',
         'name_en',
-        'price'
+        'price',
+        'feature_store_id',
     ];
 
 

@@ -50,7 +50,7 @@ class StatusController extends Controller
     /**
      * Display the specified resource.
      */
-    public function view($id)
+    public function show($id)
     {  
         $service_id = 'service_id_'.$id;
         $statuses = Status::where($service_id, true)->get();
