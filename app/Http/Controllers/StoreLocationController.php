@@ -25,10 +25,11 @@ class StoreLocationController extends Controller
      */
     public function index()
     {
-         $storeLoc = StoreLocation::all(); // Fetch all products
+        $storeLoc = StoreLocation::all(); // Fetch all products
         return response()->json([
+            'message' => 'success',
             'data' => $storeLoc // Return the products in JSON format
-        ]);
+        ], 200);
     }
 
     
@@ -38,18 +39,27 @@ class StoreLocationController extends Controller
      */
     public function store(StoreLocationRequest $request, Store $store)
     {
-       
+       if (!$store) {
+            return response()->json(['message' => 'Store not found.'], 404);
+        }
+
        $storeLoc = $store->locations()->create($request->validated());
         return response()->json([
             "message" => 'success', // Return success message in JSON format
             "data" => $storeLoc
-        ]);
+        ], 200);
     }
 
-    public function showAll(Store $store)
+    public function view(Store $store)
     {
+        if (!$store) {
+            return response()->json(['message' => 'Store not found.'], 404);
+        }
         $storeLoc = $store->locations()->get();
-        return $storeLoc;
+       return response()->json([
+            "message" => 'success', // Return success message in JSON format
+            "data" => $storeLoc
+        ], 200);
     }
 
 
@@ -58,8 +68,15 @@ class StoreLocationController extends Controller
      */
     public function show(StoreLocation $storeLoc)
     {
+
+         if (!$storeLoc) {
+            return response()->json(['message' => 'Store Location not found.'], 404);
+        }
+       return response()->json([
+            "message" => 'success', // Return success message in JSON format
+            "data" => $storeLoc
+        ], 200);
         
-        return $storeLoc;
     }
 
     
@@ -69,11 +86,15 @@ class StoreLocationController extends Controller
      */
     public function update(StoreLocationRequest $request, StoreLocation $storeLoc)
     {
+        if (!$storeLoc) {
+            return response()->json(['message' => 'Store Location not found.'], 404);
+        }
+        
         $storeLoc->update($request->validated()); // Update the product with validated data
         return response()->json([
-            'store Location' => $storeLoc, 
-            'message' => 'store Location updated successfully' // Success message
-        ]);
+             'message' => 'store location updated successfully' ,
+            'data' => $storeLoc
+        ], 200);
     }
 
     /**
@@ -81,11 +102,14 @@ class StoreLocationController extends Controller
      */
     public function destroy(StoreLocation $storeLoc)
     {
-    
-    $storeLoc->delete();
+        if (!$storeLoc) {
+            return response()->json(['message' => 'store location not found.'], 404);
+        }
+
+         $storeLoc->delete();
 
         return response()->json([ // Return a JSON response indicating success
             'message' => 'Store Location Deleted Successfully'
-        ]);
+        ],204);
     }
 }
