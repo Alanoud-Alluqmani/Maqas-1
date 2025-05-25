@@ -95,11 +95,11 @@ Route::controller( StatusController::class)->group(function(): void{
 
      Route::get('show-status/{id}','show')->name('show.status');
 
-    // Route::get('view-statuses','view')->name('view.statuses');
+     Route::get('view-statuses','index')->name('view.statuses');
 
      Route::post('add-status', 'store')->name('add.status');
 
-   //Route::post('update-status/{id}', 'update')->name('update.status');
+    Route::put('update-status/{id}', 'update')->name('update.status');
 
     Route::delete('destroy-status/{status}','destroy')->name('destroy.status');
 
@@ -154,8 +154,8 @@ Route::controller(DesignController::class)->group(function(){
     Route::get('view-store-designs', 'indexPartner')->name('store.designs.view.partner');
     Route::get('show-design/{design}', 'show')->name('store.design.show');
     Route::get('show-feature-design/{feature}', 'showStoreDesign')->name('feature.design.show');
-    Route::post('store-desgin', 'store')->name('add.desgin');
-    Route::put('update-desgin', 'update')->name('update.desgin');
-    Route::delete('destroy-desgin/{desgin}', 'destroy')->name('destroy.desgin');
+    Route::post('store-design', 'store')->name('add.desgin');
+    Route::put('update-design/{design}', 'update')->name('update.design');
+    Route::delete('destroy-design/{design}', 'destroy')->name('destroy.design');
 
 });
