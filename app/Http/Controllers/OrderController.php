@@ -23,9 +23,16 @@ class OrderController extends Controller
     public function index()
     {
          $orders = Order::all(); // Fetch all products
+
+        if (!$orders){
+            return response()->json([
+            'message' => 'no orders found'
+        ], 404);
+        } else
         return response()->json([
-            'Orders' => $orders // Return the products in JSON format
-        ]);
+            'message' => 'orders found',
+            'data' => $orders // Return the products in JSON format
+        ], 200);
     }
 
    
@@ -44,7 +51,16 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::findOrFail($id);
-        return  $order;
+        
+        if (!$order){
+            return response()->json([
+            'message' => 'order not found'
+        ], 404);
+        } else
+        return response()->json([
+            'message' => 'order found',
+            'data' => $order 
+        ], 200);
     }
 
 
@@ -64,8 +80,11 @@ public function update(UpdateOrderStatusRequest $request, $order_id)
     $order->save(); // Save without mass assignment
 
     return response()->json([
-        'order status' => $status,
-        'message' => 'Order status updated successfully'
+        'message' => 'Order status updated successfully',
+        'data' => [
+            'status' => $status,
+            'order' => $order
+        ],
     ]);
 }
 
