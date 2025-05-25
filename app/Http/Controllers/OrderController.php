@@ -11,24 +11,31 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('auth:sanctum');// currently, all methods are protected by 
+    }
+
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
          $orders = Order::all(); // Fetch all products
+
+        if (!$orders){
+            return response()->json([
+            'message' => 'no orders found'
+        ], 404);
+        } else
         return response()->json([
-            'Orders' => $orders // Return the products in JSON format
-        ]);
+            'message' => 'orders found',
+            'data' => $orders // Return the products in JSON format
+        ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+   
 
     /**
      * Store a newly created resource in storage.
@@ -44,18 +51,19 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::findOrFail($id);
-        return  $order;
+        
+        if (!$order){
+            return response()->json([
+            'message' => 'order not found'
+        ], 404);
+        } else
+        return response()->json([
+            'message' => 'order found',
+            'data' => $order 
+        ], 200);
     }
 
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
-    {
-        //
-    }
 
 
 
@@ -72,8 +80,11 @@ public function update(UpdateOrderStatusRequest $request, $order_id)
     $order->save(); // Save without mass assignment
 
     return response()->json([
-        'order status' => $status,
-        'message' => 'Order status updated successfully'
+        'message' => 'Order status updated successfully',
+        'data' => [
+            'status' => $status,
+            'order' => $order
+        ],
     ]);
 }
 
