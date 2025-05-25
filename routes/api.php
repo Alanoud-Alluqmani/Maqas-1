@@ -75,7 +75,7 @@ Route::controller( StoreLocationController::class)->group(function(): void{
 
 Route::get('/reset-password/{token}', function ($token) {
     return response()->json(['token' => $token]);
-})->name('password.reset');
+})->name('password.reset'); 
 
 
 
@@ -128,24 +128,16 @@ Route::controller( FeatureController::class)->group(function(): void{
     
     Route::get('features/{prod_catg}','showCategoryFeatures')->name('category.features');
 
-     Route::post('add-status', 'store')->name('newStatus');
+    // Route::post('add-status', 'store')->name('newStatus');
 
    //Route::post('update-order-status/{id}', 'update')->name('updateStatus');
 
-    Route::get('destroy-status/{status}','destroy')->name('deleteStatus');
+    //Route::get('destroy-status/{status}','destroy')->name('deleteStatus');
 
 });
 
 
 Route::post('features/{prod_catg}', [FeatureController::class, 'store'])->name('features.store');
-
-
-
-
-
-
-
-
 
 
 
