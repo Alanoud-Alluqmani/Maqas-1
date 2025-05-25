@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('auth:sanctum');// currently, all methods are protected by 
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -22,13 +28,7 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+   
 
     /**
      * Store a newly created resource in storage.
@@ -48,14 +48,6 @@ class OrderController extends Controller
     }
 
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
-    {
-        //
-    }
 
 
 

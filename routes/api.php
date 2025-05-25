@@ -9,6 +9,7 @@ use App\Http\Controllers\StoreLocationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\PartneringOrderController;
+use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\SpecifyProductController;
 use App\Http\Controllers\DesignController;
@@ -117,6 +118,7 @@ Route::controller( UserController::class)->group(function(){
 
 });
 
+Route::apiResource('product-categories', ProductCategoryController::class);
 
 Route::apiResource('partnering-orders', PartneringOrderController::class)->except('store');
 
@@ -128,11 +130,11 @@ Route::controller( FeatureController::class)->group(function(): void{
     
     Route::get('features/{prod_catg}','showCategoryFeatures')->name('category.features');
 
-     Route::post('add-status', 'store')->name('newStatus');
+    //  Route::post('add-status', 'store')->name('newStatus');
 
    //Route::post('update-order-status/{id}', 'update')->name('updateStatus');
 
-    Route::get('destroy-status/{status}','destroy')->name('deleteStatus');
+    // Route::get('destroy-status/{status}','destroy')->name('deleteStatus');
 
 });
 
