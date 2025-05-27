@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->tinyInteger('rating')->unsigned()->default(0); // unsigned makes it non negative
-            $table->text('comment')->default('');
+            $table->text('comment');
             $table->timestamps();
             $table->softDeletes();
         });

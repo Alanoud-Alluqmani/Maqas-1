@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreLocationRequest;
 use App\Models\Store;
+use Illuminate\Support\Facades\Auth;
 
 class StoreLocationController extends Controller
 {
@@ -25,10 +26,10 @@ class StoreLocationController extends Controller
      */
     public function index()
     {
-        $storeLoc = StoreLocation::all(); // Fetch all products
+        $storeLoc = StoreLocation::all(); 
         return response()->json([
             'message' => 'success',
-            'data' => $storeLoc // Return the products in JSON format
+            'data' => $storeLoc 
         ], 200);
     }
 
@@ -37,8 +38,9 @@ class StoreLocationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLocationRequest $request, Store $store)
+    public function store(StoreLocationRequest $request)
     {
+        $store=Auth::user()->store;
        if (!$store) {
             return response()->json(['message' => 'Store not found.'], 404);
         }

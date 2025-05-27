@@ -19,10 +19,10 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name_ar' => 'required|string|max:255',
-            'name_en' => 'required|string|max:255', // Validates that "name" is required, a string, and no longer than 255 characters
-            'phone' => 'required|digits:10',
-            'email' => 'required|email',        // Validates that "email" is required and must follow email format
+            'name_ar' => 'nullable|string|max:255',
+            'name_en' => 'nullable|string|max:255', // Validates that "name" is required, a string, and no longer than 255 characters
+            'phone' => 'nullable|digits:10',
+            'email' => 'nullable|email',        // Validates that "email" is required and must follow email format
         ];
     }
 
