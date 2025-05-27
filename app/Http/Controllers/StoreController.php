@@ -10,7 +10,7 @@ class StoreController extends Controller
 {
 
     public function __construct(){
-        $this->middleware('auth:sanctum');// currently, all methods are protected by 
+        //$this->middleware('auth:sanctum');// currently, all methods are protected by 
         // login, but will this affect the customer?
         // $this->middleware('super admin')->only(['index', 'destroy']);
         // // the index function too is supposed to be used to the customer...
