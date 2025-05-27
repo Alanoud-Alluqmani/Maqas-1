@@ -44,8 +44,10 @@ class ProductCategoryController extends Controller
 
         if ($request->hasFile('icon')){
             $file = $request->file('icon');
-            $filename = $file->getClientOriginalName() . '.' . $file->getClientOriginalExtension(); // Keeps the original extension
+            $filename = $validated['name_en']  . '.' . $file->getClientOriginalExtension(); // Keeps the original extension
             $filePath = $file->storeAs('icon', $filename, 'public');
+        }else {
+            return response()->json(['message' => 'File upload failed'], 400);
         }
 
         $categ = ProductCategory::create([
@@ -60,19 +62,20 @@ class ProductCategoryController extends Controller
         ], 201);
     }
 
+
     /**
      * Display the specified resource.
      */
-    public function show(ProductCategoryRequest $productCategory)
+    public function show(ProductCategory $product_category)
     {
-        if (!$productCategory){
+        if (!$product_category){
             return response()->json([
             'message' => 'category not found'
         ], 404);
-        } else
+        } 
         return response()->json([
             'message' => 'category found',
-            'data' => $productCategory // Return the products in JSON format
+            'data' => $product_category // Return the products in JSON format
         ], 200);
     }
 
@@ -95,9 +98,9 @@ class ProductCategoryController extends Controller
             ]);
         }
 
-        $productCategory->update([
-            $validated
-        ]);
+        $productCategory->update(
+           $validated
+        );
 
         $productCategory->save();
 
@@ -111,9 +114,12 @@ class ProductCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductCategory $productCategory)
+    public function destroy(ProductCategory $product_category)
     {
-        $productCategory->delete();
+        if (!$product_category) {
+            return response()->json(['message' => 'product category not found.'], 404);
+        }
+        $product_category->delete();
 
         return response()->json([ // Return a JSON response indicating success
             'message' => 'product category Deleted Successfully'

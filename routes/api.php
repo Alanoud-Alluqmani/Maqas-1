@@ -47,13 +47,13 @@ Route::controller( AuthController::class)->group(function(): void{
 
 Route::controller( StoreController::class)->group(function(): void{
 
-    Route::get('show-store/{id}','show')->name('show.store');
+    Route::get('show-store/{store}','show')->name('show.store');
 
      Route::get('view-stores', 'index')->name('view.stores');
 
-    Route::put('update-store/{id}', 'update')->name('update.store');
+    Route::put('update-store/{store}', 'update')->name('update.store');
 
-    Route::delete('destroy-store/{id}','destroy')->name('destroy.store');
+    Route::delete('destroy-store/{store}','destroy')->name('destroy.store');
 
 });
 
@@ -66,7 +66,7 @@ Route::controller( StoreLocationController::class)->group(function(): void{
 
      Route::get('show-store-locs/{storeLoc}','show')->name('show.loc');
 
-     Route::post('store-loc/{store}', 'store')->name('store.loc');
+     Route::post('store-loc', 'store')->name('store.loc');
 
     Route::put('update-store-loc/{storeLoc}', 'update')->name('update.loc');
 
@@ -87,19 +87,21 @@ Route::controller( OrderController::class)->group(function(): void{
 
      Route::get('view-orders','index')->name('view.orders');
 
+      Route::get('view-store-orders','view')->name('view.store.orders');
+
     Route::post('update-order-status/{id}', 'update')->name('update.order.status');
 
 });
 
 Route::controller( StatusController::class)->group(function(): void{
 
-     Route::get('show-status/{id}','show')->name('show.status');
+     Route::get('show-status/{status}','show')->name('show.status');
 
      Route::get('view-statuses','index')->name('view.statuses');
 
      Route::post('add-status', 'store')->name('add.status');
 
-    Route::put('update-status/{id}', 'update')->name('update.status');
+    Route::put('update-status/{status}', 'update')->name('update.status');
 
     Route::delete('destroy-status/{status}','destroy')->name('destroy.status');
 

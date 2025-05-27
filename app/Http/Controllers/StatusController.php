@@ -32,8 +32,8 @@ class StatusController extends Controller
             'data' => $statuses 
         ], 200);
 
-    } // ADD IT TO API !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+    } 
 
     /**
      * Store a newly created resource in storage.
@@ -50,9 +50,9 @@ class StatusController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Status $status)
     {  
-        $service_id = 'service_id_'.$id;
+        $service_id = 'service_id_'.$status->id;
         $statuses = Status::where($service_id, true)->get();
         
         if (!$statuses){
@@ -64,27 +64,23 @@ class StatusController extends Controller
             'message' => 'statuses found',
             'data' => $statuses 
         ], 200);
-    } // EDIT IT TO API !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    } 
 
 
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateStatusRequest $request, Status $status)
     {
-        
-        $status->update([
-            $request
-        ]);
-
-        $status->save();
+        if(!$status){
+            return response()->json(['message' => 'status not found'], 404);
+        }
+         $status->update($request->validated());
 
         return response()->json([
-            'message' => 'status updated Successfully', // Success message
-            'data' => $status, // Include the created user data in the response
+            'message' => 'status updated successfully',
+            "data" => $status
         ], 200);
-    } // ADD IT TO API !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
+    }
+
 
     /**
      * Remove the specified resource from storage.
