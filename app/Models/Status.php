@@ -16,6 +16,12 @@ class Status extends Model
         'service_id_2',
     ];
 
+    protected $casts = [
+    'service_id_1' => 'boolean',
+    'service_id_2' => 'boolean',
+];
+
+
     public function orders(){
         return $this->hasMany(Order::class);
     }

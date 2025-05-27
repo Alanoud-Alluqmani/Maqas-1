@@ -7,6 +7,8 @@ use App\Models\Order;
 use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Store;
 
 
 class OrderController extends Controller
@@ -32,6 +34,21 @@ class OrderController extends Controller
         return response()->json([
             'message' => 'orders found',
             'data' => $orders // Return the products in JSON format
+        ], 200);
+    }
+
+
+      public function view()
+    {
+         $store=Auth::user()->store;
+
+        if ($store->orders()->get()->isEmpty()) {
+            return response()->json(['message' => 'There is no order.'], 200);
+        }
+        $orders = $store->orders()->get();
+       return response()->json([
+            "message" => 'success', // Return success message in JSON format
+            "data" => $orders
         ], 200);
     }
 

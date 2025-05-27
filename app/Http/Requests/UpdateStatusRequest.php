@@ -18,10 +18,10 @@ class UpdateStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status_ar' => 'somtimes|string|max:255|unique:statuses,status_ar',
-            'status_en' => 'somtimes|string|max:255|unique:statuses,status_en',
-            'service_id_1' => 'somtimes|boolean',
-            'service_id_2' => 'somtimes|boolean',
+            'status_ar' => 'nullable|string|max:255|unique:statuses,status_ar',
+            'status_en' => 'nullable|string|max:255|unique:statuses,status_en',
+            'service_id_1' => 'sometimes|boolean',
+            'service_id_2' => 'sometimes|boolean',
         ];
     }
 }
