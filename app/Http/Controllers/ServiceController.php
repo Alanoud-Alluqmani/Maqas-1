@@ -12,16 +12,20 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        //
+        $services = Service::all();
+
+        if (!$services){
+            return response()->json([
+            'message' => 'no services found for'
+        ], 404);
+        } else
+        return response()->json([
+            'message' => 'services found for',
+            'data' => $services // Return the products in JSON format
+        ], 200);
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -36,16 +40,17 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
-        //
+        if (!$service){
+            return response()->json([
+            'message' => 'service not found'
+        ], 404);
+        } else
+        return response()->json([
+            'message' => 'statuses found',
+            'data' => $service 
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Service $service)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
