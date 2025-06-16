@@ -69,7 +69,7 @@ class AuthController extends Controller
         
         $store->partnering_order()->create();
 
-        event(new Registered($user));
+        //event(new Registered($user));
         return response()->json([
             'message' => 'User Created Successfully', 
             'data' => $user, 
@@ -166,11 +166,11 @@ class AuthController extends Controller
                 'message'=> 'Invalid email or password' ], 401);
         }
 
-        if(is_null($user->email_verified_at)){
-            return response()->json([
-                'message' => 'This email is not verified yet' // Error message for invalid login
-            ], 401); // Unauthorized response status
-        }
+        // if(is_null($user->email_verified_at)){
+        //     return response()->json([
+        //         'message' => 'This email is not verified yet' // Error message for invalid login
+        //     ], 401); // Unauthorized response status
+        // }
 
         // Create an authentication token for the user
         $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
