@@ -6,6 +6,7 @@ use App\Models\Feature;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use App\Http\Requests\FeatureRequest;
+use App\Http\Requests\UpdateFeatureRequest;
 
 class FeatureController extends Controller
 {
@@ -78,7 +79,7 @@ class FeatureController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(FeatureRequest $request, Feature $feature)
+    public function update(UpdateFeatureRequest $request, Feature $feature)
     {
         if (!$feature) {
             return response()->json(['message' => 'Feature not found.'], 404);
