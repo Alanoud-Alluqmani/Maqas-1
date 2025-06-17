@@ -11,6 +11,7 @@ class Image extends Model
     use SoftDeletes, HasFactory;
     protected $fillable = [
         'image',
+        'design_id',
     ];
 
     public function design(){

@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\SpecifyProductController;
 use App\Http\Controllers\DesignController;
+use App\Http\Controllers\ImageController;
 use App\Http\Requests\EmployeeRegisterRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
@@ -161,3 +162,5 @@ Route::controller(DesignController::class)->group(function(){
     Route::delete('destroy-design/{design}', 'destroy')->name('destroy.design');
 
 });
+
+Route::apiResource('images', ImageController::class)->except('store');

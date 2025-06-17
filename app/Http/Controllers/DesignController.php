@@ -6,6 +6,7 @@ use App\Models\Design;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\Feature;
+use App\Models\Image;
 use App\Models\FeatureStore;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -71,8 +72,10 @@ class DesignController extends Controller
      */
     public function showStoreDesign(Feature $feature)
      {
-    $designs = Design::whereHas('feature_store', function ($query) use ($feature) {
-        $query->where('feature_id', $feature->id);
+    $storeId = Auth::user()->store;
+    $designs = Design::whereHas('feature_store', function ($query) use ($feature,  $storeId) {
+        $query->where('feature_id', $feature->id)
+        ->orWhere('store_id', $storeId);
     })->get();
 
     return response()->json([
@@ -80,6 +83,8 @@ class DesignController extends Controller
         'data' => $designs
     ], 200);
     }
+
+
     
 
     /**
@@ -105,6 +110,22 @@ class DesignController extends Controller
         $request->validated(), // Validated data without parameters
     );
 
+
+    if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagename = $design['name_en'] . '.' . $image->getClientOriginalExtension(); // Keeps the original extension
+            $imagePath = $image->storeAs('image', $imagename, 'public');  
+            $designImage = Image::create([
+            'image' => $imagePath,
+            'design_id' => $design->id
+        ]);
+         
+        } // else {
+        //     return response()->json(['message' => 'Image upload failed'], 400);
+        // }
+
+    
+
     return response()->json([
         "message" => "Design created successfully.",
         "data" => $design
@@ -123,9 +144,9 @@ class DesignController extends Controller
         }
 
          $design->update($request->validated());
-
+    
         return response()->json([
-            'message' => 'design updated successfully',
+            'message' => 'Design updated successfully',
             "data" => $design
         ], 200);
     }
