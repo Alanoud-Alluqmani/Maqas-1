@@ -26,6 +26,8 @@ class DesignRequest extends FormRequest
             'name_en' => 'required|string|max:255',
             'price' => 'required|numeric',
             'feature_store_id' => 'required|integer|exists:feature_store,id',
+            //'image' => 'nullable|string|max:255',
+           'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ];
     }
 }
