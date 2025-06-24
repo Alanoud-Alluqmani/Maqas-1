@@ -45,19 +45,33 @@ class StoreLocationController extends Controller
             return response()->json(['message' => 'Store not found.'], 404);
         }
 
-       $storeLoc = $store->locations()->create($request->validated());
+         $locUrl = "https://maps.google.com/?q={$request->latitude},{$request->longitude}";
+        $storeLoc = $store->locations()->create([
+        'latitude' => $request->latitude,
+        'longitude' => $request->longitude,
+        'loc_url' => $locUrl,
+         ]);
+
         return response()->json([
             "message" => 'success', // Return success message in JSON format
             "data" => $storeLoc
         ], 200);
     }
 
-    public function view(Store $store)
+    public function view(Request $request)
     {
+
+         $limit = $request->input('limit', 10);
+         
+         $store = Auth::user()->store;
         if (!$store) {
             return response()->json(['message' => 'Store not found.'], 404);
         }
-        $storeLoc = $store->locations()->get();
+
+    $storeLoc = StoreLocation::with(['store']) ->where('store_id', $store->id)
+     ->paginate($limit)->items();
+
+        
        return response()->json([
             "message" => 'success', // Return success message in JSON format
             "data" => $storeLoc
@@ -70,10 +84,19 @@ class StoreLocationController extends Controller
      */
     public function show(StoreLocation $storeLoc)
     {
-
+         $store = Auth::user()->store;
+        if (!$store) {
+            return response()->json(['message' => 'Store not found.'], 404);
+        }
+        
          if (!$storeLoc) {
             return response()->json(['message' => 'Store Location not found.'], 404);
         }
+
+          if ($storeLoc->store_id !== $store->id) {
+        return response()->json(['message' => 'This location does not belong to your store.'], 403);
+     }
+
        return response()->json([
             "message" => 'success', // Return success message in JSON format
             "data" => $storeLoc
@@ -88,9 +111,17 @@ class StoreLocationController extends Controller
      */
     public function update(StoreLocationRequest $request, StoreLocation $storeLoc)
     {
+        $store = Auth::user()->store;
+
         if (!$storeLoc) {
             return response()->json(['message' => 'Store Location not found.'], 404);
         }
+
+          if ($storeLoc->store_id !== $store->id) {
+        return response()->json(['message' => 'This location does not belong to your store.'], 403);
+     }
+
+
         
         $storeLoc->update($request->validated()); // Update the product with validated data
         return response()->json([
@@ -104,9 +135,16 @@ class StoreLocationController extends Controller
      */
     public function destroy(StoreLocation $storeLoc)
     {
+
+        $store = Auth::user()->store;
+        
         if (!$storeLoc) {
             return response()->json(['message' => 'store location not found.'], 404);
         }
+          if ($storeLoc->store_id !== $store->id) {
+        return response()->json(['message' => 'This location does not belong to your store.'], 403);
+     }
+
 
          $storeLoc->delete();
 

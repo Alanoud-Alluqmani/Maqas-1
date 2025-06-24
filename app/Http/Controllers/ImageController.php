@@ -54,16 +54,12 @@ class ImageController extends Controller
         }
 
         $designName = $image->design->name_en;
-        // echo $designName;
-        // $newImage = $request->file('image');
+      
         $imageName = $designName . '.' . $request->file('image')->getClientOriginalExtension();
-         echo $imageName;
-       // $imagePath = $image->store('image', $imageName, 'public');  
-
+        
+       
          $path = $request->file('image')->storeAs('image', $imageName, 'public');
-         
-        // $image->update(['image'=>$path]);
-        // $image->save();
+    
 
         return response()->json([
             'message' => 'Image updated successfully',

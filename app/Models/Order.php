@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Order extends Model
 {
     use SoftDeletes, HasFactory;
+    protected $hidden = ['customer_id', 'store_id', 'service_id', 'status_id',
+     'customer_location_id', 'store_location_id'];
+
+     
     public function customer(){
         return $this->belongsTo(Customer::class);
     }
@@ -37,4 +41,9 @@ class Order extends Model
     public function status(){
         return $this->belongsTo(Status::class);
     }
+
+    public function service(){
+    return $this->belongsTo(Service::class);
+    }
+
 }

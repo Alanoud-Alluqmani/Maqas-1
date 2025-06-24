@@ -11,6 +11,9 @@ class CustomerLocation extends Model
     use SoftDeletes, HasFactory;
     protected $fillable = [
         'loc_url',
+        'customer_id',
+        'latitude',
+        'longitude',
         
     ];
 

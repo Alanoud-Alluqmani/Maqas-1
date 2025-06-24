@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\FilterStoreController;
 use App\Http\Controllers\StoreLocationController;
+use App\Http\Controllers\CustomerLocationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\PartneringOrderController;
@@ -17,6 +19,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Requests\EmployeeRegisterRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
+use App\Models\Customer;
 use App\Models\Design;
 use App\Models\Feature;
 use App\Models\User;
@@ -27,6 +30,10 @@ use Illuminate\Support\Facades\URL;
 Route::controller( AuthController::class)->group(function(): void{
 
     Route::post('register', 'ownerRegister')->name('ownerRegister');
+
+    Route::post('co-admin-register', 'coAdminRegister')->name('coAdminRegister');
+    
+    Route::delete('delete-co-admin/{user}', 'deleteCoAdmin')->name('deleteCoAdmin');
 
     Route::post('login', 'login')->name('login');
 
@@ -48,32 +55,56 @@ Route::controller( AuthController::class)->group(function(): void{
 
 Route::controller( StoreController::class)->group(function(): void{
 
-    Route::get('show-store/{store}','show')->name('show.store');
+    Route::get('show-store','show')->name('show.store')->middleware('auth:api');
 
      Route::get('view-stores', 'index')->name('view.stores');
 
-    Route::put('update-store/{store}', 'update')->name('update.store');
+    Route::put('update-store/{store}', 'update')->name('update.store')->middleware('auth:api');
 
-    Route::delete('destroy-store/{store}','destroy')->name('destroy.store');
+    Route::delete('destroy-store/{store}','destroy')->name('destroy.store')->middleware('auth:api');
 
+     Route::post('employee-register', 'addEmployee')->name('addEmployee')->middleware(['auth:sanctum', 'role:Store Owner']);
+
+     Route::delete('delete-employee/{user}', 'deleteEmployee')->name('deleteEmployee');
 });
 
 
 Route::controller( StoreLocationController::class)->group(function(): void{
 
-     Route::get('view-store-loc/{store}','view')->name('view.store.Loc');
+     Route::get('view-store-loc','view')->name('view.store.Loc')->middleware('auth:api');
 
      Route::get('view-stores-loc','index')->name('view.stores.loc');
 
-     Route::get('show-store-locs/{storeLoc}','show')->name('show.loc');
+     Route::get('show-store-locs/{storeLoc}','show')->name('show.loc')->middleware('auth:api');
 
      Route::post('store-loc', 'store')->name('store.loc');
 
-    Route::put('update-store-loc/{storeLoc}', 'update')->name('update.loc');
+    Route::put('update-store-loc/{storeLoc}', 'update')->name('update.loc')->middleware('auth:api');
 
-    Route::delete('destroy-store-loc/{storeLoc}','destroy')->name('destroy.loc');
+    Route::delete('destroy-store-loc/{storeLoc}','destroy')->name('destroy.loc')->middleware('auth:api');
+
 
 });
+
+
+Route::controller( CustomerLocationController::class)->group(function(): void{
+
+     Route::get('view-customer-loc/{customer}','view')->name('view.customer.Loc');
+
+     Route::get('view-customers-loc','index')->name('view.customers.loc');
+
+     Route::get('show-customer-locs/{customerLoc}','show')->name('show.customer.loc');
+
+     Route::post('store-customer-loc', 'store')->name('store.customer.loc');
+
+    Route::put('update-customer-loc/{customerLoc}', 'update')->name('update.customer.loc');
+
+    Route::delete('destroy-customer-loc/{customerLoc}','destroy')->name('destroy.customer.loc');
+
+});
+
+
+Route::get('nearest-stores', [FilterStoreController::class, 'nearestToCustomer']);
 
 
 Route::get('/reset-password/{token}', function ($token) {
@@ -164,3 +195,5 @@ Route::controller(DesignController::class)->group(function(){
 });
 
 Route::apiResource('images', ImageController::class)->except('store');
+Route::get('store-avr-ratings/{store}', [StoreController::class, 'getStoreRatings'])->name('store-avr-ratings');
+    

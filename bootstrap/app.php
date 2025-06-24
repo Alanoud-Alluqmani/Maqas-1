@@ -7,6 +7,7 @@ use App\Http\Middleware\StoreEmployee;
 use App\Http\Middleware\StoreOwner;
 use App\Http\Middleware\CoAdmin;
 use App\Http\Middleware\SuperAdmin;
+use App\Http\Middleware\CheckRole;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,20 +17,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
 
-    ->withMiddleware(function (Middleware $middleware) {
-        // $middleware->alias([
-        //     'user.check' => UserCheckMiddleware::class
-        // ]);
-    })
-    ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })
-    ->withMiddleware(function (Middleware $middleware) {
+   ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'super admin' => SuperAdmin::class,
             'co admin' => CoAdmin::class,
             'store owner' => StoreOwner::class,
             'store employee' => StoreEmployee::class,
+            'role' => CheckRole::class,
         ]);
     })
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
+    })
     ->create();
+
+    

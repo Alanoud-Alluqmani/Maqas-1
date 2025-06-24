@@ -14,6 +14,8 @@ class Feature extends Model
         'name_en'
     ];
 
+       protected $hidden = ['product_category_id'];
+
     public function stores(){
         return $this->belongsToMany(Store::class);
     }

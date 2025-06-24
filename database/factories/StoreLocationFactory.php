@@ -19,6 +19,8 @@ class StoreLocationFactory extends Factory
     {
         return [
             'loc_url' => fake()->url(),
+            'latitude' => fake()->latitude(),
+            'longitude' => fake()->longitude(),
             'store_id' => Store::pluck('id')->slice(1)->random(),
         ];
     }

@@ -11,15 +11,17 @@ class ProductCategoryController extends Controller
 {
 
     public function __construct(){
-        $this->middleware('auth:sanctum')->except('index');
+            $this->middleware(['auth:sanctum', 'role:Super Admin, Co-Admin'])->only(['store', 'update' , 'destroy']);
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categs = ProductCategory::all(); 
+        $limit= $request->input('limit',10);
+ 
+        $categs = ProductCategory::paginate($limit)->items();
         if (!$categs){
             return response()->json([
             'message' => 'no categories found'

@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\OwnerRegisterRequest; 
 use App\Http\Requests\EmployeeRegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\CoAdminRegisterRequest;
 use App\Models\PartneringOrder;
 use App\Models\User; 
 use App\Models\Role;   
@@ -25,6 +26,8 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
 
+
+
 class AuthController extends Controller
 {
 
@@ -33,6 +36,9 @@ class AuthController extends Controller
     $this->middleware('auth:sanctum')->only(['logout']);
     $this->middleware('guest')->only(['forgotPassword', 'resetPassword']);
     $this->middleware('guest')->only(['forgotPassword', 'resetPassword']);
+    $this->middleware(['auth:sanctum', 'role:Super Admin'])->only(['coAdminRegister', 'deleteCoAdmin' ]);
+    
+
 } 
 
 
@@ -72,7 +78,7 @@ class AuthController extends Controller
         //event(new Registered($user));
         return response()->json([
             'message' => 'User Created Successfully', 
-            'data' => $user, 
+            'data' => $user
         ], 201);
     }
 
@@ -113,44 +119,6 @@ class AuthController extends Controller
         return response()->json(['message' => 'Verification link resent!'], 200);
     }
 
-    
-    // public function employeeRegister(EmployeeRegisterRequest $request, $id)
-    // {
-
-    //     if (!$request->hasValidSignature()) {
-    //     abort(403, 'Invalid or expired link.');}
-
-    //     $user = $request->validated();
-
-    //     // $store=Store:: where('id', $id)->first();
-    //     // if (!$store) {
-    //     //     return response()->json(['error' => 'Store not found in the database'], 404);
-    //     // }
-    //     $user['store_id'] = $id;
-    //     $role = Role::where('role', 'Store Employee')->first();
-
-    //     if (!$role) {
-    //         return response()->json(['error' => 'Role "Store Employee" not found in the database'], 404);
-    //     }
-
-    //     $user['role_id'] = $role->id;
-
-        
-    //     $user = User::create($user); // Create a new user with validated data
-
-    //     return response()->json([
-    //         'message' => 'User Created Successfully', // Success message
-    //         'data' => $user, // Include the created user data in the response
-    //      ]);
-    // }
-
-    //  public function generateLink($store_id)
-    // {
-
-    //     $url = URL::signedRoute('employeeRegister', ['id' => $store_id]);
-    //     return response()->json(['registration_link' => $url]);
-
-    // }
 
 
 
@@ -246,6 +214,93 @@ class AuthController extends Controller
         ? redirect()->route('login')->with('status', __($status),200)
         : back()->withErrors(['email' => [__($status)]],400);
     }
+
+
+// public function coAdminRegister(CoAdminRegisterRequest $request)
+// {
+    
+//     $authUser = Auth::user();
+
+// if (!$authUser || !$authUser->role || $authUser->role->role !== 'Super Admin') {
+//     return response()->json([
+//         'message' => 'Only the super admin can add a co-admin.'
+//     ], 403);
+// }
+//     $user = $request->validated();
+
+//     $store = Store::first();
+
+//     $user['store_id'] = $store->id;
+//     $user['legal'] = $store->legal;
+//     $user['product_category_id'] = $store->product_category_id;
+//     // $user['partnering_order'] = $store->partnering_order;
+
+//     $role = Role::where('role', 'Co-Admin')->first();
+//     if (!$role) {
+//         return response()->json(['message' => 'Role "Co-Admin" not found in the database'], 404);
+//     }
+
+//     $user['role_id'] = $role->id;
+//     $user['password'] = Hash::make($user['password']);
+
+//     $createdUser = User::create($user);
+
+
+//     return response()->json([
+//         'message' => 'Co-admin registered successfully',
+//         'data' => $createdUser
+//     ], 200);
+// }
+        
+        
+public function coAdminRegister(CoAdminRegisterRequest $request)
+{
+    $user = $request->validated();
+
+    $store = Store::first();
+
+    $user['store_id'] = $store->id;
+    $user['legal'] = $store->legal;
+    $user['product_category_id'] = $store->product_category_id;
+
+    $role = Role::where('role', 'Co-Admin')->first();
+    if (!$role) {
+        return response()->json(['message' => 'Role "Co-Admin" not found in the database'], 404);
+    }
+
+    $user['role_id'] = $role->id;
+    $user['password'] = Hash::make($user['password']);
+
+    $createdUser = User::create($user);
+
+    return response()->json([
+        'message' => 'Co-admin registered successfully',
+        'data' => $createdUser
+    ], 200);
+}
+
+public function deleteCoAdmin(User $user)
+{
+
+        if (!$user) {
+            return response()->json(['message' => 'user not found.'], 404);
+        }
+
+         if ($user->role->role !== 'Co-Admin') {
+        return response()->json([
+            'message' => 'Only users with the Co-Admin role can be deleted.'
+        ], 403);
+    }
+
+    $user->delete();
+
+    return response()->json([
+        'message' => 'Co-Admin deleted successfully.'
+    ], 200);
+
+}
+
+
 
 }
 
