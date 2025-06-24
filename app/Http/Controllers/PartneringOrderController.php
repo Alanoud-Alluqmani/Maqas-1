@@ -11,6 +11,8 @@ class PartneringOrderController extends Controller
 
     public function __construct(){
         $this->middleware('auth:sanctum');// currently, all methods are protected by 
+        $this->middleware(['auth:sanctum', 'role:Super Admin'])->only('update' );
+    
     }
 
     /**
