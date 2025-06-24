@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Store;
 use Illuminate\Http\Request;
+use App\Models\Role;
+use App\Models\User;
 use App\Http\Requests\StoreRequest;
+use App\Http\Requests\AddEmployeeRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash; 
 
 class StoreController extends Controller
 {
@@ -17,18 +22,84 @@ class StoreController extends Controller
         // $this->middleware('co admin')->only(['index', 'destroy']);
         // $this->middleware('store owner')->only(['destroy', 'update']);
         // $this->middleware('store employee')->only(['']);
+        $this->middleware(['auth:sanctum', 'role:Store Owner'])->only(['addEmployee', 'deleteEmployee' ]);
+    
     }
 
-    public function addEmployee(Request $request){
+    public function addEmployee(AddEmployeeRequest $request){
+
+           $authUser = Auth::user();
+
+        // if ( !$authUser->role || $authUser->role->role !== 'Store Owner') {
+        //     return response()->json([
+        //     'message' => 'Only the store owner can add a employee.'
+        //     ], 403);
+        //     }
+    $store = $authUser->store;
+
+        
+          if (!$store) {
+            return response()->json(['message' => 'Store not found.'], 404);
+        }
+
+        if(!$store->is_active){
+            return response()->json(['message' => 'Store is not active.'], 404);
+        }
+       
+        $user = $request->validated();
+        // $store = Store::first();
+        $user['store_id'] = $store->id;
+        $user['legal'] = $store->legal;
+        $user['product_category_id'] = $store->product_category_id;
+        //$user['partnering_order'] = $store->partnering_order;
+
+         $role = Role::where('role', 'Store Employee')->first();
+    if (!$role) {
+        return response()->json(['message' => 'Role "Store Employee" not found in the database'], 404);
+    }
+
+    $user['role_id'] = $role->id;
+    $user['password'] = Hash::make($user['password']);
+
+    $createdUser = User::create($user);
+
+
+    return response()->json([
+        'message' => 'Employee registered successfully',
+        'data' => $createdUser
+    ], 200);
 
     }
+
+    public function deleteEmployee(User $user)
+{
+
+        if (!$user) {
+            return response()->json(['message' => 'user not found.'], 404);
+        }
+
+         if ($user->role->role !== 'Store Employee') {
+        return response()->json([
+            'message' => 'Only users with the Store Employee role can be deleted.'
+        ], 403);
+    }
+
+    $user->delete();
+
+    return response()->json([
+        'message' => 'Employee deleted successfully.'
+    ], 200);
+
+}
+
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $stores = Store::all(); 
+        $limit = $request->input('limit', 10);
+        $stores = Store::paginate($limit)->items(); 
 
         return response()->json([
             'message'=> 'success',
@@ -36,15 +107,16 @@ class StoreController extends Controller
         ],200); 
     }
 
-   
+ 
 
         
     /**
      * Display the specified resource.
      */
-    public function show(Store $store)
+    public function show()
     {
-
+        $store = Auth::user()->store;
+       
          if (!$store) {
             return response()->json(['message' => 'Store not found.'], 404);
         }
@@ -61,9 +133,15 @@ class StoreController extends Controller
      */
     public function update(StoreRequest $request, Store $store)
     {
+        $authstore = Auth::user()->store;
+        
         if(!$store){
             return response()->json(['message' => 'Store not found.'], 404);
         }
+
+         if ($authstore->id !== $store->id) {
+    return response()->json(['message' => 'Unauthorized.'], 403);
+}
 
       $store->update($request->validated()); 
 
@@ -79,9 +157,17 @@ class StoreController extends Controller
      */
     public function destroy(Store $store)
     {
+        // $authstore = Auth::user()->store;
+        
             if (!$store) {
             return response()->json(['message' => 'store not found.'], 404);
         }
+
+        // if ($authstore->id !== $store->id) {
+        // return response()->json(['message' => 'Unauthorized.'], 403);
+        //  }
+
+
         $store->is_active = false;
 
          $store->delete();
@@ -90,4 +176,14 @@ class StoreController extends Controller
             'message' => 'Store Deleted Successfully'
         ],200);
     }
+
+
+    public function getStoreRatings(Store $store) {
+    $averageRating = $store->ratings()->avg('rating');
+
+    return response()->json([
+         'message' => 'Success',
+        'average_rating' => round($averageRating, 2)
+    ], 200);
+}
 }

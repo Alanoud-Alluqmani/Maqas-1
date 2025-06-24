@@ -20,6 +20,8 @@ class CustomerLocationFactory extends Factory
 
         return [
             'loc_url' => fake()->url(),
+            'latitude' => fake()->latitude(),
+            'longitude' => fake()->longitude(),
             'customer_id' => Customer::pluck('id')->random(),
         ];
     }

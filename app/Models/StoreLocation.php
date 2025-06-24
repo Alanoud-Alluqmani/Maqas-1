@@ -11,8 +11,13 @@ class StoreLocation extends Model
     use SoftDeletes, HasFactory;
     protected $fillable = [
         'loc_url',
-         'store_id',
+        'store_id',
+        'latitude',
+        'longitude',
+
     ];
+
+     protected $hidden = [ 'store_id'];
 
     public function store(){
         return $this->belongsTo(Store::class);

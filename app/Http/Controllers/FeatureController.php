@@ -12,16 +12,20 @@ class FeatureController extends Controller
 {
 
     public function __construct(){
-        $this->middleware('auth:sanctum');// currently, all methods are protected by 
+        //$this->middleware('auth:sanctum');// currently, all methods are protected by 
+        $this->middleware(['auth:sanctum', 'role:Super Admin, Co-Admin'])->only(['store', 'update' , 'destroy']);
+    
     }
 
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $features = Feature::all(); 
+        $limit = $request->input('limit', 10);
+
+        $features = Feature::paginate($limit)->items(); 
 
           return response()->json([
             "message" => 'success', 
@@ -31,18 +35,38 @@ class FeatureController extends Controller
 
 
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(FeatureRequest $request, ProductCategory $prod_catg)
     {
-        $feature = $prod_catg->features()->create($request->validated());
-        
+         if (!$prod_catg) {
         return response()->json([
-            "message" => 'feature created successfully.', 
-            "data" => $feature
-        ],201);
+            "message" => 'Product Category not found',
+        ], 404);
     }
+
+    $data = $request->validated();
+
+    $existing = Feature::onlyTrashed()
+        ->where('name_ar', $data['name_ar'])
+        ->where('name_en', $data['name_en'])
+        ->where('product_category_id', $prod_catg->id)
+        ->first();
+
+    if ($existing) {
+        $existing->restore();
+        $existing->update($data); 
+        return response()->json([
+            "message" => 'Feature restored successfully.',
+            "data" => $existing
+        ], 200);
+    }
+
+    $feature = $prod_catg->features()->create($data);
+
+    return response()->json([
+        "message" => 'Feature created successfully.',
+        "data" => $feature
+    ], 201);
+}
 
     /**
      * Display the specified resource.
@@ -59,8 +83,10 @@ class FeatureController extends Controller
         ], 200);
     }
 
-    public function viewCategoryFeatures(ProductCategory $prod_catg)
+    public function viewCategoryFeatures(Request $request, ProductCategory $prod_catg)
     {
+
+        $limit = $request->input('limit', 10);
 
         if (!$prod_catg) {
             return response()->json(['message' => 'Product category not found.'], 404);
@@ -68,10 +94,10 @@ class FeatureController extends Controller
         if (!$prod_catg->features) {
             return response()->json(['message' => 'Product category features not found.'], 404);
         }
-         
+        $pc = $prod_catg->features()->paginate($limit)->items();
           return response()->json([
             "message" => 'success', 
-            "data" =>  $prod_catg->features
+            "data" =>  $pc
         ], 200);
         
     }

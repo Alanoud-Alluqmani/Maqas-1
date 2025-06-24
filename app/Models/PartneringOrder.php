@@ -15,6 +15,9 @@ class PartneringOrder extends Model
         // 'id'
     ];
 
+     protected $hidden = ['store_id'];
+
+
     public function store(){
         return $this->belongsTo(Store::class);
     }

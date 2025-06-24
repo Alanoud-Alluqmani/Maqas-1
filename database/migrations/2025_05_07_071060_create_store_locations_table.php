@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('loc_url');
             $table->foreignId('store_id')->constrained()->cascadeOnDelete();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

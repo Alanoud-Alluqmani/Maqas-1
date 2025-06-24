@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreLocationRequest extends FormRequest
+class CustomerLocationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,8 @@ class StoreLocationRequest extends FormRequest
             'loc_url' => 'nullable|url',        // Ensures it's a valid URL
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
-
-            //'store_id' => 'required|integer',
             
-          ];
+        ];
     }
 
 }
