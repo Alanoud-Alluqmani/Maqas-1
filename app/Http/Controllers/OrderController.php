@@ -22,9 +22,14 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-         $orders = Order::all(); // Fetch all products
+        $limit = $request->input('limit', 10);
+         $orders = Order::with(['customer', 'store', 'service', 'status',
+     'customer_location', 'store_location'])->paginate($limit);
+        //$orders = Order::all();
+       
+
 
         if (!$orders){
             return response()->json([
@@ -33,22 +38,30 @@ class OrderController extends Controller
         } else
         return response()->json([
             'message' => 'orders found',
-            'data' => $orders // Return the products in JSON format
+            'data' => $orders->items()// Return the products in JSON format
         ], 200);
     }
 
 
-      public function view()
+
+      public function view(Request $request)
     {
          $store=Auth::user()->store;
+
+         $limit = $request->input('limit', 10);
 
         if ($store->orders()->get()->isEmpty()) {
             return response()->json(['message' => 'There is no order.'], 200);
         }
-        $orders = $store->orders()->get();
+       
+    $orders = $store->orders()
+        ->with(['customer', 'store', 'service', 'status', 'customer_location', 'store_location'])
+        ->paginate($limit);
+
+
        return response()->json([
             "message" => 'success', // Return success message in JSON format
-            "data" => $orders
+            "data" => $orders->items()
         ], 200);
     }
 
@@ -65,20 +78,57 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
-    {
-        $order = Order::findOrFail($id);
+    // public function show($id)
+    // {
+    //     $order = Order::findOrFail($id);
         
-        if (!$order){
-            return response()->json([
-            'message' => 'order not found'
-        ], 404);
-        } else
+    //     if (!$order){
+    //         return response()->json([
+    //         'message' => 'order not found'
+    //     ], 404);
+    //     } else
+    //     return response()->json([
+    //         'message' => 'order found',
+    //         'data' => $order 
+    //     ], 200);
+    // }
+
+    public function show($id)
+{
+    $order = Order::with([
+        'customer',
+        'store',
+        'service',
+        'status',
+        'customer_location',
+        'store_location',
+         'items.designs',
+         'items.measure.secondary_measures.name',
+         
+
+    ])->findOrFail($id);
+
+     $authStoreId = Auth::user()->store_id; 
+
+    if ($order->store_id !== $authStoreId) {
         return response()->json([
-            'message' => 'order found',
-            'data' => $order 
-        ], 200);
+            'message' => 'You are not authorized to view this order.',
+        ], 403);
     }
+
+ $orderData = $order->toArray();
+
+    if ($order->status_id == 9 ||$order->status_id == 4) {
+        $order->load('rating');
+        $orderData['rating'] = $order->rating;
+    }
+
+    return response()->json([
+        'message' => 'order found',
+        'data' => $orderData,
+
+    ], 200);
+}
 
 
 
@@ -88,19 +138,19 @@ public function update(UpdateOrderStatusRequest $request, $order_id)
 {
     $status = $request->validated();
 
-    // Find the order
-    $order = Order::findOrFail($order_id);
+       $order = Order::with([
+        'status'
+    ])->findOrFail($order_id);
 
+    $order->status()->associate($status['id']); 
+    $order->save(); 
+    $order->load('status');
 
-    // Update the order status using relationship
-    $order->status()->associate($status['id']); // Associate the status
-    $order->save(); // Save without mass assignment
 
     return response()->json([
         'message' => 'Order status updated successfully',
         'data' => [
-            'status' => $status,
-            'order' => $order
+            'order' => $order,
         ],
     ]);
 }

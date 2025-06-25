@@ -7,7 +7,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\FilterStoreController;
 use App\Http\Controllers\CustomerLocationController;
-use App\Http\Controllers\StoreLocationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\PartneringOrderController;
@@ -66,14 +65,6 @@ Route::controller( StoreController::class)->group(function(): void{
      Route::post('employee-register', 'addEmployee')->name('addEmployee')->middleware(['auth:sanctum', 'role:Store Owner']);
 
      Route::delete('delete-employee/{user}', 'deleteEmployee')->name('deleteEmployee');
-    Route::get('show-store/{store}','show')->name('show.store');
-
-     Route::get('view-stores', 'index')->name('view.stores');
-
-    Route::put('update-store/{store}', 'update')->name('update.store');
-
-    Route::delete('destroy-store/{store}','destroy')->name('destroy.store');
-
 });
 
 
@@ -91,17 +82,6 @@ Route::controller( StoreLocationController::class)->group(function(): void{
 
     Route::delete('destroy-store-loc/{storeLoc}','destroy')->name('destroy.loc')->middleware('auth:api');
 
-     Route::get('view-store-loc/{store}','view')->name('view.store.Loc');
-
-     Route::get('view-stores-loc','index')->name('view.stores.loc');
-
-     Route::get('show-store-locs/{storeLoc}','show')->name('show.loc');
-
-     Route::post('store-loc', 'store')->name('store.loc');
-
-    Route::put('update-store-loc/{storeLoc}', 'update')->name('update.loc');
-
-    Route::delete('destroy-store-loc/{storeLoc}','destroy')->name('destroy.loc');
 
 });
 
@@ -216,4 +196,3 @@ Route::controller(DesignController::class)->group(function(){
 Route::apiResource('images', ImageController::class)->except('store');
 Route::get('store-avr-ratings/{store}', [StoreController::class, 'getStoreRatings'])->name('store-avr-ratings');
     
-Route::apiResource('images', ImageController::class)->except('store');

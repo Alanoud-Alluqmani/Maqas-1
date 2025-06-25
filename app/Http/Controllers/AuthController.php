@@ -38,6 +38,8 @@ class AuthController extends Controller
     $this->middleware('guest')->only(['forgotPassword', 'resetPassword']);
     $this->middleware(['auth:sanctum', 'role:Super Admin'])->only(['coAdminRegister', 'deleteCoAdmin' ]);
     
+
+>>>>>>>>> Temporary merge branch 2
 } 
     public function ownerRegister(OwnerRegisterRequest $request)
     {
@@ -116,6 +118,7 @@ class AuthController extends Controller
         return response()->json(['message' => 'Verification link resent!'], 200);
     }
 
+<<<<<<<<< Temporary merge branch 1
     
     // public function employeeRegister(EmployeeRegisterRequest $request, $id)
     // {
@@ -154,6 +157,8 @@ class AuthController extends Controller
     //     return response()->json(['registration_link' => $url]);
 
     // }
+=========
+>>>>>>>>> Temporary merge branch 2
 
 
 
