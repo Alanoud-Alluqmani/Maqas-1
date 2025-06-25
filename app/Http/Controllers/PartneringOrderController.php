@@ -11,28 +11,23 @@ class PartneringOrderController extends Controller
 
     public function __construct(){
         $this->middleware('auth:sanctum');// currently, all methods are protected by 
-        $this->middleware(['auth:sanctum', 'role:Super Admin'])->only('update' );
-    
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $limit= $request->input('limit', 10);
-        $part_ord = PartneringOrder::with([
-        'store'])->paginate($limit)->items(); 
+        $part_ord = PartneringOrder::all(); 
 
         if (!$part_ord){
             return response()->json([
             'message' => 'no partnering orders found'
         ], 404);
-        }
-
+        } else
         return response()->json([
             'message' => 'partnering orders found',
-            'data' => $part_ord 
+            'data' => $part_ord // Return the products in JSON format
         ], 200);
     }
 
@@ -47,16 +42,10 @@ class PartneringOrderController extends Controller
             return response()->json([
             'message' => 'partnering order not found'
         ], 404);
-        } 
-
-        //  $part_ord = PartneringOrder::with([
-        // 'store']);
-        $partneringOrder->load('store');
-
-
+        } else
         return response()->json([
             'message' => 'partnering order found',
-            'data' => $partneringOrder 
+            'data' => $partneringOrder // Return the products in JSON format
         ], 200);
     }
 

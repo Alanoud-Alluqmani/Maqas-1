@@ -81,7 +81,10 @@ class CustomerLocationController extends Controller
     }
 
     
+        //
+    
 
+   
     /**
      * Update the specified resource in storage.
      */
@@ -96,6 +99,8 @@ class CustomerLocationController extends Controller
              'message' => 'customer location updated successfully' ,
             'data' => $customerLoc
         ], 200);
+   
+    
     }
 
     /**
@@ -112,5 +117,7 @@ class CustomerLocationController extends Controller
         return response()->json([ // Return a JSON response indicating success
             'message' => 'Customer Location Deleted Successfully'
         ],200);
-    }
+  
 }
+    }
+
