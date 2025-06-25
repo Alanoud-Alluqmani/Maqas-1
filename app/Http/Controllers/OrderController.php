@@ -101,12 +101,32 @@ class OrderController extends Controller
         'service',
         'status',
         'customer_location',
-        'store_location'
+        'store_location',
+         'items.designs',
+         'items.measure.secondary_measures.name',
+         
+
     ])->findOrFail($id);
+
+     $authStoreId = Auth::user()->store_id; 
+
+    if ($order->store_id !== $authStoreId) {
+        return response()->json([
+            'message' => 'You are not authorized to view this order.',
+        ], 403);
+    }
+
+ $orderData = $order->toArray();
+
+    if ($order->status_id == 9 ||$order->status_id == 4) {
+        $order->load('rating');
+        $orderData['rating'] = $order->rating;
+    }
 
     return response()->json([
         'message' => 'order found',
-        'data' => $order
+        'data' => $orderData,
+
     ], 200);
 }
 
