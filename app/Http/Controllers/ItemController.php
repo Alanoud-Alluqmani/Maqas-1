@@ -3,16 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreItemRequest;
 
 class ItemController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, Order $order)
     {
-        //
+         $limit = $request->input('limit', 10);
+        $items = Order::with('items')->where('id', $order->id)
+        ->paginate($limit)->items(); 
+
+        
+        return response()->json([
+            'message'=> 'success',
+            'data'=>  $items 
+        ],200); 
+        
     }
 
     /**
@@ -26,10 +37,28 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
+
+
+    public function store(StoreItemRequest $request)
+{
+     $data= $request->validate([
+        'order_id' => 'required|integer|exists:orders,id',
+        'design_id' => 'required|integer|exists:designs,id',
+        'measure_id' => 'required|integer|exists:measures,id',
+        ]);
+
+    $item = Item::create([
+        'order_id' => $data['order_id'],
+        'measure_id' => $data['measure_id'],
+    ]);
+
+    $item->designs()->attach($data['design_id']);
+
+    return response()->json([
+        'message' => 'Item created successfully',
+        'item_id' => $item
+    ]);
+}
 
     /**
      * Display the specified resource.

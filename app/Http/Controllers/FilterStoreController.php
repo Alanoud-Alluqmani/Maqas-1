@@ -39,12 +39,12 @@ public function nearestToCustomer()
                 cos(radians(store_locations.longitude) - radians(?)) +
                 sin(radians(?)) * sin(radians(store_locations.latitude))
             )) AS distance', [$lat, $lng, $lat])
-        ->orderByDesc('stores.rating_avr')
         ->orderBy('distance')
+        ->orderByDesc('stores.rating_avr')
         ->get();
 
     return response()->json([
-        'message' => 'Stores sorted by proximity to customer',
+        'message' => 'Stores nearest to the customer',
         'data' => $stores
     ], 200);
 }

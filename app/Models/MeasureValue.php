@@ -11,6 +11,8 @@ class MeasureValue extends Model
     use SoftDeletes, HasFactory;
     protected $fillable = [
         'measure',
+        'measure_name_id',
+        'measure_id'
     ];
 
 

@@ -119,45 +119,6 @@ class AuthController extends Controller
     }
 
 
-    
-    // public function employeeRegister(EmployeeRegisterRequest $request, $id)
-    // {
-
-    //     if (!$request->hasValidSignature()) {
-    //     abort(403, 'Invalid or expired link.');}
-
-    //     $user = $request->validated();
-
-    //     // $store=Store:: where('id', $id)->first();
-    //     // if (!$store) {
-    //     //     return response()->json(['error' => 'Store not found in the database'], 404);
-    //     // }
-    //     $user['store_id'] = $id;
-    //     $role = Role::where('role', 'Store Employee')->first();
-
-    //     if (!$role) {
-    //         return response()->json(['error' => 'Role "Store Employee" not found in the database'], 404);
-    //     }
-
-    //     $user['role_id'] = $role->id;
-
-        
-    //     $user = User::create($user); // Create a new user with validated data
-
-    //     return response()->json([
-    //         'message' => 'User Created Successfully', // Success message
-    //         'data' => $user, // Include the created user data in the response
-    //      ]);
-    // }
-
-    //  public function generateLink($store_id)
-    // {
-
-    //     $url = URL::signedRoute('employeeRegister', ['id' => $store_id]);
-    //     return response()->json(['registration_link' => $url]);
-
-    // }
-
 
 
 
@@ -254,43 +215,6 @@ class AuthController extends Controller
         : back()->withErrors(['email' => [__($status)]],400);
     }
 
-
-// public function coAdminRegister(CoAdminRegisterRequest $request)
-// {
-    
-//     $authUser = Auth::user();
-
-// if (!$authUser || !$authUser->role || $authUser->role->role !== 'Super Admin') {
-//     return response()->json([
-//         'message' => 'Only the super admin can add a co-admin.'
-//     ], 403);
-// }
-//     $user = $request->validated();
-
-//     $store = Store::first();
-
-//     $user['store_id'] = $store->id;
-//     $user['legal'] = $store->legal;
-//     $user['product_category_id'] = $store->product_category_id;
-//     // $user['partnering_order'] = $store->partnering_order;
-
-//     $role = Role::where('role', 'Co-Admin')->first();
-//     if (!$role) {
-//         return response()->json(['message' => 'Role "Co-Admin" not found in the database'], 404);
-//     }
-
-//     $user['role_id'] = $role->id;
-//     $user['password'] = Hash::make($user['password']);
-
-//     $createdUser = User::create($user);
-
-
-//     return response()->json([
-//         'message' => 'Co-admin registered successfully',
-//         'data' => $createdUser
-//     ], 200);
-// }
-        
         
 public function coAdminRegister(CoAdminRegisterRequest $request)
 {
@@ -316,6 +240,43 @@ public function coAdminRegister(CoAdminRegisterRequest $request)
         'message' => 'Co-admin registered successfully',
         'data' => $createdUser
     ], 200);
+}
+
+
+public function viewCoAdmins(Request $request)
+{
+    $authUser = Auth::user();
+
+    $limit = $request->input('limit', 10);
+
+    if (!$authUser) {
+        return response()->json(['message' => 'Unauthorized.'], 401);
+    }
+
+    $store = $authUser->store;
+
+    if (!$store) {
+        return response()->json(['message' => 'Store not found.'], 404);
+    }
+
+    $role = Role::where('role', 'Co-Admin')->first();
+
+    if (!$role) {
+        return response()->json(['message' => 'Co-Admin role not defined.'], 404);
+    }
+
+    $coAdmins = User::where('store_id', $store->id)
+        ->where('role_id', $role->id)
+        ->paginate($limit)->items();
+
+    // if ($coAdmins->isEmpty()) {
+    //     return response()->json(['message' => 'No Co-Admins found.'], 200);
+    // }
+
+    return response()->json([
+        'message' => 'Co-Admins retrieved successfully.',
+        'data' => $coAdmins
+    ], 200 );
 }
 
 public function deleteCoAdmin(User $user)

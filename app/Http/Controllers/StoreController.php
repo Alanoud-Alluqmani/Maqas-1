@@ -71,6 +71,44 @@ class StoreController extends Controller
 
     }
 
+
+    public function viewEmployees(Request $request)
+{
+     $limit = $request->input('limit', 10);
+
+    $authUser = Auth::user();
+
+    if (!$authUser) {
+        return response()->json(['message' => 'Unauthorized.'], 401);
+    }
+
+
+    $store = $authUser->store;
+
+    if (!$store) {
+        return response()->json(['message' => 'Store not found.'], 404);
+    }
+
+    $role = Role::where('role', 'Store Employee')->first();
+
+    if (!$role) {
+        return response()->json(['message' => 'Employee role not defined.'], 404);
+    }
+
+    $employees = User::where('store_id', $store->id)
+        ->where('role_id', $role->id)
+        ->paginate($limit)->items();
+
+    // if ($employees->isEmpty()) {
+    //     return response()->json(['message' => 'No employees found.'], 200);
+    // }
+
+    return response()->json([
+        'message' => 'Employees retrieved successfully.',
+        'data' => $employees
+    ], 200);
+}
+
     public function deleteEmployee(User $user)
 {
 

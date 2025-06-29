@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Measure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MeasureController extends Controller
 {
@@ -28,8 +30,25 @@ class MeasureController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        //$customer = Auth::user();
+        $name = $request->validate([
+            //'customer_id' =>'required|integer|exists:customers,id',
+            'name' => 'required|string|max:255'
+        ]);
+
+        //$customer_id = $customer->id;
+
+        $newMeasure = Measure::create([
+            'name' => $name['name'],
+        // 'customer_id' => $customer->id
+        //'customer_id' => '11'
+        ]);
+
+        return response()->json([
+        'message' => 'measure created successfully',
+        "data" => $newMeasure
+        ]);
+        }
 
     /**
      * Display the specified resource.

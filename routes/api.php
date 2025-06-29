@@ -7,20 +7,28 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\FilterStoreController;
 use App\Http\Controllers\CustomerLocationController;
+use App\Http\Controllers\StoreLocationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\PartneringOrderController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\SpecifyProductController;
+use App\Http\Controllers\MeasureNameController;
+use App\Http\Controllers\MeasureController;
+use App\Http\Controllers\MeasureValueController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\MakeOrderController;
+use App\Http\Controllers\ItemController;
 use App\Http\Requests\EmployeeRegisterRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
 use App\Models\Customer;
 use App\Models\Design;
 use App\Models\Feature;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\URL;
@@ -31,6 +39,8 @@ Route::controller( AuthController::class)->group(function(): void{
     Route::post('register', 'ownerRegister')->name('ownerRegister');
 
     Route::post('co-admin-register', 'coAdminRegister')->name('coAdminRegister');
+
+    Route::get('view-co-admins', 'viewCoAdmins')->name('viewCoAdmins')->middleware('auth:api');
     
     Route::delete('delete-co-admin/{user}', 'deleteCoAdmin')->name('deleteCoAdmin');
 
@@ -65,6 +75,10 @@ Route::controller( StoreController::class)->group(function(): void{
      Route::post('employee-register', 'addEmployee')->name('addEmployee')->middleware(['auth:sanctum', 'role:Store Owner']);
 
      Route::delete('delete-employee/{user}', 'deleteEmployee')->name('deleteEmployee');
+
+     Route::get('view-employee', 'viewEmployees')->name('viewEmployees')->middleware('auth:api');
+
+
 });
 
 
@@ -195,4 +209,44 @@ Route::controller(DesignController::class)->group(function(){
 
 Route::apiResource('images', ImageController::class)->except('store');
 Route::get('store-avr-ratings/{store}', [StoreController::class, 'getStoreRatings'])->name('store-avr-ratings');
+
+
+
+Route::controller( MakeOrderController::class)->group(function(): void{
+
+     Route::get('view-store-product/{storeId}','storeProduct')->name('storeProduct');
+
+     Route::post('place-order', 'placeOrder')->name('placeOrder');
+
+});
     
+Route::apiResource('item', ItemController::class)->except('index');
+Route::get('items/{order}', [ItemController::class, 'index'])->name('order.items');
+
+
+Route::controller( MeasureNameController::class)->group(function(): void{
+
+     Route::get('view-measure-name','index')->name('viewMeasureNames');
+
+});
+
+
+Route::controller( MeasureController::class)->group(function(): void{
+
+     Route::post('store-measure','store')->name('storeMeasure');
+
+});
+
+Route::controller( MeasureValueController::class)->group(function(): void{
+
+     Route::post('store-measure-value','store')->name('storeMeasureValue');
+
+});
+
+
+Route::controller( ServiceController::class)->group(function(): void{
+
+     Route::post('set-store-service','setStoreServices')->name('setStoreServices');
+
+});
+

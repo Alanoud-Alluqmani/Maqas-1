@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
@@ -34,6 +35,24 @@ class ServiceController extends Controller
     {
         //
     }
+
+
+    public function setStoreServices(Request $request)
+{
+    $store = Auth::user()->store;
+
+    $validated = $request->validate([
+        'service_ids' => 'required|array',
+        'service_ids.*' => 'exists:services,id'
+    ]);
+
+    // Sync selected services for the store
+    $store->services()->sync($validated['service_ids']);
+
+    return response()->json([
+        'message' => 'Services assigned to store successfully.'
+    ]);
+}
 
     /**
      * Display the specified resource.

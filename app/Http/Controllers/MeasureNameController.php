@@ -10,9 +10,16 @@ class MeasureNameController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+   public function index(Request $request)
     {
-        //
+        $limit = $request->input('limit', 10);
+
+        $measures = MeasureName::paginate($limit)->items(); 
+
+          return response()->json([
+            "message" => 'success', 
+            "data" =>  $measures
+        ], 200);
     }
 
     /**

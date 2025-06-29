@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class FeatureStore extends Pivot
 {
     use SoftDeletes, HasFactory;
+   
+
     public function designs(){
-        return $this->hasMany(Design::class);
+        return $this->hasMany(Design::class , 'feature_store_id');
     }
 }

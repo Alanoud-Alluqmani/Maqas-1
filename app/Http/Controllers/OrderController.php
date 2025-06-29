@@ -25,9 +25,22 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $limit = $request->input('limit', 10);
-         $orders = Order::with(['customer', 'store', 'service', 'status',
-     'customer_location', 'store_location'])->paginate($limit);
-        //$orders = Order::all();
+        
+    //      $orders = Order::with(['customer', 'store', 'service', 'status',
+    //  'customer_location', 'store_location'])->paginate($limit);
+    //     //$orders = Order::all();
+
+         $validOrders = Order::where('status_id', '>', 1)
+        ->with(['customer', 'store', 'service', 'status', 'customer_location', 'store_location']);
+
+    if (!$validOrders->exists()) {
+        return response()->json([
+            'message' => 'no orders found'
+        ], 404);
+    }
+
+    $orders = $validOrders->paginate($limit);
+
        
 
 
@@ -38,7 +51,7 @@ class OrderController extends Controller
         } else
         return response()->json([
             'message' => 'orders found',
-            'data' => $orders->items()// Return the products in JSON format
+            'data' => $orders->items()
         ], 200);
     }
 
@@ -50,13 +63,24 @@ class OrderController extends Controller
 
          $limit = $request->input('limit', 10);
 
-        if ($store->orders()->get()->isEmpty()) {
-            return response()->json(['message' => 'There is no order.'], 200);
-        }
-       
-    $orders = $store->orders()
+        $validOrders = $store->orders()->where('status_id', '>', 1);
+
+        // if ($store->orders()->get()->isEmpty()) {
+        //     return response()->json(['message' => 'There is no order.'], 200);
+        // }
+
+        if (!$validOrders->exists()) {
+        return response()->json(['message' => 'There is no order.'], 200);
+    }
+
+           $orders = $validOrders
         ->with(['customer', 'store', 'service', 'status', 'customer_location', 'store_location'])
         ->paginate($limit);
+
+
+    // $orders = $store->orders()
+    //     ->with(['customer', 'store', 'service', 'status', 'customer_location', 'store_location'])
+    //     ->paginate($limit);
 
 
        return response()->json([
@@ -118,10 +142,19 @@ class OrderController extends Controller
 
  $orderData = $order->toArray();
 
-    if ($order->status_id == 9 ||$order->status_id == 4) {
+    if ($order->status_id == 10 ||$order->status_id == 5) {
         $order->load('rating');
         $orderData['rating'] = $order->rating;
     }
+
+    
+    if ($order->status_id == 1 ) {
+       return response()->json([
+            'message' => 'It is a pending order.',
+        ], 403);
+    }
+
+    
 
     return response()->json([
         'message' => 'order found',

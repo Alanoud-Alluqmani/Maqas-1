@@ -11,6 +11,7 @@ class Measure extends Model
     use SoftDeletes, HasFactory;
     protected $fillable = [
         'name',
+        'customer_id'
     ];
 
     public function customer(){
