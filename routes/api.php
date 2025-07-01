@@ -15,6 +15,8 @@ use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\SpecifyProductController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\StoreLocationController;
+
 use App\Http\Requests\EmployeeRegisterRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
@@ -41,6 +43,17 @@ Route::controller( AuthController::class)->group(function(): void{
     Route::get('verify-email/{id}/{hash}', 'emailVerify')->middleware('signed')->name('verification.verify');
 
     Route::post('resend-verification', 'resendEmailVerification')->name('verification.resend');
+    // Route::post('/sendSMS', 'sendSMS')->name('sendSMS');
+    // Route::get('/sendSMS', 'sendSMS')->name('sendSMS');
+    // Route::post('/sendPin', 'sendPin')->name('sendPin'); 
+    // Route::post('/sendPinCode', 'sendPinCode')->name('sendPinCode'); 
+
+    // Route::post('/verify-pin', 'verifyPin')->name('verifyPin');
+
+    Route::post('/send-pin', [AuthController::class, 'sendPin']);
+    Route::post('/verify-pin', [AuthController::class, 'verifyPin']);
+
+
 
     // Route::post('/employee/register/{id}', 'employeeRegister')->middleware('signed')->name('employeeRegister');
 

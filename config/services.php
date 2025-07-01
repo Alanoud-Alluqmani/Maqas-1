@@ -35,4 +35,22 @@ return [
         ],
     ],
 
+    // 'twilio' => [
+    //     'sid' => env('TWILIO_SID'),
+    //     'token' => env('TWILIO_TOKEN'),
+    //     'from' => env('TWILIO_FROM'),
+    // ],
+    
+    // 'vonage' => [
+    //     'api_key' => env('VONAGE_API_KEY'),
+    //     'api_secret' => env('VONAGE_API_SECRET'),
+    //     'from' => env('VONAGE_FROM', 'Vonage APIs'),   
+    // ],
+
+    'infobip' => [
+    'base_url' => env('INFOBIP_BASE_URL', 'https://g9p5ye.api.infobip.com'),
+    'api_key' => env('INFOBIP_API_KEY', '1bf3d5ae3d085a93e57db60f739e3a43-cb558fb4-30d0-4635-b05d-8b1ceaf27d66'),
+    'app_id' => env('INFOBIP_APP_ID', '3CA99AB3B566AFEC74FB98187BDE0B8F'),
+],
+
 ];
