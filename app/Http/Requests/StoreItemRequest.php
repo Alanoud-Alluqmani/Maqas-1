@@ -19,7 +19,7 @@ class StoreItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'order_id' => 'required|integer|exists:orders,id',
+        //'order_id' => 'required|integer|exists:orders,id',
         'design_id' => 'required|integer|exists:designs,id',
         'measure_id' => 'required|integer|exists:measures,id',
       

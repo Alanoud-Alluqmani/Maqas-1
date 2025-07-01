@@ -20,7 +20,7 @@ use App\Http\Controllers\MeasureValueController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\ImageController;
-use App\Http\Controllers\MakeOrderController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ItemController;
 use App\Http\Requests\EmployeeRegisterRequest;
 use Illuminate\Support\Facades\Mail;
@@ -78,7 +78,7 @@ Route::controller( StoreController::class)->group(function(): void{
 
      Route::get('view-employee', 'viewEmployees')->name('viewEmployees')->middleware('auth:api');
 
-
+      
 });
 
 
@@ -131,6 +131,8 @@ Route::controller( OrderController::class)->group(function(): void{
      Route::get('show-order/{order}','show')->name('show.order');
 
      Route::get('view-orders','index')->name('view.orders');
+
+     Route::get('view-invoice/{order}','invoice')->name('view.invoice');
 
       Route::get('view-store-orders','view')->name('view.store.orders');
 
@@ -192,6 +194,7 @@ Route::controller( SpecifyProductController::class)->group(function(){
     Route::get('show-store-feature/{feature}', 'show')->name('show.store.feature');
     Route::post('store-feature', 'store')->name('select.feature');
     Route::delete('destroy-feature/{feature}', 'destroy')->name('destroy.feature');
+    Route::get('view-store-product/{storeId}','storeProduct')->name('storeProduct');
 
 });
 
@@ -212,16 +215,17 @@ Route::get('store-avr-ratings/{store}', [StoreController::class, 'getStoreRating
 
 
 
-Route::controller( MakeOrderController::class)->group(function(): void{
+// Route::controller( MakeOrderController::class)->group(function(): void{
 
-     Route::get('view-store-product/{storeId}','storeProduct')->name('storeProduct');
+//      Route::get('view-store-product/{storeId}','storeProduct')->name('storeProduct');
 
-     Route::post('place-order', 'placeOrder')->name('placeOrder');
+//     //  Route::post('place-order', 'placeOrder')->name('placeOrder');
 
-});
+// });
     
-Route::apiResource('item', ItemController::class)->except('index');
+Route::apiResource('item', ItemController::class)->except('index')->middleware('auth:api');
 Route::get('items/{order}', [ItemController::class, 'index'])->name('order.items');
+Route::post('items/{order}', [ItemController::class, 'chooseService'])->name('chooseService');
 
 
 Route::controller( MeasureNameController::class)->group(function(): void{
@@ -246,7 +250,24 @@ Route::controller( MeasureValueController::class)->group(function(): void{
 
 Route::controller( ServiceController::class)->group(function(): void{
 
-     Route::post('set-store-service','setStoreServices')->name('setStoreServices');
+    Route::get('list-store-services/{store}','listStoreServices')->name('listStoreServices');
+
+    Route::get('view-services','index')->name('index');
+
+     Route::post('set-store-service','setStoreServices')->name('setStoreServices')->middleware('auth:api');
 
 });
+
+
+Route::controller( CustomerController::class)->group(function(): void{
+
+     Route::get('view-customers','index')->name('view-customers');
+
+});
+
+
+
+Route::get('/pay', [App\Http\Controllers\MyFatoorahController::class, 'index'])->name('myfatoorah.pay');
+Route::get('/callback', [App\Http\Controllers\MyFatoorahController::class, 'callback'])->name('myfatoorah.callback');
+
 

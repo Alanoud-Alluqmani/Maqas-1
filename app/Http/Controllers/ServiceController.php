@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
+use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,13 +20,25 @@ class ServiceController extends Controller
             return response()->json([
             'message' => 'no services found for'
         ], 404);
-        } else
+        } 
         return response()->json([
             'message' => 'services found for',
-            'data' => $services // Return the products in JSON format
+            'data' => $services 
         ], 200);
 
     }
+
+
+    
+    public function listStoreServices(Store $store)
+{
+    $store->load('services'); 
+
+    return response()->json([
+        'message' => 'Store services retrieved successfully.',
+        'data' => $store->services
+    ], 200);
+}
 
 
     /**
@@ -39,20 +52,29 @@ class ServiceController extends Controller
 
     public function setStoreServices(Request $request)
 {
-    $store = Auth::user()->store;
+    $authUser = Auth::user();
+    
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized.'], 401);
+        }
 
+
+    $store = $authUser->store;
     $validated = $request->validate([
         'service_ids' => 'required|array',
         'service_ids.*' => 'exists:services,id'
     ]);
 
-    // Sync selected services for the store
+
     $store->services()->sync($validated['service_ids']);
 
     return response()->json([
         'message' => 'Services assigned to store successfully.'
-    ]);
+    ], 200);
 }
+
+
+   
 
     /**
      * Display the specified resource.
@@ -63,7 +85,7 @@ class ServiceController extends Controller
             return response()->json([
             'message' => 'service not found'
         ], 404);
-        } else
+        } 
         return response()->json([
             'message' => 'statuses found',
             'data' => $service 

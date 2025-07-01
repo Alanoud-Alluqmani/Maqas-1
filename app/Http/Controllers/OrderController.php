@@ -15,7 +15,7 @@ class OrderController extends Controller
 {
 
     public function __construct(){
-        $this->middleware('auth:sanctum');// currently, all methods are protected by 
+        $this->middleware('auth:sanctum');
     }
 
 
@@ -195,4 +195,44 @@ public function update(UpdateOrderStatusRequest $request, $order_id)
     {
         //
     }
+
+
+
+
+    public function invoice(Order $order)
+{
+    
+    // $orderDetails = Order::with('store')->where('id', $order->id);
+
+    // $orderDetails['status_id'] = 2;
+    $orderDetails = Order::with(
+        'customer',
+        'store',
+        'service',
+        'status',
+        'customer_location',
+        'store_location',
+         'items.designs',
+         'items.measure.secondary_measures.name',
+         
+
+    )->where('id', $order->id)->firstOrFail();
+
+    $orderDetails->status_id = 2;
+    $orderDetails->save();
+
+    // Prepare response
+    return response()->json([
+        'message' => 'Invoice',
+        'data' => $orderDetails
+        // 'order_id'     => $order->id,
+        // 'items'        => $order->items, // assuming $order->items exists
+        // 'total_price'  => $order->total, // assuming total is a column
+        // 'store_email'  => $order->store->email ?? 'not available',
+        // 'store_phone'  => $order->store->phone ?? 'not available',
+        // 'payment_note' => 'Please contact the store to complete your payment.'
+    ]);
+}
+
+
 }

@@ -7,13 +7,17 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+      public function index(Request $request)
     {
-        //
+        $limit = $request->input('limit', 10);
+        $customers = Customer::paginate($limit)->items(); 
+
+        return response()->json([
+            'message'=> 'success',
+            'data'=>  $customers 
+        ],200); 
     }
+
 
     /**
      * Show the form for creating a new resource.
