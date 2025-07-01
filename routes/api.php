@@ -22,7 +22,7 @@ use App\Http\Controllers\DesignController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\StoreLocationController;
+
 
 use App\Http\Requests\EmployeeRegisterRequest;
 use Illuminate\Support\Facades\Mail;
