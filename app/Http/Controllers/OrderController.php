@@ -15,7 +15,7 @@ class OrderController extends Controller
 {
 
     public function __construct(){
-        $this->middleware('auth:sanctum');// currently, all methods are protected by 
+        $this->middleware('auth:sanctum');
     }
 
 
@@ -25,9 +25,22 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $limit = $request->input('limit', 10);
-         $orders = Order::with(['customer', 'store', 'service', 'status',
-     'customer_location', 'store_location'])->paginate($limit);
-        //$orders = Order::all();
+        
+    //      $orders = Order::with(['customer', 'store', 'service', 'status',
+    //  'customer_location', 'store_location'])->paginate($limit);
+    //     //$orders = Order::all();
+
+         $validOrders = Order::where('status_id', '>', 1)
+        ->with(['customer', 'store', 'service', 'status', 'customer_location', 'store_location']);
+
+    if (!$validOrders->exists()) {
+        return response()->json([
+            'message' => 'no orders found'
+        ], 404);
+    }
+
+    $orders = $validOrders->paginate($limit);
+
        
 
 
@@ -38,7 +51,7 @@ class OrderController extends Controller
         } else
         return response()->json([
             'message' => 'orders found',
-            'data' => $orders->items()// Return the products in JSON format
+            'data' => $orders->items()
         ], 200);
     }
 
@@ -50,13 +63,24 @@ class OrderController extends Controller
 
          $limit = $request->input('limit', 10);
 
-        if ($store->orders()->get()->isEmpty()) {
-            return response()->json(['message' => 'There is no order.'], 200);
-        }
-       
-    $orders = $store->orders()
+        $validOrders = $store->orders()->where('status_id', '>', 1);
+
+        // if ($store->orders()->get()->isEmpty()) {
+        //     return response()->json(['message' => 'There is no order.'], 200);
+        // }
+
+        if (!$validOrders->exists()) {
+        return response()->json(['message' => 'There is no order.'], 200);
+    }
+
+           $orders = $validOrders
         ->with(['customer', 'store', 'service', 'status', 'customer_location', 'store_location'])
         ->paginate($limit);
+
+
+    // $orders = $store->orders()
+    //     ->with(['customer', 'store', 'service', 'status', 'customer_location', 'store_location'])
+    //     ->paginate($limit);
 
 
        return response()->json([
@@ -118,10 +142,19 @@ class OrderController extends Controller
 
  $orderData = $order->toArray();
 
-    if ($order->status_id == 9 ||$order->status_id == 4) {
+    if ($order->status_id == 10 ||$order->status_id == 5) {
         $order->load('rating');
         $orderData['rating'] = $order->rating;
     }
+
+    
+    if ($order->status_id == 1 ) {
+       return response()->json([
+            'message' => 'It is a pending order.',
+        ], 403);
+    }
+
+    
 
     return response()->json([
         'message' => 'order found',
@@ -162,4 +195,44 @@ public function update(UpdateOrderStatusRequest $request, $order_id)
     {
         //
     }
+
+
+
+
+    public function invoice(Order $order)
+{
+    
+    // $orderDetails = Order::with('store')->where('id', $order->id);
+
+    // $orderDetails['status_id'] = 2;
+    $orderDetails = Order::with(
+        'customer',
+        'store',
+        'service',
+        'status',
+        'customer_location',
+        'store_location',
+         'items.designs',
+         'items.measure.secondary_measures.name',
+         
+
+    )->where('id', $order->id)->firstOrFail();
+
+    $orderDetails->status_id = 2;
+    $orderDetails->save();
+
+    // Prepare response
+    return response()->json([
+        'message' => 'Invoice',
+        'data' => $orderDetails
+        // 'order_id'     => $order->id,
+        // 'items'        => $order->items, // assuming $order->items exists
+        // 'total_price'  => $order->total, // assuming total is a column
+        // 'store_email'  => $order->store->email ?? 'not available',
+        // 'store_phone'  => $order->store->phone ?? 'not available',
+        // 'payment_note' => 'Please contact the store to complete your payment.'
+    ]);
+}
+
+
 }

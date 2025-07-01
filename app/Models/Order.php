@@ -12,6 +12,11 @@ class Order extends Model
     protected $hidden = ['customer_id', 'store_id', 'service_id', 'status_id',
      'customer_location_id', 'store_location_id'];
 
+      protected $fillable = [
+       'customer_id', 'store_id', 'service_id', 'status_id',
+     'customer_location_id', 'store_location_id', 'total_price'
+    ];
+
      
     public function customer(){
         return $this->belongsTo(Customer::class);

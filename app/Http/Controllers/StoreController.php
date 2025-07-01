@@ -22,7 +22,7 @@ class StoreController extends Controller
         // $this->middleware('co admin')->only(['index', 'destroy']);
         // $this->middleware('store owner')->only(['destroy', 'update']);
         // $this->middleware('store employee')->only(['']);
-        $this->middleware(['auth:sanctum', 'role:Store Owner'])->only(['addEmployee', 'deleteEmployee' ]);
+        $this->middleware(['auth:sanctum', 'role:Store Owner', 'store.active'])->only(['addEmployee', 'deleteEmployee' ]);
     
     }
 
@@ -42,9 +42,9 @@ class StoreController extends Controller
             return response()->json(['message' => 'Store not found.'], 404);
         }
 
-        if(!$store->is_active){
-            return response()->json(['message' => 'Store is not active.'], 404);
-        }
+        // if(!$store->is_active){
+        //     return response()->json(['message' => 'Store is not active.'], 404);
+        // }
        
         $user = $request->validated();
         // $store = Store::first();
@@ -70,6 +70,44 @@ class StoreController extends Controller
     ], 200);
 
     }
+
+
+    public function viewEmployees(Request $request)
+{
+     $limit = $request->input('limit', 10);
+
+    $authUser = Auth::user();
+
+    if (!$authUser) {
+        return response()->json(['message' => 'Unauthorized.'], 401);
+    }
+
+
+    $store = $authUser->store;
+
+    if (!$store) {
+        return response()->json(['message' => 'Store not found.'], 404);
+    }
+
+    $role = Role::where('role', 'Store Employee')->first();
+
+    if (!$role) {
+        return response()->json(['message' => 'Employee role not defined.'], 404);
+    }
+
+    $employees = User::where('store_id', $store->id)
+        ->where('role_id', $role->id)
+        ->paginate($limit)->items();
+
+    // if ($employees->isEmpty()) {
+    //     return response()->json(['message' => 'No employees found.'], 200);
+    // }
+
+    return response()->json([
+        'message' => 'Employees retrieved successfully.',
+        'data' => $employees
+    ], 200);
+}
 
     public function deleteEmployee(User $user)
 {

@@ -8,6 +8,7 @@ use App\Http\Middleware\StoreOwner;
 use App\Http\Middleware\CoAdmin;
 use App\Http\Middleware\SuperAdmin;
 use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\StoreIsActive;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'store owner' => StoreOwner::class,
             'store employee' => StoreEmployee::class,
             'role' => CheckRole::class,
+            'store.active' => StoreIsActive::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

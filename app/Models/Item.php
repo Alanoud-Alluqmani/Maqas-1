@@ -9,6 +9,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Item extends Model
 {
     use SoftDeletes, HasFactory;
+
+     protected $fillable = [
+        'order_id',
+        'measure_id',
+      
+    ];
+
     public function order(){
         return $this->belongsTo(Order::class);
     }

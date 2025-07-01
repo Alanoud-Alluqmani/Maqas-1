@@ -15,6 +15,15 @@ class StatusesSeeder extends Seeder
     public function run(): void
     {
 
+       DB::table('statuses')->insert(
+            [
+                'status_ar' => 'معلق',
+                'status_en' => 'Pending',
+                'created_at' => Carbon::now(),
+                'service_id_1' => true,
+                'service_id_2' => true,
+            ]);
+
         DB::table('statuses')->insert(
             [
                 'status_ar' => 'تم الدفع',

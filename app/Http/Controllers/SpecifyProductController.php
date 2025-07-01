@@ -123,4 +123,22 @@ class SpecifyProductController extends Controller
             'message' => 'Feature Deleted Successfully'
         ], 200);
     }
+
+
+     public function storeProduct(Request $request, $storeId)
+{
+    $limit = $request->input('limit', 10);
+    if(!$storeId){
+        return response()->json(['Store not found'], 404);
+    }
+    
+     $features = FeatureStore::with(['designs', 'designs.images'])->where('store_id',$storeId)
+     ->paginate($limit)->items();
+
+
+    return response()->json([
+        'message' => 'success',
+        'data' => $features
+    ], 200);
+}
 }
