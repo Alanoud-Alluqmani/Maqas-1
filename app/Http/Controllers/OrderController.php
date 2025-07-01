@@ -8,14 +8,17 @@ use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Customer;
+
 use App\Models\Store;
+
 
 
 class OrderController extends Controller
 {
 
     public function __construct(){
-        $this->middleware('auth:sanctum');
+        $this->middleware('auth:sanctum')->except('customerOrderDetails');
     }
 
 
@@ -234,5 +237,74 @@ public function update(UpdateOrderStatusRequest $request, $order_id)
     ]);
 }
 
+// public function customerOrderDetails($id)
+// {
+//     $customer = Customer::first(); 
 
+//     $order = Order::with([
+//         'customer',
+//         'store',
+//         'service',
+//         'status',
+//         'customer_location',
+//         'store_location',
+//         'items.designs',
+//         'items.measure.secondary_measures.name',
+//     ])->find($id);
+
+    
+//     if (!$order) {
+//         return response()->json([
+//             'message' => 'Order not found.'
+//         ], 404);
+//     }
+
+//         if ($order->customer_id !== $customer->id) {
+//         return response()->json([
+//             'message' => 'You are not authorized to view this order.',
+//         ], 403);
+//     }
+
+//     if ($order->status_id != 2) {
+//         return response()->json([
+//             'message' => 'You can only view the order details after payment is completed.',
+//         ], 403);
+//     }
+
+//     return response()->json([
+//         'message' => 'Order details retrieved successfully.',
+//         'data' => $order,
+//     ], 200);
+// }
+
+public function customerOrderDetails($orderId)
+{
+    //$customer = Customer::find($customerId);
+    $order = Order::with([
+        'customer',
+        'store',
+        'service',
+        'status',
+        'customer_location',
+        'store_location',
+        'items.designs',
+        'items.measure.secondary_measures.name',
+    ])->find($orderId);
+
+    if (!$order) {
+        return response()->json(['message' => 'Order not found.'], 404);
+    }
+
+    // if (!$customer || $order->customer_id !== $customer->id) {
+    //     return response()->json(['message' => 'Unauthorized'], 403);
+    // }
+
+    if ($order->status_id != 2) {
+        return response()->json(['message' => 'Payment not completed.'], 403);
+    }
+
+    return response()->json(['message' => 'Success', 'data' => $order], 200);
 }
+
+
+ }
