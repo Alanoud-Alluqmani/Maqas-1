@@ -125,6 +125,8 @@ class AuthController extends Controller
         ], 401);
     }
 
+
+    
     public function ownerRegister(OwnerRegisterRequest $request)
     {
         $user = $request->validated();
@@ -159,45 +161,7 @@ class AuthController extends Controller
         ], 201);
     }
 
-     public function emailVerify($id ,$hash, Request $request) {
-        // Find user by ID
-        $user = User::find($id);
-    
-        if (!$user) {
-            return response()->json(['message' => 'User not found.'], 404);
-        }
-    
-        // Verify if the hash is correct
-        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-            return response()->json(['message' => 'Invalid verification link.'], 403);
-        }
-    
-        // Mark email as verified
-        if (!$user->hasVerifiedEmail()) {
-            $user->markEmailAsVerified();
-        }
-    
-        return response()->json(['message' => 'Email verified successfully!'], 200);
-    }
-
-
-     public function resendEmailVerification(Request $request) {
-        $user = User::where('email', $request->email)->first();
-    
-        if (!$user) {
-            return response()->json(['message' => 'User not found.'], 404);
-        }
-    
-        if ($user->hasVerifiedEmail()) {
-            return response()->json(['message' => 'Email already verified.'], 400);
-        }
-    
-        $user->sendEmailVerificationNotification();
-        return response()->json(['message' => 'Verification link resent!'], 200);
-    }
-
-
-
+     
 
 
     public function login(LoginRequest $request)
@@ -226,138 +190,6 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out successfully!'], 200);
     }
 
-    public function verifyEmail($id)
-    {
-        $user = User::find($id);
+   
 
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        if ($user->email_verified_at) {
-            return response()->json(['message' => 'Email is already verified'], 200);
-        }
-
-        $user->email_verified_at = now();
-        $user->save();
-
-        return response()->json(['message' => 'Email verified successfully!'], 200);
-    }
-
-    public function forgotPassword(Request $request)
-    {
-        $request->validate([
-            'email' => ['required', 'email'],
-        ]);
-
-        $status = Password::broker('users')->sendResetLink(
-            $request->only('email')
-        );
-
-        return $status === Password::RESET_LINK_SENT
-            ? response()->json(['message' => __($status)], 200)
-            : response()->json(['message' => __($status)], 400);
-    }
-
-    public function resetPassword(ResetPasswordRequest $request)
-    {
-        $request->validated();
-
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (User $user, string $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password)
-                ])->setRememberToken(Str::random(60));
-
-                $user->save();
-                event(new PasswordReset($user));
-            }
-        );
-
-    return $status === Password::PasswordReset
-        ? redirect()->route('login')->with('status', __($status),200)
-        : back()->withErrors(['email' => [__($status)]],400);
-    }
-
-        
-public function coAdminRegister(CoAdminRegisterRequest $request)
-{
-    $user = $request->validated();
-
-        $store = Store::first();
-
-        $user['store_id'] = $store->id;
-        $user['legal'] = $store->legal;
-        $user['product_category_id'] = $store->product_category_id;
-
-        $role = Role::where('role', 'Co-Admin')->first();
-        if (!$role) {
-            return response()->json(['message' => 'Role "Co-Admin" not found in the database'], 404);
-        }
-
-        $user['role_id'] = $role->id;
-        $user['password'] = Hash::make($user['password']);
-
-        $createdUser = User::create($user);
-
-        return response()->json([
-            'message' => 'Co-admin registered successfully',
-            'data' => $createdUser
-        ], 200);
-    }
-
-
-public function viewCoAdmins(Request $request)
-{
-    $authUser = Auth::user();
-
-    $limit = $request->input('limit', 10);
-
-    if (!$authUser) {
-        return response()->json(['message' => 'Unauthorized.'], 401);
-    }
-
-    $store = $authUser->store;
-
-    if (!$store) {
-        return response()->json(['message' => 'Store not found.'], 404);
-    }
-
-    $role = Role::where('role', 'Co-Admin')->first();
-
-    if (!$role) {
-        return response()->json(['message' => 'Co-Admin role not defined.'], 404);
-    }
-
-    $coAdmins = User::where('store_id', $store->id)
-        ->where('role_id', $role->id)
-        ->paginate($limit)->items();
-
-    // if ($coAdmins->isEmpty()) {
-    //     return response()->json(['message' => 'No Co-Admins found.'], 200);
-    // }
-
-    return response()->json([
-        'message' => 'Co-Admins retrieved successfully.',
-        'data' => $coAdmins
-    ], 200 );
-}
-
-    public function deleteCoAdmin(User $user)
-    {
-        if (!$user) {
-            return response()->json(['message' => 'User not found.'], 404);
-        }
-
-        if ($user->role->role !== 'Co-Admin') {
-            return response()->json([
-                'message' => 'Only users with the Co-Admin role can be deleted.'
-            ], 403);
-        }
-
-        $user->delete();
-
-        return response()->json(['message' => 'Co-Admin deleted successfully.'], 200);
-    }
 }

@@ -22,8 +22,8 @@ use App\Http\Controllers\DesignController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ItemController;
-
-
+use App\Http\Controllers\CoAdminController;
+use App\Http\Controllers\EmailController;
 use App\Http\Requests\EmployeeRegisterRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
@@ -40,19 +40,11 @@ Route::controller( AuthController::class)->group(function(): void{
 
     Route::post('register', 'ownerRegister')->name('ownerRegister');
 
-    Route::post('co-admin-register', 'coAdminRegister')->name('coAdminRegister');
-
-    Route::get('view-co-admins', 'viewCoAdmins')->name('viewCoAdmins')->middleware('auth:api');
-    
-    Route::delete('delete-co-admin/{user}', 'deleteCoAdmin')->name('deleteCoAdmin');
-
     Route::post('login', 'login')->name('login');
 
     Route::post('logout', 'logout')->name('logout');
 
-    Route::get('verify-email/{id}/{hash}', 'emailVerify')->middleware('signed')->name('verification.verify');
-
-    Route::post('resend-verification', 'resendEmailVerification')->name('verification.resend');
+   
     // Route::post('/sendSMS', 'sendSMS')->name('sendSMS');
     // Route::get('/sendSMS', 'sendSMS')->name('sendSMS');
     // Route::post('/sendPin', 'sendPin')->name('sendPin'); 
@@ -63,17 +55,35 @@ Route::controller( AuthController::class)->group(function(): void{
     Route::post('/send-pin', [AuthController::class, 'sendPin']);
     Route::post('/verify-pin', [AuthController::class, 'verifyPin']);
 
+});
 
 
-    // Route::post('/employee/register/{id}', 'employeeRegister')->middleware('signed')->name('employeeRegister');
 
-    // Route::get('/generate-link/{store_id}', 'generateLink')->middleware('signed')->name('generateLink');
+
+Route::controller( CoAdminController::class)->group(function(): void{
+
+    Route::post('co-admin-register', 'coAdminRegister')->name('coAdminRegister');
+
+    Route::get('view-co-admins', 'viewCoAdmins')->name('viewCoAdmins')->middleware('auth:api');
+    
+    Route::delete('delete-co-admin/{user}', 'deleteCoAdmin')->name('deleteCoAdmin');
+
+});
+
+
+
+Route::controller( EmailController::class)->group(function(): void{
+
+    Route::get('verify-email/{id}/{hash}', 'emailVerify')->middleware('signed')->name('verification.verify');
+
+    Route::post('resend-verification', 'resendEmailVerification')->name('verification.resend');
 
     Route::post('/forgot-password', 'forgotPassword')->name('password.email');
 
     Route::post('/reset-password', 'resetPassword')->name('password.update'); 
 
 });
+
 
 Route::controller( StoreController::class)->group(function(): void{
 
@@ -280,7 +290,7 @@ Route::controller( CustomerController::class)->group(function(): void{
 
 
 
-Route::get('/pay', [App\Http\Controllers\MyFatoorahController::class, 'index'])->name('myfatoorah.pay');
-Route::get('/callback', [App\Http\Controllers\MyFatoorahController::class, 'callback'])->name('myfatoorah.callback');
+// Route::get('/pay', [App\Http\Controllers\MyFatoorahController::class, 'index'])->name('myfatoorah.pay');
+// Route::get('/callback', [App\Http\Controllers\MyFatoorahController::class, 'callback'])->name('myfatoorah.callback');
 
 
