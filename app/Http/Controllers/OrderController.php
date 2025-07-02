@@ -8,7 +8,6 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Customer;
 
 use App\Models\Store;
 
@@ -17,7 +16,7 @@ use App\Models\Store;
 class OrderController extends Controller
 {
 
-  public function __construct()
+    public function __construct()
     {
         $this->middleware('auth:sanctum');
         $this->middleware('role:Super Admin,Co-Admin')->only(['index']);
@@ -168,41 +167,73 @@ class OrderController extends Controller
         ]);
     }
 
-
-    // public function rateOrder(Request $request, Order $order)
+    // public function customerOrderDetails($id)
     // {
-    //     $data = $request->validate([
-    //         'rating'  => 'required|integer|min:1|max:5',
-    //         'comment' => 'nullable|string|max:1000',
-    //     ]);
+    //     $customer = Customer::first(); 
 
-    //     if ($order->status_id != 5 && $order->status_id != 10) {
+    //     $order = Order::with([
+    //         'customer',
+    //         'store',
+    //         'service',
+    //         'status',
+    //         'customer_location',
+    //         'store_location',
+    //         'items.designs',
+    //         'items.measure.secondary_measures.name',
+    //     ])->find($id);
+
+
+    //     if (!$order) {
     //         return response()->json([
-    //             'message' => 'You can only rate completed orders'
+    //             'message' => 'Order not found.'
+    //         ], 404);
+    //     }
+
+    //         if ($order->customer_id !== $customer->id) {
+    //         return response()->json([
+    //             'message' => 'You are not authorized to view this order.',
     //         ], 403);
     //     }
 
-    //     $customer = Customer::first(); // Auth::user()->customer 
-    //     if ($order->customer_id !== $customer->id) {
-    //         return response()->json(['message' => 'Unauthorized'], 401);
+    //     if ($order->status_id != 2) {
+    //         return response()->json([
+    //             'message' => 'You can only view the order details after payment is completed.',
+    //         ], 403);
     //     }
-
-    //     $alreadyRated = $order->rating()->exists();
-
-    //     if ($alreadyRated) {
-    //         return response()->json(['message' => 'You have already rated this order'], 409);
-    //     }
-
-
-    //     $order->rating()->create([
-    //         'rating' => $data['rating'],
-    //         'comment' => $data['comment'] ?? null,
-    //     ]);
-
 
     //     return response()->json([
-    //         'message' => 'Thank you for rating your order!',
-    //         'data' => $data,
-    //     ]);
+    //         'message' => 'Order details retrieved successfully.',
+    //         'data' => $order,
+    //     ], 200);
     // }
+
+
+    public function customerOrderDetails($orderId)
+    {
+        //$customer = Customer::find($customerId);
+        $order = Order::with([
+            'customer',
+            'store',
+            'service',
+            'status',
+            'customer_location',
+            'store_location',
+            'items.designs',
+            'items.measure.secondary_measures.name',
+        ])->find($orderId);
+
+        if (!$order) {
+            return response()->json(['message' => 'Order not found.'], 404);
+        }
+
+        // if (!$customer || $order->customer_id !== $customer->id) {
+        //     return response()->json(['message' => 'Unauthorized'], 403);
+        // }
+
+        if ($order->status_id != 2) {
+            return response()->json(['message' => 'Payment not completed.'], 403);
+        }
+
+        return response()->json(['message' => 'Success', 'data' => $order], 200);
+    }
 }
