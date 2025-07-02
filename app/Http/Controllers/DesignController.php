@@ -16,52 +16,52 @@ use App\Http\Requests\UpdateDesignRequest;
 class DesignController extends Controller
 {
 
-    public function __construct(){
-        $this->middleware('auth:sanctum');// currently, all methods are protected by 
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:Super Admin,Co-Admin')->only(['indexAdmin']);
+        $this->middleware('role:Store Owner,Store Employee')->only(['indexPartner', 'store', 'update', 'destroy']);
     }
 
 
 
     public function indexAdmin(Store $store)
     {
-        
-    $designs = Design::whereHas('feature_store', function ($query) use ($store) {
-        $query->where('store_id', $store->id);
-    })->get();
 
-    return response()->json([
-        'message' => 'success',
-        'data' => $designs
-    ], 200);
-    }
-   
-
-       public function indexPartner(Request $request)
-    {
-       
-        $store = Auth::user()->store;
-        $limit = $request->input('limit', 10); 
-       $designs = Design::whereHas('feature_store', function ($query) use ($store) {
-        $query->where('store_id', $store->id);
-    })->paginate($limit)->items();
+        $designs = Design::whereHas('feature_store', function ($query) use ($store) {
+            $query->where('store_id', $store->id);
+        })->get();
 
         return response()->json([
-        'message' => 'success',
-        'data' => $designs
-    ], 200);
+            'message' => 'success',
+            'data' => $designs
+        ], 200);
     }
 
-    
-    /**
-     * Display the specified resource.
-     */
+
+    public function indexPartner(Request $request)
+    {
+
+        $store = Auth::user()->store;
+        $limit = $request->input('limit', 10);
+        $designs = Design::whereHas('feature_store', function ($query) use ($store) {
+            $query->where('store_id', $store->id);
+        })->paginate($limit)->items();
+
+        return response()->json([
+            'message' => 'success',
+            'data' => $designs
+        ], 200);
+    }
+
+
     public function show(Design $design)
     {
         $store = Auth::user()->store;
 
-    if ($design->feature_store->store_id !== $store->id) {
-        return response()->json(['message' => 'This design does not belong to your store.'], 403);
-    }
+        if ($design->feature_store->store_id !== $store->id) {
+            return response()->json(['message' => 'This design does not belong to your store.'], 403);
+        }
 
         if (!$design) {
             return response()->json(['message' => 'Design not found.'], 404);
@@ -69,115 +69,101 @@ class DesignController extends Controller
 
         $image = $design->image;
 
-          return response()->json([
-            "message" => 'success', 
+        return response()->json([
+            "message" => 'success',
             "data" =>  $design,
             'image' => $image ? $image->image : null
         ], 200);
     }
 
 
-
-
-    
-    /**
-     * Display the specified resource.
-     */
     public function showStoreDesign(Request $request, Feature $feature)
-     {
-    $storeId = Auth::user()->store;
-    $limit = $request->input('limit', 10); 
-    $designs = Design::whereHas('feature_store', function ($query) use ($feature,  $storeId) {
-        $query->where('feature_id', $feature->id)
-        ->orWhere('store_id', $storeId);
-    })->get()->paginate($limit);
+    {
+        $storeId = Auth::user()->store;
+        $limit = $request->input('limit', 10);
+        $designs = Design::whereHas('feature_store', function ($query) use ($feature,  $storeId) {
+            $query->where('feature_id', $feature->id)
+                ->orWhere('store_id', $storeId);
+        })->get()->paginate($limit);
 
-    return response()->json([
-        'message' => 'success',
-        'data' => $designs
-    ], 200);
+        return response()->json([
+            'message' => 'success',
+            'data' => $designs
+        ], 200);
     }
 
 
-
-
-    public function store(DesignRequest $request ){
+    public function store(DesignRequest $request)
+    {
 
         $store = Auth::user()->store;
         $featureStore = FeatureStore::where('id', $request->feature_store_id)->first();
 
-    if (!$featureStore) {
-        return response()->json([
-            'message' => 'Invalid feature store ID'
-        ], 404);
-    }
+        if (!$featureStore) {
+            return response()->json([
+                'message' => 'Invalid feature store ID'
+            ], 404);
+        }
 
-    if ($featureStore->store_id !== $store->id) {
-        return response()->json([
-            'message' => 'You are not authorized to create a design for this feature'
-        ], 403);
-    }
+        if ($featureStore->store_id !== $store->id) {
+            return response()->json([
+                'message' => 'You are not authorized to create a design for this feature'
+            ], 403);
+        }
 
 
-    $design = Design::create(
-        $request->validated(), // Validated data without parameters
-    );
+        $design = Design::create(
+            $request->validated(),
+        );
 
-    if ($request->hasFile('image')) {
+        if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imagename = $design['name_en'] . '.' . $image->getClientOriginalExtension(); // Keeps the original extension
-            $imagePath = $image->storeAs('image', $imagename, 'public');  
+            $imagePath = $image->storeAs('image', $imagename, 'public');
             $designImage = Image::create([
-            'image' => $imagePath,
-            'design_id' => $design->id
-        ]);
-         
-        } 
+                'image' => $imagePath,
+                'design_id' => $design->id
+            ]);
+        }
 
-    return response()->json([
-        "message" => "Design created successfully.",
-        "data" => $design
-    ], 201);
-}
-
+        return response()->json([
+            "message" => "Design created successfully.",
+            "data" => $design
+        ], 201);
+    }
 
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateDesignRequest $request, Design $design)
     {
-        if(!$design){
+        if (!$design) {
             return response()->json(['message' => 'Design not found'], 404);
         }
 
-         $design->update($request->validated());
-    
+        $design->update($request->validated());
+
         return response()->json([
             'message' => 'Design updated successfully',
             "data" => $design
         ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Design $design)
     {
-         $store = Auth::user()->store;
+        $store = Auth::user()->store;
 
-         if (!$design) {
+        if (!$design) {
             return response()->json(['message' => 'Design not found.'], 404);
         }
 
 
-     if (!$design->feature_store || $design->feature_store->store_id !== $store->id) {
-    return response()->json(['message' => 'This design does not belong to your store.'], 403);
-    }
+        if (!$design->feature_store || $design->feature_store->store_id !== $store->id) {
+            return response()->json(['message' => 'This design does not belong to your store.'], 403);
+        }
         $design->delete();
 
-        return response()->json([ // Return a JSON response indicating success
+        return response()->json([
             'message' => 'Design Deleted Successfully'
-        ],200);
+        ], 200);
     }
 }

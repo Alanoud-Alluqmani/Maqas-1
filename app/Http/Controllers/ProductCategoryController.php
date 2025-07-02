@@ -10,112 +10,97 @@ use App\Http\Requests\UpdateProductCategoryRequest;
 class ProductCategoryController extends Controller
 {
 
-    public function __construct(){
-            $this->middleware(['auth:sanctum', 'role:Super Admin, Co-Admin'])->only(['store', 'update' , 'destroy']);
+    public function __construct()
+    {
+       // $this->middleware('auth:sanctum');
+        $this->middleware('role:Super Admin,Co-Admin')->only(['store', 'update', 'destroy']);
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-        $limit= $request->input('limit',10);
- 
+        $limit = $request->input('limit', 10);
+
         $categs = ProductCategory::paginate($limit)->items();
-        if (!$categs){
+        if (!$categs) {
             return response()->json([
-            'message' => 'no categories found'
-        ], 404);
+                'message' => 'no categories found'
+            ], 404);
         } else
-        return response()->json([
-            'message' => 'categories found',
-            'data' => $categs // Return the products in JSON format
-        ], 200);
+            return response()->json([
+                'message' => 'categories found',
+                'data' => $categs
+            ], 200);
     }
 
-    
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ProductCategoryRequest $request)
     {
         $validated = $request->validated();
 
         $filePath = "";
 
-        if ($request->hasFile('icon')){
+        if ($request->hasFile('icon')) {
             $file = $request->file('icon');
-            $filename = $validated['name_en']  . '.' . $file->getClientOriginalExtension(); // Keeps the original extension
+            $filename = $validated['name_en']  . '.' . $file->getClientOriginalExtension();
             $filePath = $file->storeAs('icon', $filename, 'public');
-        }else {
+        } else {
             return response()->json(['message' => 'File upload failed'], 400);
         }
 
         $categ = ProductCategory::create([
-            'icon' => $filePath, // Store uploaded file path
+            'icon' => $filePath,
             'name_ar' => $validated['name_ar'],
             'name_en' => $validated['name_en'],
         ]);
 
         return response()->json([
-            'message' => 'Product Category Created Successfully', // Success message
-            'data' => $categ, // Include the created user data in the response
+            'message' => 'Product Category Created Successfully',
+            'data' => $categ,
         ], 201);
     }
 
 
-    /**
-     * Display the specified resource.
-     */
     public function show(ProductCategory $product_category)
     {
-        if (!$product_category){
+        if (!$product_category) {
             return response()->json([
-            'message' => 'category not found'
-        ], 404);
-        } 
+                'message' => 'category not found'
+            ], 404);
+        }
         return response()->json([
             'message' => 'category found',
-            'data' => $product_category // Return the products in JSON format
+            'data' => $product_category
         ], 200);
     }
 
-    
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateProductCategoryRequest $request, ProductCategory $productCategory)
     {
         $validated = $request->validated();
 
-        if ($request->hasFile('icon')){
+        if ($request->hasFile('icon')) {
             $file = $request->file('icon');
             $filename = $file->getClientOriginalName() . '.' . $file->getClientOriginalExtension(); // Keeps the original extension
             $filePath = $file->storeAs('icon', $filename, 'public');
 
             $productCategory->update([
-            'icon' => $filePath, // Store uploaded file path
+                'icon' => $filePath,
             ]);
         }
 
         $productCategory->update(
-           $validated
+            $validated
         );
 
         $productCategory->save();
 
         return response()->json([
-            'message' => 'Product Category updated Successfully', // Success message
-            'data' => $productCategory, // Include the created user data in the response
+            'message' => 'Product Category updated Successfully',
+            'data' => $productCategory,
         ], 200);
     }
 
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(ProductCategory $product_category)
     {
         if (!$product_category) {
@@ -123,7 +108,7 @@ class ProductCategoryController extends Controller
         }
         $product_category->delete();
 
-        return response()->json([ // Return a JSON response indicating success
+        return response()->json([
             'message' => 'product category Deleted Successfully'
         ], 200);
     }

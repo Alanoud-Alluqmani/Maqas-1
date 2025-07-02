@@ -9,71 +9,58 @@ use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-     public function index()
-    {
-        $images = Image::all(); 
 
-        return response()->json([
-            'message'=> 'success',
-            'data'=>  $images 
-        ],200); 
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:Store Owner,Store Employee')->only('update');
     }
 
+    public function index()
+    {
+        $images = Image::all();
 
+        return response()->json([
+            'message' => 'success',
+            'data' =>  $images
+        ], 200);
+    }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Image $image)
     {
-        
-         if (!$image) {
+
+        if (!$image) {
             return response()->json(['message' => 'Image not found.'], 404);
         }
-       return response()->json([
-            "message" => 'success', // Return success message in JSON format
+        return response()->json([
+            "message" => 'success',
             "data" => $image
         ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
 
-    public function update(Request $request,Image $image)
+    public function update(Request $request, Image $image)
     {
-        $newImage=$request->validate([
+        $newImage = $request->validate([
             'image' => 'required|image|max:2048',
         ]);
-        
+
         if (Storage::disk('public')->exists($image->image)) {
-           Storage::disk('public')->delete($image->image);
+            Storage::disk('public')->delete($image->image);
         }
 
         $designName = $image->design->name_en;
-      
+
         $imageName = $designName . '.' . $request->file('image')->getClientOriginalExtension();
-        
-       
-         $path = $request->file('image')->storeAs('image', $imageName, 'public');
-    
+
+
+        $path = $request->file('image')->storeAs('image', $imageName, 'public');
+
 
         return response()->json([
             'message' => 'Image updated successfully',
             'data' => $image,
-        ],200);
+        ], 200);
     }
 
-//   
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Image $image)
-    {
-        //
-    }
 }
-

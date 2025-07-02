@@ -16,7 +16,9 @@ class CoAdminController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth:sanctum', 'role:Super Admin'])->only(['coAdminRegister', 'deleteCoAdmin']);
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:Super Admin')->only(['coAdminRegister', 'deleteCoAdmin']);
+        $this->middleware('role:Super Admin,Co-Admin')->only(['viewCoAdmins']);
     }
 
 

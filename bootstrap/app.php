@@ -20,10 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
 
    ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'super admin' => SuperAdmin::class,
-            'co admin' => CoAdmin::class,
-            'store owner' => StoreOwner::class,
-            'store employee' => StoreEmployee::class,
             'role' => CheckRole::class,
             'store.active' => StoreIsActive::class,
         ]);

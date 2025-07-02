@@ -69,10 +69,7 @@ class AuthController extends Controller
     {
         $this->smsService = $smsService;
 
-        // Middleware setup
         $this->middleware('auth:sanctum')->only(['logout']);
-        $this->middleware('guest')->only(['forgotPassword', 'resetPassword']);
-        $this->middleware(['auth:sanctum', 'role:Super Admin'])->only(['coAdminRegister', 'deleteCoAdmin']);
     }
 
     public function sendPin(Request $request)
@@ -126,7 +123,7 @@ class AuthController extends Controller
     }
 
 
-    
+
     public function ownerRegister(OwnerRegisterRequest $request)
     {
         $user = $request->validated();
@@ -161,7 +158,7 @@ class AuthController extends Controller
         ], 201);
     }
 
-     
+
 
 
     public function login(LoginRequest $request)
@@ -189,7 +186,4 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logged out successfully!'], 200);
     }
-
-   
-
 }

@@ -7,64 +7,36 @@ use Illuminate\Http\Request;
 
 class MeasureNameController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-   public function index(Request $request)
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+        $this->middleware('role:Super Admin,Co-Admin')->only(['store', 'store', 'update', 'destroy']);
+    }
+
+    public function index(Request $request)
     {
         $limit = $request->input('limit', 10);
 
-        $measures = MeasureName::paginate($limit)->items(); 
+        $measures = MeasureName::paginate($limit)->items();
 
-          return response()->json([
-            "message" => 'success', 
+        return response()->json([
+            "message" => 'success',
             "data" =>  $measures
         ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(MeasureName $measureName)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(MeasureName $measureName)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, MeasureName $measureName)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(MeasureName $measureName)
     {
         //

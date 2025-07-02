@@ -9,103 +9,73 @@ use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $services = Service::all();
 
-        if (!$services){
+        if (!$services) {
             return response()->json([
-            'message' => 'no services found for'
-        ], 404);
-        } 
+                'message' => 'no services found for'
+            ], 404);
+        }
         return response()->json([
             'message' => 'services found for',
-            'data' => $services 
+            'data' => $services
         ], 200);
-
     }
 
 
-    
+
     public function listStoreServices(Store $store)
-{
-    $store->load('services'); 
-
-    return response()->json([
-        'message' => 'Store services retrieved successfully.',
-        'data' => $store->services
-    ], 200);
-}
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
     {
-        //
+        $store->load('services');
+
+        return response()->json([
+            'message' => 'Store services retrieved successfully.',
+            'data' => $store->services
+        ], 200);
     }
 
 
     public function setStoreServices(Request $request)
-{
-    $authUser = Auth::user();
-    
+    {
+        $authUser = Auth::user();
+
         if (!$authUser) {
             return response()->json(['message' => 'Unauthorized.'], 401);
         }
 
 
-    $store = $authUser->store;
-    $validated = $request->validate([
-        'service_ids' => 'required|array',
-        'service_ids.*' => 'exists:services,id'
-    ]);
+        $store = $authUser->store;
+        $validated = $request->validate([
+            'service_ids' => 'required|array',
+            'service_ids.*' => 'exists:services,id'
+        ]);
 
 
-    $store->services()->sync($validated['service_ids']);
+        $store->services()->sync($validated['service_ids']);
 
-    return response()->json([
-        'message' => 'Services assigned to store successfully.'
-    ], 200);
-}
-
-
-   
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Service $service)
-    {
-        if (!$service){
-            return response()->json([
-            'message' => 'service not found'
-        ], 404);
-        } 
         return response()->json([
-            'message' => 'statuses found',
-            'data' => $service 
+            'message' => 'Services assigned to store successfully.'
         ], 200);
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Service $service)
+
+    public function show(Service $service)
     {
-        //
+        if (!$service) {
+            return response()->json([
+                'message' => 'service not found'
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'statuses found',
+            'data' => $service
+        ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Service $service)
-    {
-        //
-    }
+
+
 }
