@@ -8,7 +8,10 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Customer;
+
 use App\Models\Store;
+
 
 
 class OrderController extends Controller
