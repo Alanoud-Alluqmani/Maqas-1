@@ -203,6 +203,7 @@ Route::controller(FeatureController::class)->group(function (): void {
 Route::controller(SpecifyProductController::class)->group(function () {
     Route::get('view-store-features', 'index')->name('view.store.features');
     Route::get('show-store-feature/{feature}', 'show')->name('show.store.feature');
+    Route::get('view-unselected-features', 'unselectedFeatures')->name('unselectedFeatures');
     Route::post('store-feature', 'store')->name('select.feature');
     Route::delete('destroy-feature/{feature}', 'destroy')->name('destroy.feature');
     Route::get('view-store-product/{storeId}', 'storeProduct')->name('storeProduct');
@@ -260,6 +261,10 @@ Route::controller(ServiceController::class)->group(function (): void {
 Route::controller(CustomerController::class)->group(function (): void {
 
     Route::get('view-customers', 'index')->name('view-customers');
+
+    Route::get('show-customer', 'show')->name('show-customers');
+
+    Route::put('update-customer', 'update')->name('update-customers');
 });
 
 Route::post('rate-order/{order}', [RatingController::class, 'store'])->name('rate.order');

@@ -34,6 +34,33 @@ class SpecifyProductController extends Controller
             ], 200);
     }
 
+
+
+    public function unselectedFeatures(Request $request)
+{
+    $store = Auth::user()->store;
+    $limit = $request->input('limit', 10);
+
+    
+    $selectedFeatureIds = $store->features()->pluck('features.id')->toArray();
+
+    
+    $features = Feature::whereNotIn('id', $selectedFeatureIds)
+        ->paginate($limit)
+        ->items();
+
+    if (empty($features)) {
+        return response()->json([
+            'message' => 'No unselected features found for this store.'
+        ], 404);
+    }
+
+    return response()->json([
+        'message' => 'Unselected features retrieved successfully.',
+        'data' => $features
+    ], 200);
+}
+
     public function show(FeatureStore $feature)
     {
         $store = Auth::user()->store;

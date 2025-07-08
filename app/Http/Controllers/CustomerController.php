@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UpdateUserRequest;
 
 class CustomerController extends Controller
 {
@@ -19,44 +21,33 @@ class CustomerController extends Controller
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    
+   public function show()
     {
-        //
+        /** @var \App\Models\User $user */
+        $$customer = Auth::user();
+        if (!$$customer) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+        return response()->json([
+            'message' => 'success',
+            'data' => $customer
+        ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Customer $customer)
+    public function update(UpdateUserRequest $request, Customer $customer)
     {
-        //
-    }
+        $authUser = Auth::user();
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+        $customer->update($request->validated());
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Customer $customer)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Customer $customer)
-    {
-        //
+        return response()->json([
+            'message' => 'success',
+            'data' =>  $customer
+        ], 200);
     }
 
     /**
