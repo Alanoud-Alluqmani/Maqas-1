@@ -144,13 +144,13 @@ Route::get('/reset-password/{token}', function ($token) {
 
 Route::controller(OrderController::class)->group(function (): void {
 
-    Route::get('show-order/{order}','show')->name('show.order');
+    Route::get('orders/{order}','show')->name('show.order');
 
     Route::get('view-orders', 'index')->name('view.orders');
 
     Route::get('view-invoice/{order}', 'invoice')->name('view.invoice');
 
-    Route::get('view-store-orders', 'view')->name('view.store.orders');
+    Route::get('orders', 'view')->name('view.store.orders');
 
     Route::post('update-order-status/{id}', 'update')->name('update.order.status');
 
@@ -196,7 +196,7 @@ Route::controller(FeatureController::class)->group(function (): void {
 
     Route::post('features/{prod_catg}', 'store')->name('features.store');
 
-    Route::get('view-features/{prod_catg}', 'viewCategoryFeatures')->name('view.category.features');
+    Route::get('view-features', 'viewCategoryFeatures')->name('view.category.features');
 });
 
 
