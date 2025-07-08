@@ -119,7 +119,7 @@ class FeatureController extends Controller
         return response()->json(['message' => 'Store or product category not found.'], 404);
     }
 
-    $prod_catg = \App\Models\ProductCategory::find($store->product_category_id);
+    $prod_catg = ProductCategory::find($store->product_category_id);
 
     if (!$prod_catg) {
         return response()->json(['message' => 'Product category not found.'], 404);

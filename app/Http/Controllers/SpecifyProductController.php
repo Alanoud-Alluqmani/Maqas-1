@@ -36,27 +36,58 @@ class SpecifyProductController extends Controller
 
 
 
-    public function unselectedFeatures(Request $request)
+//     public function unselectedFeatures(Request $request)
+// {
+//     $store = Auth::user()->store;
+//     $limit = $request->input('limit', 10);
+
+    
+//     $selectedFeatureIds = $store->features()->pluck('features.id')->toArray();
+
+    
+//     $features = Feature::whereNotIn('id', $selectedFeatureIds)
+//         ->paginate($limit)
+//         ->items();
+
+//     if (empty($features)) {
+//         return response()->json([
+//             'message' => 'No unselected features found for this store.'
+//         ], 404);
+//     }
+
+//     return response()->json([
+//         'message' => 'Unselected features retrieved successfully.',
+//         'data' => $features
+//     ], 200);
+// }
+
+public function unselectedFeatures(Request $request)
 {
     $store = Auth::user()->store;
     $limit = $request->input('limit', 10);
 
-    
+    // Ensure store and category exist
+    if (!$store || !$store->product_category_id) {
+        return response()->json(['message' => 'Store or product category not found.'], 404);
+    }
+
+    // Get features already selected by store
     $selectedFeatureIds = $store->features()->pluck('features.id')->toArray();
 
-    
-    $features = Feature::whereNotIn('id', $selectedFeatureIds)
+    // Get features in store's category that aren't selected
+    $features = Feature::where('product_category_id', $store->product_category_id)
+        ->whereNotIn('id', $selectedFeatureIds)
         ->paginate($limit)
         ->items();
 
     if (empty($features)) {
         return response()->json([
-            'message' => 'No unselected features found for this store.'
+            'message' => 'No unselected features found for this store and category.'
         ], 404);
     }
 
     return response()->json([
-        'message' => 'Unselected features retrieved successfully.',
+        'message' => 'Unselected category features retrieved successfully.',
         'data' => $features
     ], 200);
 }
