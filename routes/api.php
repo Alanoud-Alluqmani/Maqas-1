@@ -273,3 +273,31 @@ Route::post('rate-order/{order}', [RatingController::class, 'store'])->name('rat
 // Route::get('/pay', [App\Http\Controllers\MyFatoorahController::class, 'index'])->name('myfatoorah.pay');
 // Route::get('/callback', [App\Http\Controllers\MyFatoorahController::class, 'callback'])->name('myfatoorah.callback');
 
+#API's with authentication:
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::prefix('measures')->controller(MeasureController::class)->group(function () {
+//         Route::post('/', 'store');
+//         Route::get('{measure}', 'show');
+//         Route::put('{measure}', 'update');
+//         Route::delete('{measure}', 'destroy');
+//     });
+
+//     Route::prefix('measure-values')->controller(MeasureValueController::class)->group(function () {
+//         Route::post('/', 'store');
+//         Route::put('{secondaryMeasure}', 'update');
+//         Route::delete('{secondaryMeasure}', 'destroy');
+//     });
+// });
+
+Route::prefix('measures')->controller(MeasureController::class)->group(function () {
+    Route::post('/', 'store');
+    Route::get('{measure}', 'show');
+    Route::put('{measure}', 'update');
+    Route::delete('{measure}', 'destroy');
+});
+
+Route::prefix('measure-values')->controller(MeasureValueController::class)->group(function () {
+    Route::post('/', 'store');
+    Route::put('{secondaryMeasure}', 'update');
+    Route::delete('{secondaryMeasure}', 'destroy');
+});

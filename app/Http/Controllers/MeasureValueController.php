@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\MeasureValue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MeasureValueController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:sanctum');
+        // $this->middleware('auth:sanctum');
     }
 
     public function index()
@@ -49,14 +50,39 @@ class MeasureValueController extends Controller
         ], 200);
     }
 
-
-    public function update(Request $request, MeasureValue $secondaryMeasure)
+ public function update(Request $request, MeasureValue $secondaryMeasure)
     {
-        //
+        $validated = $request->validate([
+            'value' => 'required|numeric',
+        ]);
+
+        $measure = $secondaryMeasure->measure;
+
+        // if ($measure->customer_id !== Auth::id()) {
+        //     return response()->json(['message' => 'Unauthorized.'], 403);
+        // }
+
+        $secondaryMeasure->update(['measure' => $validated['value']]);
+
+        return response()->json([
+            'message' => 'Measure value updated successfully.',
+            'data' => $secondaryMeasure,
+        ]);
     }
 
     public function destroy(MeasureValue $secondaryMeasure)
     {
-        //
+        $measure = $secondaryMeasure->measure;
+
+        // if ($measure->customer_id !== Auth::id()) {
+        //     return response()->json(['message' => 'Unauthorized.'], 403);
+        // }
+
+        $secondaryMeasure->delete();
+
+        return response()->json([
+            'message' => 'Measure value deleted successfully.',
+        ]);
     }
 }
+
