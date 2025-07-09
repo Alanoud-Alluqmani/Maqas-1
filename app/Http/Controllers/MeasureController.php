@@ -14,6 +14,7 @@ class MeasureController extends Controller
     public function __construct()
     {
         // $this->middleware('auth:sanctum');
+        // $this->middleware('auth:sanctum');
     }
 
     public function store(Request $request)
@@ -40,7 +41,7 @@ class MeasureController extends Controller
     }
 
 
-    public function show(Measure $measure)
+     public function show(Measure $measure)
     {
         // $customer = Auth::user();
 
@@ -55,7 +56,7 @@ class MeasureController extends Controller
             'data' => $measure,
         ]);
     }
-
+    
     public function update(Request $request, Measure $measure)
     {
         // $customer = Auth::user();
@@ -91,4 +92,5 @@ class MeasureController extends Controller
             'message' => 'Measure profile and values deleted successfully',
         ]);
     }
-}
+} 
+

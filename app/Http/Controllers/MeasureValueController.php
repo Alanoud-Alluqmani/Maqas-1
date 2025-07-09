@@ -6,7 +6,6 @@ use App\Models\MeasureValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
 class MeasureValueController extends Controller
 {
     public function __construct()
@@ -81,6 +80,7 @@ class MeasureValueController extends Controller
             'data' => $measureValues
         ], 200);
     }
+
  public function update(Request $request, MeasureValue $secondaryMeasure)
     {
         $validated = $request->validate([
@@ -101,7 +101,6 @@ class MeasureValueController extends Controller
         ]);
     }
 
-    
     public function destroy(MeasureValue $secondaryMeasure)
     {
         $measure = $secondaryMeasure->measure;
@@ -117,3 +116,4 @@ class MeasureValueController extends Controller
         ]);
     }
 }
+

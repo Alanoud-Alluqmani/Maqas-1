@@ -22,7 +22,7 @@ class SpecifyProductController extends Controller
     {
         $store = Auth::user()->store;
         $limit = $request->input('limit', 10);
-        $features = $store->features()->paginate($limit)->items();
+        $features = $store->features()->whereNull('feature_store.deleted_at')->paginate($limit)->items();
         if (!$features) {
             return response()->json([
                 'message' => 'no features found for this store'
@@ -32,6 +32,38 @@ class SpecifyProductController extends Controller
                 'message' => 'features found for this store',
                 'data' => $features
             ], 200);
+    }
+
+
+    public function unselectedFeatures(Request $request)
+    {
+        $store = Auth::user()->store;
+        $limit = $request->input('limit', 10);
+
+        if (!$store || !$store->product_category_id) {
+            return response()->json(['message' => 'Store or product category not found.'], 404);
+        }
+
+        $selectedFeatureIds = FeatureStore::where('store_id', $store->id)
+            ->pluck('feature_id')
+            ->toArray();
+
+        $features = Feature::withTrashed()
+            ->where('product_category_id', $store->product_category_id)
+            ->whereNotIn('id', $selectedFeatureIds)
+            ->paginate($limit)
+            ->items();
+
+        if (empty($features)) {
+            return response()->json([
+                'message' => 'No unselected features found for this store and category.'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Unselected category features retrieved successfully.',
+            'data' => $features
+        ], 200);
     }
 
     public function show(FeatureStore $feature)
@@ -60,34 +92,45 @@ class SpecifyProductController extends Controller
     }
 
 
-
     public function store(SpecifyProductRequest $request)
     {
         $store = Auth::user()->store;
-
         $feature = $request->validated();
         $featureId = $feature['id'];
 
-        if ($store->features()->wherePivot('feature_id', $featureId)->exists()) {
 
+        $selectedFeature = Feature::withTrashed()->find($featureId);
+
+        if (!$selectedFeature) {
+            return response()->json(['message' => 'Feature not found.'], 404);
+        }
+
+
+        if ($selectedFeature->product_category_id !== $store->product_category_id) {
+            return response()->json(['message' => 'Feature does not belong to the store’s product category.'], 403);
+        }
+
+
+        if ($store->features()->wherePivot('feature_id', $featureId)->exists()) {
             $pivot = FeatureStore::withTrashed()
                 ->where('store_id', $store->id)
-                ->where('feature_id', $featureId)->first();
+                ->where('feature_id', $featureId)
+                ->first();
 
             if ($pivot && $pivot->trashed()) {
                 $pivot->restore();
                 return response()->json(['message' => 'Feature restored successfully'], 200);
-            } else {
-                return response()->json(['message' => 'Feature is selected before'], 403);
             }
-        }
-        $store->features()->attach($featureId);
 
-        $savedFeature = Feature::with('product_category')->find($featureId);
+            return response()->json(['message' => 'Feature is already selected'], 403);
+        }
+
+
+        $store->features()->attach($featureId);
 
         return response()->json([
             'message' => 'Feature selected successfully',
-            'data' => $savedFeature,
+            'data' => $selectedFeature->load('product_category'),
         ], 201);
     }
 

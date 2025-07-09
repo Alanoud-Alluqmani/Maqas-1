@@ -144,13 +144,13 @@ Route::get('/reset-password/{token}', function ($token) {
 
 Route::controller(OrderController::class)->group(function (): void {
 
-    Route::get('show-order/{order}','show')->name('show.order');
+    Route::get('orders/{order}','show')->name('show.order');
 
     Route::get('view-orders', 'index')->name('view.orders');
 
     Route::get('view-invoice/{order}', 'invoice')->name('view.invoice');
 
-    Route::get('view-store-orders', 'view')->name('view.store.orders');
+    Route::get('orders', 'view')->name('view.store.orders');
 
     Route::post('update-order-status/{id}', 'update')->name('update.order.status');
 
@@ -196,13 +196,14 @@ Route::controller(FeatureController::class)->group(function (): void {
 
     Route::post('features/{prod_catg}', 'store')->name('features.store');
 
-    Route::get('view-features/{prod_catg}', 'viewCategoryFeatures')->name('view.category.features');
+    Route::get('view-features', 'viewCategoryFeatures')->name('view.category.features');
 });
 
 
 Route::controller(SpecifyProductController::class)->group(function () {
     Route::get('view-store-features', 'index')->name('view.store.features');
     Route::get('show-store-feature/{feature}', 'show')->name('show.store.feature');
+    Route::get('view-unselected-features', 'unselectedFeatures')->name('unselectedFeatures');
     Route::post('store-feature', 'store')->name('select.feature');
     Route::delete('destroy-feature/{feature}', 'destroy')->name('destroy.feature');
     Route::get('view-store-product/{storeId}', 'storeProduct')->name('storeProduct');
@@ -260,6 +261,10 @@ Route::controller(ServiceController::class)->group(function (): void {
 Route::controller(CustomerController::class)->group(function (): void {
 
     Route::get('view-customers', 'index')->name('view-customers');
+
+    Route::get('show-customer', 'show')->name('show-customers');
+
+    Route::put('update-customer', 'update')->name('update-customers');
 });
 
 Route::post('rate-order/{order}', [RatingController::class, 'store'])->name('rate.order');
@@ -268,6 +273,34 @@ Route::post('rate-order/{order}', [RatingController::class, 'store'])->name('rat
 // Route::get('/pay', [App\Http\Controllers\MyFatoorahController::class, 'index'])->name('myfatoorah.pay');
 // Route::get('/callback', [App\Http\Controllers\MyFatoorahController::class, 'callback'])->name('myfatoorah.callback');
 
+#API's with authentication:
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::prefix('measures')->controller(MeasureController::class)->group(function () {
+//         Route::post('/', 'store');
+//         Route::get('{measure}', 'show');
+//         Route::put('{measure}', 'update');
+//         Route::delete('{measure}', 'destroy');
+//     });
+
+//     Route::prefix('measure-values')->controller(MeasureValueController::class)->group(function () {
+//         Route::post('/', 'store');
+//         Route::put('{secondaryMeasure}', 'update');
+//         Route::delete('{secondaryMeasure}', 'destroy');
+//     });
+// });
+
+Route::prefix('measures')->controller(MeasureController::class)->group(function () {
+    Route::post('/', 'store');
+    Route::get('{measure}', 'show');
+    Route::put('{measure}', 'update');
+    Route::delete('{measure}', 'destroy');
+});
+
+Route::prefix('measure-values')->controller(MeasureValueController::class)->group(function () {
+    Route::post('/', 'store');
+    Route::put('{secondaryMeasure}', 'update');
+    Route::delete('{secondaryMeasure}', 'destroy');
+});
 #those are the measuers API"s once the customer auth is done :-
 // Route::middleware('auth:sanctum')->group(function () {
 //     Route::prefix('measures')->controller(MeasureController::class)->group(function () {

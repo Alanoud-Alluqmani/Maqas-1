@@ -39,18 +39,47 @@ class DesignController extends Controller
     }
 
 
+    // public function indexPartner(Request $request)
+    // {
+
+    //      $store = Auth::user()->store;
+    //     $limit = $request->input('limit', 10);
+    //     $designs = Design::whereHas('feature_store', function ($query) use ($store) {
+    //         $query->where('store_id', $store->id);
+    //     })->paginate($limit)->items();
+    //     // $designs = FeatureStore::where('store_id', $store->id)->with('designs')->get();
+
+
+    //     return response()->json([
+    //         'message' => 'success',
+    //         'data' => $designs
+    //     ], 200);
+    // }
+
     public function indexPartner(Request $request)
     {
-
         $store = Auth::user()->store;
         $limit = $request->input('limit', 10);
+
         $designs = Design::whereHas('feature_store', function ($query) use ($store) {
             $query->where('store_id', $store->id);
         })->paginate($limit)->items();
 
+        $data = [];
+
+        foreach ($designs as $design) {
+            $featureStore = FeatureStore::find($design->feature_store_id);
+            $feature = $featureStore ? Feature::find($featureStore->feature_id) : null;
+
+            $item = $design->toArray();
+            $item['feature'] = $feature;
+
+            $data[] = $item;
+        }
+
         return response()->json([
             'message' => 'success',
-            'data' => $designs
+            'data' => $data
         ], 200);
     }
 
@@ -77,21 +106,37 @@ class DesignController extends Controller
     }
 
 
+    // public function showStoreDesign(Request $request, Feature $feature)
+    // {
+    //     $storeId = Auth::user()->store;
+    //     $limit = $request->input('limit', 10);
+    //     $designs = Design::whereHas('feature_store', function ($query) use ($feature,  $storeId) {
+    //         $query->where('feature_id', $feature->id)
+    //             ->orWhere('store_id', $storeId);
+    //     })->get()->paginate($limit);
+
+    //     return response()->json([
+    //         'message' => 'success',
+    //         'data' => $designs
+    //     ], 200);
+    // }
+
+
     public function showStoreDesign(Request $request, Feature $feature)
     {
-        $storeId = Auth::user()->store;
+        $storeId = Auth::user()->store->id;
         $limit = $request->input('limit', 10);
-        $designs = Design::whereHas('feature_store', function ($query) use ($feature,  $storeId) {
+
+        $designs = Design::whereHas('feature_store', function ($query) use ($feature, $storeId) {
             $query->where('feature_id', $feature->id)
-                ->orWhere('store_id', $storeId);
-        })->get()->paginate($limit);
+                ->where('store_id', $storeId);
+        })->paginate($limit)->items();
 
         return response()->json([
             'message' => 'success',
             'data' => $designs
         ], 200);
     }
-
 
     public function store(DesignRequest $request)
     {
