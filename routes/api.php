@@ -301,32 +301,3 @@ Route::prefix('measure-values')->controller(MeasureValueController::class)->grou
     Route::put('{secondaryMeasure}', 'update');
     Route::delete('{secondaryMeasure}', 'destroy');
 });
-#those are the measuers API"s once the customer auth is done :-
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::prefix('measures')->controller(MeasureController::class)->group(function () {
-//         Route::post('/', 'store');
-//         Route::get('{measure}', 'show');
-//         Route::put('{measure}', 'update');
-//         Route::delete('{measure}', 'destroy');
-//     });
-
-//     Route::prefix('measure-values')->controller(MeasureValueController::class)->group(function () {
-//         Route::post('/', 'store');
-//         Route::put('{secondaryMeasure}', 'update');
-//         Route::delete('{secondaryMeasure}', 'destroy');
-//     });
-// });
-
-Route::prefix('measures')->controller(MeasureController::class)->group(function () {
-    Route::post('/', 'store');
-    Route::get('{measure}', 'show');
-    Route::put('{measure}', 'update');
-    Route::delete('{measure}', 'destroy');
-});
-
-
-Route::prefix('measure-values')->controller(MeasureValueController::class)->group(function () {
-    Route::post('/', 'store');
-    Route::put('{secondaryMeasure}', 'update');
-    Route::delete('{secondaryMeasure}', 'destroy');
-});
