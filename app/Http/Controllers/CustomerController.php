@@ -6,6 +6,7 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\CustomerResource;
 
 class CustomerController extends Controller
 {
@@ -24,11 +25,16 @@ class CustomerController extends Controller
     
    public function show()
     {
-        /** @var \App\Models\User $user */
-        $$customer = Auth::user();
-        if (!$$customer) {
+       
+        $customer = Auth::user();
+        if (!$customer) {
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
+    //    $customer = Customer::with('locations')->get();
+    $customer = Customer::with('locations')->find($customer->id);
+
+         $customer = CustomerResource::make($customer);
+
         return response()->json([
             'message' => 'success',
             'data' => $customer

@@ -36,11 +36,7 @@ class ItemController extends Controller
 
     public function store(StoreItemRequest $request)
     {
-        $data = $request->validate([
-            'design_id' => 'required|integer|exists:designs,id',
-            'measure_id' => 'required|integer|exists:measures,id',
-        ]);
-
+        $data = $request->validated();
 
         $customer = Customer::first();
 

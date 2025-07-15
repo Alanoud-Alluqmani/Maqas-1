@@ -8,6 +8,7 @@ use App\Models\Store;
 use App\Models\FeatureStore;
 use App\Models\Feature;
 use App\Http\Requests\SpecifyProductRequest;
+use App\Http\Resources\FeatureResource;
 use Illuminate\Support\Facades\DB;
 
 class SpecifyProductController extends Controller
@@ -22,15 +23,19 @@ class SpecifyProductController extends Controller
     {
         $store = Auth::user()->store;
         $limit = $request->input('limit', 10);
-        $features = $store->features()->whereNull('feature_store.deleted_at')->paginate($limit)->items();
+        $features = $store->features()->whereNull('feature_store.deleted_at')->paginate($limit);
+
+        $resource = FeatureResource::collection($features);
+
         if (!$features) {
             return response()->json([
                 'message' => 'no features found for this store'
             ], 404);
-        } else
+        } 
+
             return response()->json([
                 'message' => 'features found for this store',
-                'data' => $features
+                'data' => $resource
             ], 200);
     }
 

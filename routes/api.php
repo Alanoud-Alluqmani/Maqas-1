@@ -43,6 +43,10 @@ Route::controller(AuthController::class)->group(function (): void {
 
     Route::post('login', 'login')->name('login');
 
+    Route::post('customer-register', 'customerRegister')->name('customerRegister');
+
+    Route::post('customer-login', 'customerLogin')->name('customerLogin');
+
     Route::post('logout', 'logout')->name('logout');
 
 
@@ -125,7 +129,7 @@ Route::controller(CustomerLocationController::class)->group(function (): void {
 
     Route::get('show-customer-locs/{customerLoc}', 'show')->name('show.customer.loc');
 
-    Route::post('store-customer-loc', 'store')->name('store.customer.loc');
+    Route::post('store-customer-loc', 'store')->name('store.customer.loc')->middleware('auth:sanctum');
 
     Route::put('update-customer-loc/{customerLoc}', 'update')->name('update.customer.loc');
 
@@ -262,7 +266,7 @@ Route::controller(CustomerController::class)->group(function (): void {
 
     Route::get('view-customers', 'index')->name('view-customers');
 
-    Route::get('show-customer', 'show')->name('show-customers');
+    Route::get('show-customer', 'show')->name('show-customers')->middleware('auth:sanctum');
 
     Route::put('update-customer', 'update')->name('update-customers');
 });

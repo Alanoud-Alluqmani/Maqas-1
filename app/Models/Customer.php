@@ -7,10 +7,14 @@ use App\Models\CustomerLocation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Sanctum\HasApiTokens;
+
 
 class Customer extends Authenticatable
 {
     use SoftDeletes, HasFactory;
+    use HasApiTokens;
+    
     protected $fillable = [
         'name_ar',
         'name_en',

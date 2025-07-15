@@ -45,11 +45,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\OwnerRegisterRequest;
+use App\Http\Requests\CustomerRegisterRequest;
 use App\Http\Requests\CoAdminRegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Resources\CustomerResource;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Store;
+use App\Models\Customer;
 use App\Services\SmsService;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
@@ -156,6 +159,47 @@ class AuthController extends Controller
             'message' => 'User Created Successfully',
             'data' => $user
         ], 201);
+    }
+
+
+    public function customerRegister(CustomerRegisterRequest $request){
+
+        $customer = $request->validated();
+
+        $customer = Customer::create($customer);
+
+        $customer = CustomerResource::make($customer);
+        return response()->json([
+            'message' => 'Customer Created Successfully',
+            'data' => $customer
+        ], 201);
+    }
+
+    //دخول مؤقت (بالباسوورد)
+     public function customerLogin(Request $request)
+    {
+       $cardinals = $request->validate([
+            'phone' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $user = Customer::where('phone', $cardinals['phone'])->first();
+
+        // if (!Auth::attempt($cardinals)) {
+        //     return response()->json(['message' => 'Invalid phone number or password'], 401);
+        // }
+
+          if (!Auth::guard('customer')->attempt($cardinals)) {
+         return response()->json(['message' => 'Invalid phone number or password'], 401);
+        };
+
+        $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login Success',
+            'access_token' => $token,
+            'data' => $user,
+        ], 200);
     }
 
 

@@ -30,8 +30,9 @@ class CustomerLocationController extends Controller
 
  public function store(CustomerLocationRequest $request)
     {
-        //$customer=Auth::customer()->customer;
-        $customer = Customer::first(); 
+        $customer=Auth::user();
+        $customer = Customer::find($customer->id); 
+
        if (!$customer) {
             return response()->json(['message' => 'Customer not found.'], 404);
         }
