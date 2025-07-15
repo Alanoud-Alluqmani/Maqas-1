@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\DesignRequest;
 use App\Http\Requests\UpdateDesignRequest;
+use App\Http\Resources\DesignResource;
+use Illuminate\Support\Str;
 
 class DesignController extends Controller
 {
@@ -28,33 +30,22 @@ class DesignController extends Controller
     public function indexAdmin(Store $store)
     {
 
-        $designs = Design::whereHas('feature_store', function ($query) use ($store) {
-            $query->where('store_id', $store->id);
-        })->get();
+        // $designs = Design::whereHas('feature_store', function ($query) use ($store) {
+        //     $query->where('store_id', $store->id);
+        // })->get();
+
+        $designs = Design::whereHas(
+            'feature_store',
+            fn($query) =>
+            $query->where('store_id', $store->id)
+        )->with(['images', 'feature_store'])->get();
 
         return response()->json([
             'message' => 'success',
-            'data' => $designs
+            'data' => DesignResource::collection($designs)
         ], 200);
     }
 
-
-    // public function indexPartner(Request $request)
-    // {
-
-    //      $store = Auth::user()->store;
-    //     $limit = $request->input('limit', 10);
-    //     $designs = Design::whereHas('feature_store', function ($query) use ($store) {
-    //         $query->where('store_id', $store->id);
-    //     })->paginate($limit)->items();
-    //     // $designs = FeatureStore::where('store_id', $store->id)->with('designs')->get();
-
-
-    //     return response()->json([
-    //         'message' => 'success',
-    //         'data' => $designs
-    //     ], 200);
-    // }
 
     public function indexPartner(Request $request)
     {
@@ -63,23 +54,12 @@ class DesignController extends Controller
 
         $designs = Design::whereHas('feature_store', function ($query) use ($store) {
             $query->where('store_id', $store->id);
-        })->paginate($limit)->items();
-
-        $data = [];
-
-        foreach ($designs as $design) {
-            $featureStore = FeatureStore::find($design->feature_store_id);
-            $feature = $featureStore ? Feature::find($featureStore->feature_id) : null;
-
-            $item = $design->toArray();
-            $item['feature'] = $feature;
-
-            $data[] = $item;
-        }
+        })->with(['feature_store', 'images'])
+            ->paginate($limit);
 
         return response()->json([
             'message' => 'success',
-            'data' => $data
+            'data' => DesignResource::collection($designs)
         ], 200);
     }
 
@@ -96,30 +76,14 @@ class DesignController extends Controller
             return response()->json(['message' => 'Design not found.'], 404);
         }
 
-        $image = $design->image;
+        $design = Design::with('images', 'feature_store')->find($design->id);
 
         return response()->json([
             "message" => 'success',
-            "data" =>  $design,
-            'image' => $image ? $image->image : null
+            "data" =>  new DesignResource($design),
         ], 200);
     }
 
-
-    // public function showStoreDesign(Request $request, Feature $feature)
-    // {
-    //     $storeId = Auth::user()->store;
-    //     $limit = $request->input('limit', 10);
-    //     $designs = Design::whereHas('feature_store', function ($query) use ($feature,  $storeId) {
-    //         $query->where('feature_id', $feature->id)
-    //             ->orWhere('store_id', $storeId);
-    //     })->get()->paginate($limit);
-
-    //     return response()->json([
-    //         'message' => 'success',
-    //         'data' => $designs
-    //     ], 200);
-    // }
 
 
     public function showStoreDesign(Request $request, Feature $feature)
@@ -130,11 +94,11 @@ class DesignController extends Controller
         $designs = Design::whereHas('feature_store', function ($query) use ($feature, $storeId) {
             $query->where('feature_id', $feature->id)
                 ->where('store_id', $storeId);
-        })->paginate($limit)->items();
+        })->with(['images', 'feature_store'])->paginate($limit);
 
         return response()->json([
             'message' => 'success',
-            'data' => $designs
+            'data' => DesignResource::collection($designs)
         ], 200);
     }
 
@@ -163,17 +127,21 @@ class DesignController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imagename = $design['name_en'] . '.' . $image->getClientOriginalExtension(); // Keeps the original extension
+            // $imagename = $design['name_en'] . '.' . $image->getClientOriginalExtension();
+            $imagename = Str::slug($design['name_en']) . '.' .  $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('image', $imagename, 'public');
-            $designImage = Image::create([
+
+            Image::create([
                 'image' => $imagePath,
                 'design_id' => $design->id
             ]);
+
+            $design->load(['images', 'feature_store']);
         }
 
         return response()->json([
             "message" => "Design created successfully.",
-            "data" => $design
+            "data" => new DesignResource($design)
         ], 201);
     }
 
@@ -188,7 +156,7 @@ class DesignController extends Controller
 
         return response()->json([
             'message' => 'Design updated successfully',
-            "data" => $design
+            "data" => new DesignResource($design)
         ], 200);
     }
 

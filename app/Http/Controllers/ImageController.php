@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ImageResource;
 use App\Models\Design;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ImageController extends Controller
 {
@@ -22,7 +24,7 @@ class ImageController extends Controller
 
         return response()->json([
             'message' => 'success',
-            'data' =>  $images
+            'data' =>  ImageResource::Collection($images),
         ], 200);
     }
 
@@ -34,14 +36,13 @@ class ImageController extends Controller
         }
         return response()->json([
             "message" => 'success',
-            "data" => $image
+            "data" => new ImageResource($image)
         ], 200);
     }
 
-
     public function update(Request $request, Image $image)
     {
-        $newImage = $request->validate([
+        $request->validate([
             'image' => 'required|image|max:2048',
         ]);
 
@@ -49,18 +50,23 @@ class ImageController extends Controller
             Storage::disk('public')->delete($image->image);
         }
 
+
         $designName = $image->design->name_en;
-
-        $imageName = $designName . '.' . $request->file('image')->getClientOriginalExtension();
-
+        $extension = $request->file('image')->getClientOriginalExtension();
+        $sluggedName = Str::slug($designName); // Removes spaces
+        $imageName = $sluggedName . '.' . $extension;
 
         $path = $request->file('image')->storeAs('image', $imageName, 'public');
 
+        $image->update([
+            'image' => $path,
+        ]);
+
+        $image->refresh();
 
         return response()->json([
             'message' => 'Image updated successfully',
-            'data' => $image,
+            'data' => new ImageResource($image),
         ], 200);
     }
-
 }
