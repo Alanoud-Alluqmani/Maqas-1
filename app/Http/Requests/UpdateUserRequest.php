@@ -20,9 +20,8 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name_ar' => 'nullable|string|max:255',
-            'name_en' => 'nullable|string|max:255', // Validates that "name" is required, a string, and no longer than 255 characters
-            'phone' => 'nullable|digits:10',
-            //'email' => 'nullable|email|unique:users',        // Validates that "email" is required and must follow email format
+            'name_en' => 'nullable|string|max:255', 
+            'phone' => 'nullable|digits:10',    
         ];
     }
 

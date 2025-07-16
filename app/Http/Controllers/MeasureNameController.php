@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MeasureName;
 use Illuminate\Http\Request;
+use App\Http\Resources\MeasureNameResource;
 
 class MeasureNameController extends Controller
 {
@@ -21,7 +22,7 @@ class MeasureNameController extends Controller
 
         return response()->json([
             "message" => 'success',
-            "data" =>  $measures
+            "data" =>  MeasureNameResource::collection($measures)
         ], 200);
     }
 

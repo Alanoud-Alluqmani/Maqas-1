@@ -249,6 +249,9 @@ Route::controller(MeasureController::class)->group(function (): void {
 Route::controller(MeasureValueController::class)->group(function (): void {
 
     Route::post('store-measure-value', 'store')->name('storeMeasureValue');
+
+     Route::put('update-measure-value/{id}', 'update')->name('updateMeasureValue');
+
 });
 
 
@@ -268,7 +271,7 @@ Route::controller(CustomerController::class)->group(function (): void {
 
     Route::get('show-customer', 'show')->name('show-customers')->middleware('auth:sanctum');
 
-    Route::put('update-customer', 'update')->name('update-customers');
+    Route::put('update-customer', 'update')->name('update-customers')->middleware('auth:sanctum');
 });
 
 Route::post('rate-order/{order}', [RatingController::class, 'store'])->name('rate.order');
@@ -302,6 +305,6 @@ Route::prefix('measures')->controller(MeasureController::class)->group(function 
 
 Route::prefix('measure-values')->controller(MeasureValueController::class)->group(function () {
     Route::post('/', 'store');
-    Route::put('{secondaryMeasure}', 'update');
+    // Route::put('{secondaryMeasure}', 'update');
     Route::delete('{secondaryMeasure}', 'destroy');
 });
