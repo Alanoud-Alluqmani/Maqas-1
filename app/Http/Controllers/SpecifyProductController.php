@@ -10,6 +10,7 @@ use App\Models\Feature;
 use App\Http\Requests\SpecifyProductRequest;
 use App\Http\Resources\FeatureResource;
 use App\Http\Resources\FeatureStoreResource;
+use App\Http\Resources\StoreResource;
 use Illuminate\Support\Facades\DB;
 
 class SpecifyProductController extends Controller
@@ -69,32 +70,51 @@ class SpecifyProductController extends Controller
         ], 200);
     }
 
+    // public function show(FeatureStore $feature)
+    // {
+    //     $store = Auth::user()->store;
+
+    //     if (!$feature) {
+    //         return response()->json(['message' => 'feature not found'], 404);
+    //     }
+
+    //     if ($feature->store_id !== $store->id) {
+    //         return response()->json(['message' => 'This feature does not belong to your store.'], 403);
+    //     }
+
+    //     $featurestore = Feature::find($feature->feature_id);
+    //     // $fs = FeatureStore::where($feature->store_id, $store->id);
+
+    //     $storeInfo = Store::find($feature->store_id);
+
+
+    //     return response()->json([
+    //         'message' => 'feature found',
+    //         'feature' =>new FeatureResource($featurestore),
+    //         'store' => $storeInfo
+    //     //    'data' => new FeatureStoreResource($fs),
+
+    //     ], 200);
+    // }
+
     public function show(FeatureStore $feature)
-    {
-        $store = Auth::user()->store;
+{
+    $store = Auth::user()->store;
 
-        if (!$feature) {
-            return response()->json(['message' => 'feature not found'], 404);
-        }
-
-        if ($feature->store_id !== $store->id) {
-            return response()->json(['message' => 'This feature does not belong to your store.'], 403);
-        }
-
-        $featurestore = Feature::find($feature->feature_id);
-        // $fs = FeatureStore::where($feature->store_id, $store->id);
-        $storeInfo = Store::find($feature->store_id);
-
-
-        return response()->json([
-            'message' => 'feature found',
-            'store feature' => $featurestore,
-            'feature' => $feature,
-            'store' => $storeInfo
-        //    'data' => new FeatureStoreResource($fs),
-
-        ], 200);
+    if (!$feature || $feature->store_id !== $store->id) {
+        return response()->json(['message' => 'Unauthorized or not found'], 403);
     }
+
+    $featureWithPivot = $store->features()
+        ->where('features.id', $feature->feature_id)
+        ->first();
+
+    return response()->json([
+        'message' => 'feature found',
+        'feature' => new FeatureResource($featureWithPivot),
+        'store' => new StoreResource($store)
+    ]);
+}
 
  
 

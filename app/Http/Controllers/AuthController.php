@@ -64,6 +64,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
+
 class AuthController extends Controller
 {
     protected $smsService;
@@ -131,13 +132,24 @@ class AuthController extends Controller
     {
         $user = $request->validated();
 
+        // if ($request->hasFile('legal')) {
+        //     $file = $request->file('legal');
+        //     $filename = $user['name_en'] . '.' . $file->getClientOriginalExtension();
+        //     $filePath = $file->storeAs('legal', $filename, 'public');
+        // } else {
+        //     return response()->json(['message' => 'File upload failed'], 400);
+        // }
+
+
         if ($request->hasFile('legal')) {
             $file = $request->file('legal');
-            $filename = $user['name_en'] . '.' . $file->getClientOriginalExtension();
+            $name = Str::slug($user['name_en'], '_'); // Remove spaces and special chars
+            $filename = $name . '.' . $file->getClientOriginalExtension();
             $filePath = $file->storeAs('legal', $filename, 'public');
         } else {
             return response()->json(['message' => 'File upload failed'], 400);
         }
+
 
         $store = Store::create([
             'legal' => $filePath,
@@ -162,7 +174,8 @@ class AuthController extends Controller
     }
 
 
-    public function customerRegister(CustomerRegisterRequest $request){
+    public function customerRegister(CustomerRegisterRequest $request)
+    {
 
         $customer = $request->validated();
 
@@ -176,9 +189,9 @@ class AuthController extends Controller
     }
 
     //دخول مؤقت (بالباسوورد)
-     public function customerLogin(Request $request)
+    public function customerLogin(Request $request)
     {
-       $cardinals = $request->validate([
+        $cardinals = $request->validate([
             'phone' => 'required|string',
             'password' => 'required|string',
         ]);
@@ -189,8 +202,8 @@ class AuthController extends Controller
         //     return response()->json(['message' => 'Invalid phone number or password'], 401);
         // }
 
-          if (!Auth::guard('customer')->attempt($cardinals)) {
-         return response()->json(['message' => 'Invalid phone number or password'], 401);
+        if (!Auth::guard('customer')->attempt($cardinals)) {
+            return response()->json(['message' => 'Invalid phone number or password'], 401);
         };
 
         $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;

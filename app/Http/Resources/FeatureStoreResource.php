@@ -15,11 +15,10 @@ class FeatureStoreResource extends JsonResource
     public function toArray(Request $request): array
     {
          return [
-        'id' => $this->id,
-        //  'feature_id' => $this->feature_id,
+        'feature_store_id' => $this->id,
+          'feature_id' => $this->feature_id,
         // 'feature_id' => FeatureResource::collection($this->features),
-         'feature' => new FeatureResource($this->feature),
-
+        // 'feature_id' => new FeatureResource($this->feature),
         'store_id' => $this->store_id,
     ];
 

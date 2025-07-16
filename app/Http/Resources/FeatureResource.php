@@ -14,15 +14,26 @@ class FeatureResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            'feature_id' => $this->id,
-            'name_ar' => $this->name_ar,
-            'name_en' => $this->name_en,
-            'feature_store_id' => $this->pivot?->id ?? null,
-            // // 'feature_store_id' => $this->feature_store_id ?? null,
-            'store' => $this->whenLoaded('stores'),
-            'product_category' => $this->whenLoaded('product_category')
-        ];
-    }
+        // return [
+        //     'feature_id' => $this->id,
+        //     'name_ar' => $this->name_ar,
+        //     'name_en' => $this->name_en,
+        //     'feature_store_id' => $this->pivot?->id ?? null,
+        //     // // 'feature_store_id' => $this->feature_store_id ?? null,
+        //     'store' => $this->whenLoaded('stores'),
+        //     'product_category' => $this->whenLoaded('product_category')
+        // ];
 
+        return array_merge(
+            [
+                'feature_id' => $this->id,
+                'name_ar' => $this->name_ar,
+                'name_en' => $this->name_en,
+                'store' => $this->whenLoaded('stores'),
+                'product_category' => $this->whenLoaded('product_category'),
+
+            ],
+            $this->pivot?->id ? ['feature_store_id' => $this->pivot->id] : []
+        );
+    }
 }

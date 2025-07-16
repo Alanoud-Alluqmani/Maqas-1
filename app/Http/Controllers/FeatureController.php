@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\FeatureRequest;
 use App\Http\Requests\UpdateFeatureRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\FeatureResource;
+
 
 class FeatureController extends Controller
 {
@@ -27,7 +29,7 @@ class FeatureController extends Controller
 
         return response()->json([
             "message" => 'success',
-            "data" =>  $features
+            "data" =>  FeatureResource::collection($features),
         ], 200);
     }
 
@@ -91,24 +93,7 @@ class FeatureController extends Controller
         ], 200);
     }
 
-    // public function viewCategoryFeatures(Request $request, ProductCategory $prod_catg)
-    // {
-
-    //     $limit = $request->input('limit', 10);
-
-    //     if (!$prod_catg) {
-    //         return response()->json(['message' => 'Product category not found.'], 404);
-    //     }
-    //     if (!$prod_catg->features) {
-    //         return response()->json(['message' => 'Product category features not found.'], 404);
-    //     }
-    //     $pc = $prod_catg->features()->paginate($limit)->items();
-    //     return response()->json([
-    //         "message" => 'success',
-    //         "data" =>  $pc
-    //     ], 200);
-    // }
-
+    
     public function viewCategoryFeatures(Request $request)
 {
     $limit = $request->input('limit', 10);
@@ -129,7 +114,7 @@ class FeatureController extends Controller
 
     return response()->json([
         "message" => 'success',
-        "data" => $features
+        "data" => FeatureResource::collection($features),
     ], 200);
 }
 
