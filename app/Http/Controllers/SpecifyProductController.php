@@ -9,6 +9,7 @@ use App\Models\FeatureStore;
 use App\Models\Feature;
 use App\Http\Requests\SpecifyProductRequest;
 use App\Http\Resources\FeatureResource;
+use App\Http\Resources\FeatureStoreResource;
 use Illuminate\Support\Facades\DB;
 
 class SpecifyProductController extends Controller
@@ -25,8 +26,6 @@ class SpecifyProductController extends Controller
         $limit = $request->input('limit', 10);
         $features = $store->features()->whereNull('feature_store.deleted_at')->paginate($limit);
 
-        $resource = FeatureResource::collection($features);
-
         if (!$features) {
             return response()->json([
                 'message' => 'no features found for this store'
@@ -35,7 +34,7 @@ class SpecifyProductController extends Controller
 
             return response()->json([
                 'message' => 'features found for this store',
-                'data' => $resource
+                'data' => FeatureResource::collection($features),
             ], 200);
     }
 
@@ -56,8 +55,7 @@ class SpecifyProductController extends Controller
         $features = Feature::withTrashed()
             ->where('product_category_id', $store->product_category_id)
             ->whereNotIn('id', $selectedFeatureIds)
-            ->paginate($limit)
-            ->items();
+            ->paginate($limit);
 
         if (empty($features)) {
             return response()->json([
@@ -67,7 +65,7 @@ class SpecifyProductController extends Controller
 
         return response()->json([
             'message' => 'Unselected category features retrieved successfully.',
-            'data' => $features
+            'data' => FeatureResource::collection($features),
         ], 200);
     }
 
@@ -84,6 +82,7 @@ class SpecifyProductController extends Controller
         }
 
         $featurestore = Feature::find($feature->feature_id);
+        // $fs = FeatureStore::where($feature->store_id, $store->id);
         $storeInfo = Store::find($feature->store_id);
 
 
@@ -92,10 +91,44 @@ class SpecifyProductController extends Controller
             'store feature' => $featurestore,
             'feature' => $feature,
             'store' => $storeInfo
+        //    'data' => new FeatureStoreResource($fs),
 
         ], 200);
     }
 
+ 
+
+// public function show(FeatureStore $featureStore)
+// {
+//     $store = Auth::user()->store;
+// echo $store->id;
+//     $r = $featureStore->id ;
+// echo $r;
+//         if (!$featureStore) {
+//             return response()->json(['message' => 'feature not found'], 404);
+//         }
+// $r = $featureStore->store_id ;
+// echo $r;
+
+//         if ($featureStore->store_id !== $store->id) {
+//             return response()->json(['message' => 'This feature does not belong to your store.'], 403);
+//         }
+
+//     // Manually fetch related models
+//     $relatedStore = \App\Models\Store::find($featureStore->store_id);
+//     $relatedFeature = \App\Models\Feature::find($featureStore->feature_id);
+
+//     // Attach manually so the resource can access them
+//     $featureStore->store = $relatedStore;
+//     $featureStore->feature = $relatedFeature;
+
+//     return response()->json([
+//         'message' => 'Feature found',
+//         'data' => new FeatureStoreResource($featureStore),
+//     ], 200);
+// }
+
+    
 
     public function store(SpecifyProductRequest $request)
     {

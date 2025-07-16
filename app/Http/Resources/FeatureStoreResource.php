@@ -16,7 +16,10 @@ class FeatureStoreResource extends JsonResource
     {
          return [
         'id' => $this->id,
-        'feature_id' => $this->feature_id,
+        //  'feature_id' => $this->feature_id,
+        // 'feature_id' => FeatureResource::collection($this->features),
+         'feature' => new FeatureResource($this->feature),
+
         'store_id' => $this->store_id,
     ];
 
