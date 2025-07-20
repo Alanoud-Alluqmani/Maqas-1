@@ -22,24 +22,7 @@ class CustomerResource extends JsonResource
             'name_ar' => $this->name_ar,
             'name_en' => $this->name_en,
             'phone' => $this->phone,
-            // 'locations' => CustomerLocationCollection::make($this->whenLoaded('locations')),
            'locations' => CustomerLocationResource::collection($this->whenLoaded('locations')),
-
-            // public function locations(){
-    //     return $this->hasMany(CustomerLocation::class);
-    // }
-
-    // public function measures(){
-    //     return $this->hasMany(Measure::class);
-    // } 
-
-    // public function orders(){
-    //     return $this->hasMany(Order::class);
-    // }
-
-    // public function ratings(){
-    //     return $this->hasManyThrough(Rating::class, Order::class);
-    // }
         ];
     }
 }

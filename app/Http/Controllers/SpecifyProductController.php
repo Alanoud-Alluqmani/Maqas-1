@@ -18,7 +18,7 @@ class SpecifyProductController extends Controller
     public function __construct()
     {
         $this->middleware('auth:sanctum');
-        $this->middleware('role:Store Owner,Store Employee')->only(['store', 'storeProduct', 'destroy']);
+        $this->middleware('role:Store Owner,Store Employee')->only(['store', 'destroy']);
     }
 
     public function index(Request $request)
@@ -225,7 +225,7 @@ class SpecifyProductController extends Controller
 
         return response()->json([
             'message' => 'success',
-            'data' => $features
+            'data' => FeatureStoreResource::collection($features)
         ], 200);
     }
 }

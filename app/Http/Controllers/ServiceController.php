@@ -6,6 +6,8 @@ use App\Models\Service;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\ServiceResource;
+use App\Http\Resources\StoreResource;
 
 class ServiceController extends Controller
 {

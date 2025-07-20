@@ -6,6 +6,8 @@ use App\Models\Item;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreItemRequest;
+use App\Http\Resources\ItemResource;
+use App\Http\Resources\OrderResource;
 use App\Models\Design;
 use App\Models\Store;
 use App\Models\Customer;
@@ -16,7 +18,7 @@ class ItemController extends Controller
 {
     public function __construct()
     {
-        //$this->middleware('auth:sanctum');
+        $this->middleware('auth:sanctum');
     }
 
 
@@ -24,92 +26,74 @@ class ItemController extends Controller
     {
         $limit = $request->input('limit', 10);
         $items = Order::with('items.designs')->where('id', $order->id)
-            ->paginate($limit)->items();
+            ->paginate($limit);
 
 
         return response()->json([
             'message' => 'success',
-            'data' =>  $items
+            'data' =>  OrderResource::collection($items),
         ], 200);
     }
 
-
     public function store(StoreItemRequest $request)
     {
+        $customer = Auth::user();
+
         $data = $request->validated();
 
-        $customer = Customer::first();
-
         $design = Design::with('feature_store')->findOrFail($data['design_id']);
-        $storeId = $design->feature_store->store_id;
-
-        $storeModel = Store::with('locations')->find($storeId);
-        $storeLocationId = optional($storeModel->locations->first())->id;
-        $customerLocationId = optional($customer->locations->first())->id;
+        $storeId = optional($design->feature_store)->store_id;
 
         if (!$storeId) {
             return response()->json(['message' => 'This design is not linked to a store'], 400);
         }
 
-        $existingOrder = Order::where([
+        $storeModel = Store::with('locations')->find($storeId);
+        $storeLocationId = optional($storeModel->locations->first())->id;
+        $customerLocationId = optional($customer->locations->first())->id;
+
+        $order = Order::firstOrCreate([
             'customer_id' => $customer->id,
             'store_id'    => $storeId,
             'status_id'   => 1,
-        ])->first();
+        ], [
+            'service_id'            => 1,
+            'customer_location_id'  => $customerLocationId,
+            'store_location_id'     => $storeLocationId,
+            'total_price'           => 0,
+        ]);
 
-        if ($existingOrder) {
-            $order = $existingOrder;
-        } else {
-            $order = Order::create([
-                'customer_id'           => $customer->id,
-                'store_id'              => $storeId,
-                'service_id'            => 1,
-                'status_id'             => 1,
-                'customer_location_id'  => $customerLocationId,
-                'store_location_id'     => $storeLocationId,
-                'total_price'           => 0,
-            ]);
-        }
         $item = Item::withTrashed()
             ->where('order_id', $order->id)
             ->where('measure_id', $data['measure_id'])
             ->first();
 
         if ($item) {
-            if ($item->trashed()) {
-                $item->restore();
-
-                $item->designs()->sync([$data['design_id']]);
-            } else {
-
-                $item->designs()->syncWithoutDetaching([$data['design_id']]);
-            }
+            $item->trashed() ? $item->restore() : null;
+            $item->designs()->syncWithoutDetaching([$data['design_id']]);
         } else {
             $item = Item::create([
                 'order_id'   => $order->id,
                 'measure_id' => $data['measure_id'],
             ]);
-
             $item->designs()->attach($data['design_id']);
         }
 
-        $total = 0;
+
         $order->load('items.designs');
 
-        foreach ($order->items as $item) {
-            foreach ($item->designs as $design) {
-                $total += $design->price;
-            }
-        }
-
-        $order->total_price = $total;
+        $order->total_price = $order->items->flatMap->designs->sum('price');
         $order->save();
+
+        $item->load('measure', 'designs');
 
         return response()->json([
             'message' => 'Item created successfully',
-            'item_id' => $item
+            'data' => new ItemResource($item),
         ]);
     }
+
+
 
     public function chooseService(Request $request)
     {

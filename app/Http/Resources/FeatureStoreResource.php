@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Design;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,6 +21,7 @@ class FeatureStoreResource extends JsonResource
         // 'feature_id' => FeatureResource::collection($this->features),
         // 'feature_id' => new FeatureResource($this->feature),
         'store_id' => $this->store_id,
+        'designs' => DesignResource::collection($this->whenLoaded('designs'))
     ];
 
     }

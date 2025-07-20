@@ -21,6 +21,7 @@ class StoreResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'product_category_id' => $this->product_category_id,
+            'services' => ServiceResource::collection($this->whenLoaded('services')),
             
         ];
     }

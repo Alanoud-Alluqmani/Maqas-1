@@ -228,7 +228,7 @@ Route::apiResource('images', ImageController::class)->except('store');
 Route::get('store-avr-ratings/{store}', [StoreController::class, 'getStoreRatings'])->name('store-avr-ratings');
 
 
-Route::apiResource('item', ItemController::class)->except('index')->middleware('auth:api');
+Route::apiResource('item', ItemController::class)->except('index');
 Route::get('items/{order}', [ItemController::class, 'index'])->name('order.items');
 Route::post('items/{order}', [ItemController::class, 'chooseService'])->name('chooseService');
 Route::delete('items/{item}', [ItemController::class, 'destroy'])->name('destroy');
