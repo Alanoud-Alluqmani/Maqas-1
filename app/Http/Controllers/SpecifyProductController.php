@@ -192,24 +192,39 @@ class SpecifyProductController extends Controller
         ], 201);
     }
 
+
+
     public function destroy(FeatureStore $feature)
-    {
-        $store = Auth::user()->store;
+{
+    $store = Auth::user()->store;
 
-        if (!$feature) {
-            return response()->json(['message' => 'Feature not found.'], 404);
-        }
-
-        if ($feature->store_id !== $store->id) {
-            return response()->json(['message' => 'This feature does not belong to your store.'], 403);
-        }
-
-        $feature->delete();
-
-        return response()->json([
-            'message' => 'Feature Deleted Successfully'
-        ], 200);
+    if (!$feature) {
+        return response()->json(['message' => 'Feature not found.'], 404);
     }
+
+    if ($feature->store_id !== $store->id) {
+        return response()->json(['message' => 'This feature does not belong to your store.'], 403);
+    }
+    
+    foreach ($feature->designs ?? [] as $design) {
+    foreach ($design->images ?? [] as $image) {
+        $image->delete();
+    }
+
+    foreach ($design->designItems ?? [] as $designItem) {
+        $designItem->delete();
+    }
+
+    $design->delete();
+}
+
+
+    $feature->delete();
+
+    return response()->json([
+        'message' => 'Feature and all related data deleted successfully.'
+    ], 200);
+}
 
 
     public function storeProduct(Request $request, $storeId)
