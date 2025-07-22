@@ -11,6 +11,7 @@ use App\Http\Resources\StoreResource;
 
 class ServiceController extends Controller
 {
+    //test
 
     public function index()
     {
