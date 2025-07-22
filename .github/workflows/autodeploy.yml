@@ -1,0 +1,30 @@
+name: Auto Deploy to Dev Branch
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Pull master into Dev on server
+      run: |
+        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
+          cd ${{ secrets.SERVER_PROJECT_PATH }} &&
+          git fetch origin &&
+          git checkout Dev &&
+          git merge origin/master
+        "
+
+    - name: Cleanup
+      run: rm -rf ~/.ssh
