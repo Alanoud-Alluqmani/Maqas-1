@@ -10,21 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Set up SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Pull master into Dev on server
-      run: |
-        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
-          cd ${{ secrets.SERVER_PROJECT_PATH }} &&
-          git fetch origin &&
-          git checkout Dev &&
-          git merge origin/master
-        "
+      - name: Deploy via SSH (merge master into Dev)
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
 
-    - name: Cleanup
-      run: rm -rf ~/.ssh
+          ssh -i key.pem -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
+            cd ${{ secrets.SERVER_PROJECT_PATH }} &&
+            git checkout Dev &&
+            git pull origin master &&
+            php artisan config:cache &&
+            php artisan route:cache
+          "
