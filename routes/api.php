@@ -138,6 +138,7 @@ Route::controller(CustomerLocationController::class)->group(function (): void {
 
 
 Route::get('nearest-stores', [FilterStoreController::class, 'nearestToCustomer']);
+Route::get('nearest-stores/{category_id}', [FilterStoreController::class, 'nearestToCustomerByCategory']);
 
 
 Route::get('/reset-password/{token}', function ($token) {
