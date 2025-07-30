@@ -93,30 +93,47 @@ class FeatureController extends Controller
         ], 200);
     }
 
-    
+
     public function viewCategoryFeatures(Request $request)
-{
-    $limit = $request->input('limit', 10);
+    {
+        $limit = $request->input('limit', 10);
 
-    $store = Auth::user()->store;
+        $store = Auth::user()->store;
 
-    if (!$store || !$store->product_category_id) {
-        return response()->json(['message' => 'Store or product category not found.'], 404);
+        if (!$store || !$store->product_category_id) {
+            return response()->json(['message' => 'Store or product category not found.'], 404);
+        }
+
+        $prod_catg = ProductCategory::find($store->product_category_id);
+
+        if (!$prod_catg) {
+            return response()->json(['message' => 'Product category not found.'], 404);
+        }
+
+        $features = $prod_catg->features()->paginate($limit)->items();
+
+        return response()->json([
+            "message" => 'success',
+            "data" => FeatureResource::collection($features),
+        ], 200);
     }
 
-    $prod_catg = ProductCategory::find($store->product_category_id);
+    public function viewFeaturesByCategory(Request $request, ProductCategory $prod_catg)
+    {
+        $limit = $request->input('limit', 10);
 
-    if (!$prod_catg) {
-        return response()->json(['message' => 'Product category not found.'], 404);
+
+        if (!$prod_catg) {
+            return response()->json(['message' => 'Product category not found.'], 404);
+        }
+
+        $features = $prod_catg->features()->paginate($limit);
+
+        return response()->json([
+            "message" => 'success',
+            "data" => FeatureResource::collection($features),
+        ], 200);
     }
-
-    $features = $prod_catg->features()->paginate($limit)->items();
-
-    return response()->json([
-        "message" => 'success',
-        "data" => FeatureResource::collection($features),
-    ], 200);
-}
 
 
     public function update(UpdateFeatureRequest $request, Feature $feature)

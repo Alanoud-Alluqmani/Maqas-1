@@ -201,6 +201,8 @@ Route::controller(FeatureController::class)->group(function (): void {
     Route::post('features/{prod_catg}', 'store')->name('features.store');
 
     Route::get('view-features', 'viewCategoryFeatures')->name('view.category.features');
+    
+    Route::get('view-features/{prod_catg}', 'viewFeaturesByCategory')->name('view.features.by.category');
 });
 
 

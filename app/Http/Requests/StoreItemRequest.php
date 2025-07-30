@@ -15,13 +15,12 @@ class StoreItemRequest extends FormRequest
         return true;
     }
 
-   // These rules ensure the data provided in the form meets specific requirements.
     public function rules(): array
     {
         return [
         //'order_id' => 'required|integer|exists:orders,id',
         'design_id' => 'required|integer|exists:designs,id',
-        'measure_id' => 'required|integer|exists:measures,id',
+        'measure_id' => 'nullable|integer|exists:measures,id',
       
         ];
     }
