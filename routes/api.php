@@ -45,7 +45,11 @@ Route::controller(AuthController::class)->group(function (): void {
 
     Route::post('customer-register', 'customerRegister')->name('customerRegister');
 
+    Route::post('verify-phone', 'verifyOTP')->name('verifyPhone');
+
     Route::post('customer-login', 'customerLogin')->name('customerLogin');
+
+    Route::post('verify-login-otp', 'verifyLoginOTP')->name('verifyLoginOTP');
 
     Route::post('logout', 'logout')->name('logout');
 

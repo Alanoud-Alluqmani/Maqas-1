@@ -53,4 +53,10 @@ return [
     'app_id' => env('INFOBIP_APP_ID', '3CA99AB3B566AFEC74FB98187BDE0B8F'),
 ],
 
+'twilio' => [
+    'sid' => env('TWILIO_SID'),
+    'token' => env('TWILIO_TOKEN'),
+    'service_sid' => env('TWILIO_SERVICE_SID'),
+],
+
 ];

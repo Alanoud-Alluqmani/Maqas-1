@@ -20,6 +20,7 @@ class Customer extends Authenticatable
         'name_en',
         'phone',
         'password',
+        'phone_verified_at',
     ];
 
 
