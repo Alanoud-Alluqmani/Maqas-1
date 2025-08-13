@@ -12,7 +12,7 @@ class ProductCategoryController extends Controller
 
     public function __construct()
     {
-       // $this->middleware('auth:sanctum');
+        $this->middleware('auth:sanctum');
         $this->middleware('role:Super Admin,Co-Admin')->only(['store', 'update', 'destroy']);
     }
 
@@ -44,7 +44,7 @@ class ProductCategoryController extends Controller
             $filename = $validated['name_en']  . '.' . $file->getClientOriginalExtension();
             $filePath = $file->storeAs('icon', $filename, 'public');
         } else {
-            return response()->json(['message' => 'File upload failed'], 400);
+            return response()->json(['message' => 'Icon File upload failed'], 400);
         }
 
         $categ = ProductCategory::create([
